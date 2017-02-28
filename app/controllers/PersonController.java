@@ -42,23 +42,23 @@ public class PersonController extends Controller {
     	
     	
     	CompletableFuture<Result> future = new CompletableFuture<>();
-    	play.Logger.debug("response5 :"+ new Date());
+    	play.Logger.debug("webService : response1 :"+ new Date());
     	
     	return ws.url("http://www.fnac.com/Trolls-de-Troy/si245").get()
     			.thenApply(
     					response ->{
-    						        play.Logger.debug("response1 :"+ new Date());
+    						        play.Logger.debug("webService : response2  :"+ new Date());
     						        
     						        
-    						        return ok(views.html.bd.render(response.getBody().replaceAll("(?i)trolls", "Miguel_Casado"+new Date())));
+    						        return ok(views.html.bd.render(response.getBody().replaceAll("(?i)trolls", "Miguel_Casado webService : response3: "+new Date())));
     							   }
     					).whenComplete((value, exception) -> {
-    						 play.Logger.debug("response2 :"+ new Date());
+    						 play.Logger.debug("webService : response4  :"+ new Date());
     			            if (exception != null) {
-    			            	 play.Logger.debug("response3 :"+ new Date());
+    			            	 play.Logger.debug("webService : response5  :"+ new Date());
     			            	future.completeExceptionally(exception);
     			            }
-    			            else { play.Logger.debug(" respônse 4:"+ new Date());
+    			            else { play.Logger.debug("webService : response6 :"+ new Date());
     			            	future.complete(value);
     			            }
     			        });
@@ -72,27 +72,31 @@ public class PersonController extends Controller {
     	   
     	   CompletableFuture<String> future = new CompletableFuture<>();
     	   
+    	   play.Logger.debug("webService2 : response1 :"+ new Date());
+    	   
     	   CompletionStage<String> request = ws.url("http://bd.grobe.fr/").get()
     	       .thenApply(
     	           response ->{
-    	                     play.Logger.debug("response1 :"+ new Date());
+    	                     play.Logger.debug("webService2 : response2 : :"+ new Date());
     	                     
     	                     
     	                     return (response.getBody());
     	                  }
     	           ).whenComplete((value, exception) -> {
-    	              play.Logger.debug("response2 :"+ new Date());
+    	              play.Logger.debug("webService2 : response3 : :"+ new Date());
     	                   if (exception != null) {
+    	                	 play.Logger.debug("webService2 : response4 : :"+ new Date()); 
     	                     future.completeExceptionally(exception);
     	                   }
     	                   else {
-    	                     future.complete(value);
+    	                	   play.Logger.debug("webService2 : response5 : :"+ new Date());
+    	                	  future.complete(value);
     	                   }
     	               });
     	     
-    	    play.Logger.debug("response3 :"+ new Date());
+    	    play.Logger.debug("webService2 : response6 :"+ new Date());
     	   
-    	   return  ok("ok fini"+new Date());
+    	   return  ok("ok fini : webService2 : response7 :"+new Date());
     	 }
     @Transactional
     public Result addPerson() {
