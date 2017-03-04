@@ -1,6 +1,6 @@
 package controllers;
 
-import models.Person;
+
 
 import javax.inject.Inject;
 import play.data.FormFactory;
@@ -21,22 +21,11 @@ import java.util.concurrent.CompletionStage;
 
 import static play.libs.Json.toJson;
 
-public class PersonController extends Controller {
-	@Inject WSClient ws;
+public class FuturController extends Controller {
+	@Inject 
+	WSClient ws;
 	
-    private final FormFactory formFactory;
-    private final JPAApi jpaApi;
-
-    @Inject
-    public PersonController(FormFactory formFactory, JPAApi jpaApi) {
-        this.formFactory = formFactory;
-        this.jpaApi = jpaApi;
-    }
-
-    public Result index() {
-        return ok(views.html.index.render());
-    }
-
+ 
     public CompletionStage<Result>  webService(){
     	
     	
@@ -70,6 +59,12 @@ public class PersonController extends Controller {
     
     public Result  webService2(){
     	   
+    	 play.Logger.debug("webService2 : response0 :"+ new Date());
+    	 
+    	 CompletionStage<Double> promiseOfPIValue = CompletableFuture.supplyAsync(() -> computePIAsynchronously());
+    	
+    	
+    	
     	   CompletableFuture<String> future = new CompletableFuture<>();
     	   
     	   play.Logger.debug("webService2 : response1 :"+ new Date());
@@ -98,17 +93,22 @@ public class PersonController extends Controller {
     	   
     	   return  ok("ok fini : webService2 : response7 :"+new Date());
     	 }
-    @Transactional
-    public Result addPerson() {
-        Person person = formFactory.form(Person.class).bindFromRequest().get();
-        jpaApi.em().persist(person);
-        return redirect(routes.PersonController.index());
-    }
+    
+    private Double computePIAsynchronously() {
+    	play.Logger.debug("computePIAsynchronously : debut :"+ new Date());
+    	Double sum= new Double(0);
+    	long SomeNumber=25000000000L;
+    	for(double i=0; i<SomeNumber; i++)
+    	{//play.Logger.debug("computePIAsynchronously : dans boucle :"+ new Date());
+    	    if(i%2 == 0) // if the remainder of `i/2` is 0
+    	        sum += -1 / ( 2 * i - 1);
+    	    else
+    	        sum += 1 / (2 * i - 1);
+    	}
+    	play.Logger.debug("computePIAsynchronously : fin :"+sum+" "+ new Date());
+		return sum;
+	}
 
-    @Transactional(readOnly = true)
-    public Result getPersons() {
-        List<Person> persons = (List<Person>) jpaApi.em().createQuery("select p from Person p").getResultList();
-        return ok(toJson(persons));
-    }
+	
 
 }
