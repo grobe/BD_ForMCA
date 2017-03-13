@@ -17,10 +17,13 @@ public class ActorController extends Controller {
 
     @Inject 
     public  ActorController(ActorSystem system) {
+    	play.Logger.debug("ActorController : ActorController");
     	actorsWebService = system.actorOf(actors.ActorsWebService.props);
     }
 	
     public CompletionStage<Result> sayHello(String name) {
+    	
+    	play.Logger.debug("ActorController : sayHello(String name)");
         return FutureConverters.toJava(ask(actorsWebService, new SayHello(name), 1000))
                 .thenApply(response -> ok((String) response));
     }

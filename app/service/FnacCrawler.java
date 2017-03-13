@@ -1,4 +1,4 @@
-package Service;
+package service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +38,7 @@ public class FnacCrawler {
 		
 		urlTab.add("http://www.fnac.com/Trolls-de-Troy/si245");
 		urlTab.add("http://bd.grobe.fr");
+		urlTab.add("https://news.grobe.fr");
 		play.Logger.debug("FnacCrawler : crawler1 : : urlTab" + new Date());
 		for (String  url: urlTab){
 		

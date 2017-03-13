@@ -2,7 +2,7 @@ package actors;
 
 import java.util.Date;
 
-import Service.FnacCrawler;
+import service.FnacCrawler;
 import play.api.Play;
 
 
@@ -15,7 +15,8 @@ public class ActorsWebServiceProtocol {
 	            
 	        	
 	        	
-	        	FnacCrawler serviceFnacCrawler =Play.current().injector().instanceOf(FnacCrawler.class);
+	        	//FnacCrawler serviceFnacCrawler =
+	        	Play.current().injector().instanceOf(FnacCrawler.class);
 	        	
 	        	
 	        	
