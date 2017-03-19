@@ -33,7 +33,7 @@ public class Collection extends Model {
     //@JsonBackReference
    // @Constraints.Required
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-    public List<CrowlerResults> series;
+    public List<CrowlerResults> crowlerResults;
     
     public static Finder<Long, Collection> find = new Finder<Long,Collection>(Collection.class);
 
@@ -69,12 +69,12 @@ public class Collection extends Model {
 		this.completed = completed;
 	}
 
-	public List<CrowlerResults> getSeries() {
-		return series;
+	public List<CrowlerResults> getCrowlerResults() {
+		return crowlerResults;
 	}
 
-	public void setSeries(List<CrowlerResults> series) {
-		this.series = series;
+	public void setSeries(List<CrowlerResults> crowlerResults) {
+		this.crowlerResults = crowlerResults;
 	}
     
     
