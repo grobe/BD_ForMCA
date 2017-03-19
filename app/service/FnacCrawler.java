@@ -8,7 +8,7 @@ import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
-
+import models.Test;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
@@ -58,6 +58,12 @@ public class FnacCrawler {
 			                 else {
 			              	   play.Logger.debug("FnacCrawler : crawler5 : :"+url+" "+ new Date());
 			              	   play.Logger.debug("FnacCrawler : crawler6 : :"+url+" "+ value.substring(0, 100));
+			              	   
+			              	   Test test = new Test();
+			              	   test.data=value.substring(0, 100);
+			              	   test.save();
+			              	   
+			              	   
 			              	   play.Logger.debug("FnacCrawler : crawler7 : :"+url+" "+  new Date());
 			              	  future.complete(value);
 			                 }

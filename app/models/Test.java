@@ -15,7 +15,7 @@ public class Test extends Model {
     public Long id;
 
     @Constraints.Required
-    public String name;
+    public String data;
 
     public boolean done;
 
