@@ -1,4 +1,4 @@
-name := """BD_ForMCA"""
+name := """BD.grobe.fr"""
 
 version := "1.0-SNAPSHOT"
 
