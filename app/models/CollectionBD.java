@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import play.data.validation.Constraints;
 
 @Entity
-public class Collection extends Model {
+public class CollectionBD extends Model {
 	@Id
     @Constraints.Min(10)
     public Long id;
@@ -35,7 +35,13 @@ public class Collection extends Model {
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     public List<CrowlerResults> crowlerResults;
     
-    public static Finder<Long, Collection> find = new Finder<Long,Collection>(Collection.class);
+    @OneToMany(mappedBy = "collection" ,cascade = CascadeType.ALL)
+    //@JsonBackReference
+   // @Constraints.Required
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+    public List<CrowlerBot> crowlerBots;
+    
+    public static Finder<Long, CollectionBD> find = new Finder<Long,CollectionBD>(CollectionBD.class);
 
 	public Long getId() {
 		return id;

@@ -3,18 +3,19 @@
 
 # --- !Ups
 
-create table collection (
+create table collection_bd (
   id                            bigint auto_increment not null,
   title                         varchar(255),
   editor                        varchar(255),
   completed                     tinyint(1) default 0,
-  constraint pk_collection primary key (id)
+  constraint pk_collection_bd primary key (id)
 );
 
 create table crowler_bot (
   id                            bigint auto_increment not null,
   collection_id                 bigint,
   url                           varchar(255),
+  store                         varchar(255),
   constraint pk_crowler_bot primary key (id)
 );
 
@@ -34,10 +35,10 @@ create table test (
   constraint pk_test primary key (id)
 );
 
-alter table crowler_bot add constraint fk_crowler_bot_collection_id foreign key (collection_id) references collection (id) on delete restrict on update restrict;
+alter table crowler_bot add constraint fk_crowler_bot_collection_id foreign key (collection_id) references collection_bd (id) on delete restrict on update restrict;
 create index ix_crowler_bot_collection_id on crowler_bot (collection_id);
 
-alter table crowler_results add constraint fk_crowler_results_collection_id foreign key (collection_id) references collection (id) on delete restrict on update restrict;
+alter table crowler_results add constraint fk_crowler_results_collection_id foreign key (collection_id) references collection_bd (id) on delete restrict on update restrict;
 create index ix_crowler_results_collection_id on crowler_results (collection_id);
 
 
@@ -49,7 +50,7 @@ drop index ix_crowler_bot_collection_id on crowler_bot;
 alter table crowler_results drop foreign key fk_crowler_results_collection_id;
 drop index ix_crowler_results_collection_id on crowler_results;
 
-drop table if exists collection;
+drop table if exists collection_bd;
 
 drop table if exists crowler_bot;
 

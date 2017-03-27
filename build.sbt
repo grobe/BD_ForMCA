@@ -10,6 +10,8 @@ libraryDependencies += javaJpa
 libraryDependencies += "org.mockito" % "mockito-core" % "2.1.0"
 libraryDependencies += javaWs % "test"
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.36"
+// https://mvnrepository.com/artifact/org.jsoup/jsoup
+libraryDependencies += "org.jsoup" % "jsoup" % "1.10.2"
 libraryDependencies ++= Seq(
   javaWs
 )

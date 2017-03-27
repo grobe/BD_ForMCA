@@ -17,12 +17,23 @@ public class CrowlerBot extends Model {
 	@ManyToOne
     @JsonIgnore
 	@Constraints.Required
-    public Collection collection;
+    public CollectionBD collection;
     
     @Constraints.Required
     public String url;
     
+    @Constraints.Required
+    public String Store;
+    
     public static Finder<Long, CrowlerBot> find = new Finder<Long,CrowlerBot>(CrowlerBot.class);
+
+	public String getStore() {
+		return Store;
+	}
+
+	public void setStore(String store) {
+		Store = store;
+	}
 
 	public Long getId() {
 		return id;
@@ -32,11 +43,11 @@ public class CrowlerBot extends Model {
 		this.id = id;
 	}
 
-	public Collection getCollection() {
+	public CollectionBD getCollection() {
 		return collection;
 	}
 
-	public void setCollection(Collection collection) {
+	public void setCollection(CollectionBD collection) {
 		this.collection = collection;
 	}
 

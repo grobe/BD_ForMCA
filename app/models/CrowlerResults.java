@@ -20,7 +20,7 @@ public class CrowlerResults extends Model {
 	@ManyToOne
     @JsonIgnore
 	@Constraints.Required
-    public Collection collection;
+    public CollectionBD collection;
     
     @Constraints.Required
     public String title;
@@ -38,11 +38,11 @@ public class CrowlerResults extends Model {
 		this.id = id;
 	}
 
-	public Collection getCollection() {
+	public CollectionBD getCollection() {
 		return collection;
 	}
 
-	public void setCollection(Collection collection) {
+	public void setCollection(CollectionBD collection) {
 		this.collection = collection;
 	}
 

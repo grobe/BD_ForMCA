@@ -8,6 +8,8 @@ import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
+
+import models.CollectionBD;
 import models.Test;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
@@ -34,15 +36,27 @@ public class FnacCrawler {
 		
 		CompletableFuture<String> future = new CompletableFuture<>();
 		
-		List <String> urlTab = new ArrayList<>();
+		//List <String> urlTab = new ArrayList<>();
+		//Look for all the collection 
+		List <CollectionBD> collection =  CollectionBD.find.all();
 		
-		urlTab.add("http://www.fnac.com/Trolls-de-Troy/si245");
-		urlTab.add("http://bd.grobe.fr");
-		urlTab.add("https://news.grobe.fr");
-		play.Logger.debug("FnacCrawler : crawler1 : : urlTab" + new Date());
-		for (String  url: urlTab){
 		
-					CompletionStage<String> retour = ws.url(url).get().thenApply(
+		
+		/*urlTab.add("http://www.fnac.com/Trolls-de-Troy/si245");
+		urlTab.add("http://recherche.fnac.com/se10792/Barracuda");
+		urlTab.add("http://recherche.fnac.com/se8699/Ben-Hur");
+		*/
+		play.Logger.debug("FnacCrawler : crawler1 : : collection.size() :" +collection.size() + new Date());
+		
+		collection.stream().forEach((col)->{
+		            
+			play.Logger.debug("FnacCrawler : crawler1.5 : : col.size() :" +col.crowlerBots.size()+ new Date());
+			 col.crowlerBots.stream().forEach((bot)->{		
+			        
+				    //Look for the URL to be used by the bot 
+				    String url  =bot.url;
+				   
+			        CompletionStage<String> retour = ws.url(url).get().thenApply(
 			  	           response ->{
 			                   play.Logger.debug("FnacCrawler : crawler2 : :"+url+" "+ new Date());
 			                   
@@ -68,7 +82,8 @@ public class FnacCrawler {
 			              	  future.complete(value);
 			                 }
 			             });
-		}
+			 });        
+		});
 		
 		return "done";
 	}
