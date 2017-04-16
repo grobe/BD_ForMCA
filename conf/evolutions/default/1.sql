@@ -24,6 +24,11 @@ create table crowler_results (
   collection_id                 bigint,
   title                         varchar(255),
   number                        integer,
+  price                         double,
+  creation_date                 datetime(6),
+  scenario                      varchar(255),
+  designer                      varchar(255),
+  availability                  varchar(255),
   constraint pk_crowler_results primary key (id)
 );
 
