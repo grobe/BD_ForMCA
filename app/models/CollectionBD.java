@@ -33,13 +33,13 @@ public class CollectionBD extends Model {
     //@JsonBackReference
    // @Constraints.Required
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-    public List<CrowlerResults> crowlerResults;
+    public List<ScraperResults> scraperResults;
     
     @OneToMany(mappedBy = "collection" ,cascade = CascadeType.ALL)
     //@JsonBackReference
    // @Constraints.Required
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-    public List<CrowlerBot> crowlerBots;
+    public List<ScraperBot> scraperBots;
     
     public static Finder<Long, CollectionBD> find = new Finder<Long,CollectionBD>(CollectionBD.class);
 
@@ -75,12 +75,12 @@ public class CollectionBD extends Model {
 		this.completed = completed;
 	}
 
-	public List<CrowlerResults> getCrowlerResults() {
-		return crowlerResults;
+	public List<ScraperResults> getCrowlerResults() {
+		return scraperResults;
 	}
 
-	public void setSeries(List<CrowlerResults> crowlerResults) {
-		this.crowlerResults = crowlerResults;
+	public void setSeries(List<ScraperResults> scraperResults) {
+		this.scraperResults = scraperResults;
 	}
     
     

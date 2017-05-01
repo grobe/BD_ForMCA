@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import play.data.validation.Constraints;
 
 @Entity
-public class CrowlerBot extends Model {
+public class ScraperBot extends Model {
 	@Id
     @Constraints.Min(10)
     public Long id;
@@ -25,7 +25,7 @@ public class CrowlerBot extends Model {
     @Constraints.Required
     public String Store;
     
-    public static Finder<Long, CrowlerBot> find = new Finder<Long,CrowlerBot>(CrowlerBot.class);
+    public static Finder<Long, ScraperBot> find = new Finder<Long,ScraperBot>(ScraperBot.class);
 
 	public String getStore() {
 		return Store;

@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.google.zxing.BinaryBitmap;
@@ -20,14 +21,18 @@ import com.google.zxing.Reader;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
-
+import models.BdData;
 import play.mvc.*;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
+import service.FnacScanBD;
 
 @Singleton
 public class BdController extends Controller {
 
+	
+	@Inject
+	FnacScanBD scanFromFnac;
 	
 	public Result  scan(){
 		
@@ -37,7 +42,7 @@ public class BdController extends Controller {
 	
 	  public Result  listBD(){
 		
-		  
+		  play.Logger.debug("BdController : MCA is HEre");
 		  String IsbnCode="No code";
 		 
 		  File file;
@@ -50,13 +55,19 @@ public class BdController extends Controller {
 		        
 		    } else {
 		        flash("error", "Missing file");
-		        return badRequest();
+		        return badRequest("bad request");
 		    }
 		
-		  
-		   
-		  
-		  try {
+		    play.Logger.debug("before scanFromFnac.Scan");
+		    IsbnCode =scanFromFnac.Scan(file);
+		    play.Logger.debug("after scanFromFnac.Scan");
+		    BdData book = new BdData();
+		    play.Logger.debug("after new BdData();");
+		    book.isbn=IsbnCode;
+		    play.Logger.debug("IsbnCode");
+		    book.save();
+		    play.Logger.debug("save");
+		/*  try {
 			
 			  
 			  
@@ -73,10 +84,13 @@ public class BdController extends Controller {
 		} catch (NotFoundException | ChecksumException | FormatException | IOException e) {
 			
 			 play.Logger.error("BdController : listBD :"+e.getMessage());
-		}  
+		}  */
+		    
+		    
+		    
 		  
-		  play.Logger.error("BdController : listBD :IsbnCode="+IsbnCode);
+		  play.Logger.debug("BdController :  listBD :IsbnCode="+IsbnCode+ " - size of the file :"+file.length());
 		  
-		  return ok(IsbnCode);
+		  return ok(IsbnCode+ " - size of the file :"+file.length());
 	  }
 }

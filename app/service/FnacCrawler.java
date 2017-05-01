@@ -19,8 +19,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import models.CollectionBD;
-import models.CrowlerBot;
-import models.CrowlerResults;
+import models.ScraperBot;
+import models.ScraperResults;
 import play.libs.ws.WSClient;
 
 public class FnacCrawler {
@@ -61,8 +61,8 @@ public class FnacCrawler {
 		
 		collection.stream().forEach((col)->{
 		            
-			play.Logger.debug("FnacCrawler : crawler1.5 : : col.size() :" +col.crowlerBots.size()+ new Date());
-			 col.crowlerBots.stream().forEach((bot)->{		
+			play.Logger.debug("FnacCrawler : crawler1.5 : : col.size() :" +col.scraperBots.size()+ new Date());
+			 col.scraperBots.stream().forEach((bot)->{		
 			        
 				    //Look for the URL to be used by the bot to search into the store FNAC
 				    String url  =bot.url;
@@ -100,7 +100,7 @@ public class FnacCrawler {
 	/*
 	 * Private function used to parse the HTML response for each URL in order to create or update the model  CrowlerResults
 	 */
-	private void setAllCrowlerResult (String html, CrowlerBot bot) {
+	private void setAllCrowlerResult (String html, ScraperBot bot) {
 		
 		 Document doc = Jsoup.parse(html);
     	   
@@ -132,7 +132,7 @@ public class FnacCrawler {
 	 * model  CrowlerResults list
 	 */
 	private void setCrowlerItemResult (Element bdItem,CollectionBD collection) {
-		CrowlerResults result;
+		ScraperResults result;
 		 Document article = Jsoup.parseBodyFragment(bdItem.outerHtml());
 		
 		 //STEP1 : i'm looking for the title and the number of the comic in the collection	 
@@ -150,11 +150,11 @@ public class FnacCrawler {
         	        	// take the number between" tome" and ":" and remove all the non numeric characters -
         	            int number = Integer.parseInt(((bdTitle.text().split("Tome"))[1].split(":"))[0].replaceAll("[^\\d.]", ""));
 		 
-		                   result = CrowlerResults.find.where().eq("collection", collection).eq("number", number).findUnique();
+		                   result = ScraperResults.find.where().eq("collection", collection).eq("number", number).findUnique();
 		                    
 		                   //if new comics i create the row
 		                   if (result ==null){
-		                	   result= new CrowlerResults();
+		                	   result= new ScraperResults();
 		                	    play.Logger.debug("crowlerResult :New"); 
 		                	    result.setCollection(collection);
 		                	    result.setNumber(number);
