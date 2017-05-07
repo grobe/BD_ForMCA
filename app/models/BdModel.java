@@ -31,7 +31,7 @@ public abstract class BdModel extends Model {
     public double price;
     
     @Constraints.Required
-    public Date CreationDate;
+    public Date creationDate;
     
     @Constraints.Required
     public String scenario;
@@ -46,11 +46,11 @@ public abstract class BdModel extends Model {
   
 
 	public Date getCreationDate() {
-		return CreationDate;
+		return creationDate;
 	}
 
 	public void setCreationDate(Date creationDate) {
-		CreationDate = creationDate;
+		this.creationDate = creationDate;
 	}
 
 	public double getPrice() {

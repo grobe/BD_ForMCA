@@ -5,8 +5,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
+
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import com.google.inject.ImplementedBy;
 import com.google.zxing.BinaryBitmap;
@@ -24,9 +32,9 @@ public interface ScanBD {
 	
 	
 	
-	default String Scan(File file){
+	default String scan(File file){
 		
-		String  IsbnCode="no Code";
+		String  IsbnCode="";
 		
 		 try {
 				
@@ -51,4 +59,6 @@ public interface ScanBD {
 		}
 		return (IsbnCode);
 	}
+	
+	
 }

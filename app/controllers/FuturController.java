@@ -30,7 +30,7 @@ public class FuturController extends Controller {
     	
     	
     	
-    	CompletableFuture<Result> future = new CompletableFuture<>();
+    	//CompletableFuture<Result> future = new CompletableFuture<>();
     	play.Logger.debug("webService : response1 :"+ new Date());
     	
     	return ws.url("http://www.fnac.com/Trolls-de-Troy/si245").get()
@@ -45,10 +45,10 @@ public class FuturController extends Controller {
     						 play.Logger.debug("webService : response4  :"+ new Date());
     			            if (exception != null) {
     			            	 play.Logger.debug("webService : response5  :"+ new Date());
-    			            	future.completeExceptionally(exception);
+    			            	//future.completeExceptionally(exception);
     			            }
     			            else { play.Logger.debug("webService : response6 :"+ new Date());
-    			            	future.complete(value);
+    			            	//future.complete(value);
     			            }
     			        });
    

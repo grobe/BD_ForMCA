@@ -13,8 +13,7 @@ public class ActorsWebServiceProtocol {
 	 public static class SayHello {
 	        public final String name;
 	        
-	    	@Inject 
-  	        FnacCrawler crawler;
+	    	
 
 	        public SayHello(String name) {
 	            
@@ -27,7 +26,7 @@ public class ActorsWebServiceProtocol {
 	        	
 	        	this.name = name+ new Date();
 	        	
-	    	    play.Logger.debug("ActorsWebServiceProtocol : SayHello :"+ name);
+	    	    play.Logger.debug("ActorsWebServiceProtocol : SayHello :"+ name  );
 
 	        }
 	    }

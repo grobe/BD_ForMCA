@@ -1,8 +1,8 @@
 name := """BD.grobe.fr"""
 
-version := "1.0-SNAPSHOT"
+version := "Release-V0.2"
 
-lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
+lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean,DebianPlugin)
 
 scalaVersion := "2.11.8"
 
@@ -26,3 +26,11 @@ libraryDependencies ++= Seq(
 
 // Compile the project before generating Eclipse files, so that generated .scala or .class files for views and routes are present
 EclipseKeys.preTasks := Seq(compile in Compile)
+
+
+
+maintainer in Linux := "Grobe <admin@grobe.fr>"
+
+packageSummary in Linux := "bd.grobe.Fr"
+
+packageDescription := "My longer package description"

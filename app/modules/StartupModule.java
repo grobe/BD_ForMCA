@@ -29,7 +29,7 @@ public class StartupModule extends AbstractModule implements AkkaGuiceSupport {
 	protected void configure() {
 		bindActor(ActorsWebService.class, "update-db-crawler");
         bind(SchedulingStartUp.class).asEagerSingleton(); 
-        bind(ScanBD.class).to(FnacScanBD.class);
+        bind(FnacScanBD.class);
         
         play.Logger.debug("StartupModule : configure");
 		
