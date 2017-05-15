@@ -34,6 +34,7 @@ public class FnacScanBD  implements ScanBD {
 		
 			play.Logger.debug("extractData 2");
 			BdData bdInfo =new BdData();
+			CollectionBD bdCollection;
 			
 			play.Logger.debug("extractData 3");
 			               
@@ -48,8 +49,24 @@ public class FnacScanBD  implements ScanBD {
 			
 			//I check if the answer from the Fnac webStore return a validated ITem based on the ISBN code 
 			if ((listBD.size()>0)){
-				play.Logger.debug("extractData 4");
-		    	//bdInfo.collection=????
+				
+				//i check if the collection extracted from the web store alredy exist or not
+				//in order to know if i have to create it
+				bdCollection= CollectionBD.find.where().eq("title", FnacExtractData.getCollection(listBD.get(0))).findUnique();
+						//il faut chercher l'édituer --> classe "editorialInfo"
+				        //
+				if (bdCollection==null){
+					play.Logger.debug("New ____extractData collection____New");
+					bdCollection = new CollectionBD();
+					bdCollection.setTitle(FnacExtractData.getCollection(listBD.get(0)));
+					bdCollection.setEditor(FnacExtractData.getEditor(listBD.get(0)));
+					bdCollection.save();
+					
+				}
+						
+				bdInfo.setCollection(bdCollection);
+				play.Logger.debug("extractData collection");
+		    	
 				bdInfo.setIsbn(isbn);
 				play.Logger.debug("extractData isbn-"+isbn);
 		    	bdInfo.setCreationDate(new Date());

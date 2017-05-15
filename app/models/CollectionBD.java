@@ -9,7 +9,9 @@ import javax.persistence.OneToMany;
 
 import com.avaje.ebean.Model;
 import com.avaje.ebean.Model.Finder;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import play.data.validation.Constraints;
 
@@ -29,16 +31,15 @@ public class CollectionBD extends Model {
     public boolean completed;
     
     
-    @OneToMany(mappedBy = "collection" ,cascade = CascadeType.ALL)
-    //@JsonBackReference
-   // @Constraints.Required
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-    public List<ScraperResults> scraperResults;
+     @OneToMany(mappedBy = "collection" ,cascade = CascadeType.ALL)
+     // @Constraints.Required
+     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+     public List<ScraperResults> scraperResults;
     
     @OneToMany(mappedBy = "collection" ,cascade = CascadeType.ALL)
-    //@JsonBackReference
    // @Constraints.Required
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+  
     public List<ScraperBot> scraperBots;
     
     public static Finder<Long, CollectionBD> find = new Finder<Long,CollectionBD>(CollectionBD.class);

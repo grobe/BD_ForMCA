@@ -40,8 +40,34 @@ public class FnacExtractData {
 		 Elements listBD = doc.select("li[class*=Article-item]"); 
 		 return listBD;
 	}
-	
-	
+	static String getEditor(Element bdItem) {
+		Element bdEditor= bdItem.select("div[class=editorialInfo]").first();
+        String Editor="No information";
+        
+        if (bdEditor !=null){
+     	  
+        	Editor = bdEditor.text();
+     	   play.Logger.debug("FnacExtractData : bdEditor :_____MCA___________________________ :"+"bdEditor : "+ bdEditor.text());
+                      	    
+        }
+		return Editor.split(" - ")[2].trim();
+	}
+	static String getCollection(Element bdItem) {
+		//Element bdTitle = bdItem.select("a").first();
+        String collection="No information";
+        
+       
+     	  
+           collection = getTitle(bdItem);
+        	if (collection.contains("Tome")){
+        		
+        		collection = (collection.split("Tome"))[0];
+        	};
+     	   play.Logger.debug("FnacExtractData : getCollection :_____MCA___________________________ :"+"collection : "+ collection);
+                      	    
+       
+		return collection.replaceAll(" - ", "").trim();
+	}
 	
 	
 	static String getTitle(Element bdItem) {
@@ -55,7 +81,7 @@ public class FnacExtractData {
      	   play.Logger.debug("FnacExtractData : getTitle :_____MCA___________________________ :"+"bdTitle : "+ bdTitle.text());
                       	    
         }
-		return title;
+		return title.trim();
 	}
 	
 	static String getTitleCleaned(Element bdItem) {
@@ -167,8 +193,8 @@ public class FnacExtractData {
          }
          
          
-         authorAndScriptWriter.put("author",author);
-         authorAndScriptWriter.put("ScriptWriter",ScriptWriter);
+         authorAndScriptWriter.put("author",author.replaceAll(" - ", "").trim());
+         authorAndScriptWriter.put("ScriptWriter",ScriptWriter.replaceAll(" - ", "").trim());
          
          
 		return authorAndScriptWriter;

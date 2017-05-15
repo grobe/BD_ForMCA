@@ -27,14 +27,18 @@ import com.google.zxing.Reader;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
+import models.BdData;
+import models.ScraperResults;
+
 @ImplementedBy(FnacScanBD.class)
 public interface ScanBD {
 	
 	
 	
+	//based on an image of barcode this function extract the ISBN code. 
 	default String scan(File file){
 		
-		String  IsbnCode="";
+		String  isbnCode="";
 		
 		 try {
 				
@@ -48,17 +52,23 @@ public interface ScanBD {
 			  Reader reader = new MultiFormatReader();  
 			  com.google.zxing.Result result = reader.decode(bitmap);  
 			  
-			  IsbnCode=result.getText();
+			  isbnCode=result.getText();
 			 
 		} catch (NotFoundException | ChecksumException | FormatException | IOException e) {
 			
 			 play.Logger.error(this.getClass().getName()+": ScanBD :"+e.getMessage());
 		} finally{		  
-		  play.Logger.debug(this.getClass().getName()+": ScanBD :"+"- IsbnCode="+IsbnCode+ " - size of the file :"+file.length());
+		  play.Logger.debug(this.getClass().getName()+": ScanBD :"+"- IsbnCode="+isbnCode+ " - size of the file :"+file.length());
 		 
 		}
-		return (IsbnCode);
+		return (isbnCode);
 	}
 	
+	//check if the isbnCode already exist in the Database
+	default boolean bdExist(String isbnCode){
+		BdData bdData = BdData.find.where().eq("isbn", isbnCode).findUnique();
+		
+		return (!(bdData==null));
+	}
 	
 }

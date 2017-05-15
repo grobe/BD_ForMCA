@@ -4,6 +4,7 @@
 
 # Home page
 
+# used to demonstrate promise with Java and Play! 
 
 GET /webservice                         controllers.FuturController.webService
 
@@ -11,9 +12,13 @@ GET /webservice2                        controllers.FuturController.webService2
 
 GET /SayHello/:text					    controllers.ActorController.sayHello(text: String )
 
-POST /listBD							controllers.BdController.listBD()
+#used by the bd.grobe.fr applciation
+
+POST /infoBD							controllers.BdController.infoBD()
 
 GET /scan								controllers.BdController.scan()
+
+GET /									controllers.BdController.listBD()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

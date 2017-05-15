@@ -1,12 +1,29 @@
-@(bd: BdData)
+@(bd: BdData, bdExist: Boolean)
 
-
-<div id=id>@bd.id</div>
-<div id=collection id>@bd.collection</div>
-<div id=title>@bd.title</div>
-<div id=number>@bd.number</div>
-<div id=price>@bd.price</div>
-<div id=creationDate>@bd.creationDate</div>
-<div id=scenario>@bd.scenario</div>
-<div id=designer>@bd.designer</div>
-<div id=isbn>@bd.isbn</div>
+<form>
+@if(bdExist== true){
+<h1>BD already on my DataBase</h1>
+}else{
+<h1>new BD on my DataBase</h1>
+}
+<div>Id</div>
+<div ><input id=id type="text" value="@bd.id"> </div>
+<div>Collection</div>
+<div><input id=collection type="text" value="@bd.collection.title"></div>
+<div>Editor</div>
+<div><input id=collection type="text" value="@bd.collection.editor"></div>
+<div>Title</div>
+<div><input id=title type="text" value="@bd.title"></div>
+<div>Number</div>
+<div><input id=number type="text" value="@bd.number"></div>
+<div>Price</div>
+<div><input id=price type="text" value="@bd.price"></div>
+<div>creationDate</div>
+<div><input id=creationDate type="text" value="@bd.creationDate"></div>
+<div>scenario</div>
+<div><input id=scenario type="text" value="@bd.scenario"></div>
+<div>designer</div>
+<div><input id=designer type="text" value="@bd.designer"></div>
+<div>isbn</div>
+<div><input id=isbn type="text" value="@bd.isbn"></div>
+</form>

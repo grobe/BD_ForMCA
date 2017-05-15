@@ -9,6 +9,7 @@ import play.data.validation.Constraints;
 
 import com.avaje.ebean.Model;
 import com.avaje.ebean.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @MappedSuperclass
 public abstract class BdModel extends Model {
@@ -17,7 +18,7 @@ public abstract class BdModel extends Model {
     public Long id;
 
 	@ManyToOne
-    @JsonIgnore
+	@JsonBackReference
 	@Constraints.Required
     public CollectionBD collection;
     

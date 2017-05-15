@@ -10,12 +10,14 @@
 </head>
 <body>
 
+  <div id="videoEnabled">
+  
     <video autoplay="true" id="videoElement">
      
     </video>
     
     <br>
-    
+  </div>  
     <input type="file" name="picture" id="picture"  accept="image/*;capture=camera">
     
    <!--    
@@ -35,7 +37,7 @@
 
 
 
-<img src="http://placekitten.com/g/320/261" crossOrigin="anynymous" width="100" height="100" id="photo" alt="photo">
+<img src="https://placekitten.com/g/320/261" crossOrigin="anynymous" width="100" height="100" id="photo" alt="photo">
 
 <div id="bdReturnedValues">
 
@@ -85,7 +87,7 @@
         })
         // permission denied:
         .catch(function(error) {
-          document.body.textContent = 'Could not access the camera. Error: ' + error.name;
+        	document.getElementById('videoEnabled').innerHTML = 'Could not access the camera. Error: ' + error.name;
         });
     }
   })();
