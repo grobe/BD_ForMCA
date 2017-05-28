@@ -1,29 +1,77 @@
-@(bd: BdData, bdExist: Boolean)
+@import java.lang.String; var submit=""
+@(collection: CollectionBD, bdExist: Boolean)
 
-<form>
+
+
+
 @if(bdExist== true){
+@{ submit = "Update"}
 <h1>BD already on my DataBase</h1>
 }else{
+
+@{ submit = "Create"}
+
+
+
 <h1>new BD on my DataBase</h1>
 }
-<div>Id</div>
-<div ><input id=id type="text" value="@bd.id"> </div>
-<div>Collection</div>
-<div><input id=collection type="text" value="@bd.collection.title"></div>
-<div>Editor</div>
-<div><input id=collection type="text" value="@bd.collection.editor"></div>
-<div>Title</div>
-<div><input id=title type="text" value="@bd.title"></div>
-<div>Number</div>
-<div><input id=number type="text" value="@bd.number"></div>
-<div>Price</div>
-<div><input id=price type="text" value="@bd.price"></div>
-<div>creationDate</div>
-<div><input id=creationDate type="text" value="@bd.creationDate"></div>
-<div>scenario</div>
-<div><input id=scenario type="text" value="@bd.scenario"></div>
-<div>designer</div>
-<div><input id=designer type="text" value="@bd.designer"></div>
-<div>isbn</div>
-<div><input id=isbn type="text" value="@bd.isbn"></div>
+
+<form id="BDscan" name="BDscan" >
+<div class="form-group">
+	<label >Collection Id</label >
+	<input id=id name="id" type="text" class="form-control" value="@collection.getId()">
+</div>
+
+<div class="form-group">
+	<label>Collection Tilte</label>
+	<input id=collection name="collection" type="text" class="form-control" value="@collection.getTitle()">
+</div>
+
+<div class="form-group">
+	<label>Collection Editor</label>
+	<input id=editor name="editor" type="text" class="form-control" value="@collection.getEditor()">
+</div>
+
+<div class="form-group">
+	<label>Title</label>
+	<input id=title name="title"  type="text" class="form-control" value="@collection.getBddata().get(0).getTitle()">
+</div>
+
+<div class="form-group">
+	<label>Number</label>
+	<input id=number name="number" type="text"  class="form-control" value="@collection.getBddata().get(0).getNumber()">
+</div>
+
+<div class="form-group">
+	<label>Price</label>
+	<input id=price name="price"  type="text" class="form-control" value="@collection.getBddata().get(0).getPrice()">
+</div>
+
+<div class="form-group">
+	<label>creationDate</label>
+	<input id=creationDate name="creationDate"  type="text" class="form-control" value="@collection.getBddata().get(0).getCreationDate()">
+</div>
+
+<div class="form-group">
+	<label>scenario</label>
+	<input id=scenario name="scenario"  type="text" class="form-control" value="@collection.getBddata().get(0).getScenario()">
+</div>
+
+<div class="form-group">
+	<label>designer</label>
+	<input id=designer name="designer"  type="text" class="form-control" value="@collection.getBddata().get(0).getDesigner()">
+</div>
+
+<div class="form-group">
+	<label>isbn</label>
+	<input id=isbn name="isbn" type="text" class="form-control" value="@collection.getBddata().get(0).getIsbn()">
+</div>
+ 
+<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button id="submitBDscan" name="submitBDscan" type="button" class="btn btn-primary">Save changes</button>
+</div>
+
 </form>
+
+
