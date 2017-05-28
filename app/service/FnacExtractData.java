@@ -42,21 +42,15 @@ public class FnacExtractData {
 	}
 	static String getEditor(Element bdItem) {
 		Element bdEditor= bdItem.select("div[class=editorialInfo]").first();
-        String editor="No information";
+        String Editor="No information";
         
         if (bdEditor !=null){
      	  
-        	editor = bdEditor.text();
-     	    if (editor.split(" - ").length>1) {
-     	    	editor= editor.split(" - ")[2].trim();
-     	    }
-     	   
-        	play.Logger.debug("FnacExtractData : bdEditor :_____MCA___________________________ :"+"bdEditor : "+ bdEditor.text());
+        	Editor = bdEditor.text();
+     	   play.Logger.debug("FnacExtractData : bdEditor :_____MCA___________________________ :"+"bdEditor : "+ bdEditor.text());
                       	    
         }
-		
-        //bug here if editor have not "-" i get an error exception
-        return editor;
+		return Editor.split(" - ")[2].trim();
 	}
 	static String getCollection(Element bdItem) {
 		//Element bdTitle = bdItem.select("a").first();
