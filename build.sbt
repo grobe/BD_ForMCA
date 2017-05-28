@@ -1,6 +1,6 @@
 name := """BD.grobe.fr"""
 
-version := "Release-V0.4"
+version := "Release-V0.2"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean,DebianPlugin)
 
@@ -10,8 +10,6 @@ libraryDependencies += javaJpa
 libraryDependencies += "org.mockito" % "mockito-core" % "2.1.0"
 libraryDependencies += javaWs % "test"
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.36"
-libraryDependencies += "org.webjars" % "bootstrap" % "3.3.7"
-
 
 // https://mvnrepository.com/artifact/org.jsoup/jsoup
 libraryDependencies += "org.jsoup" % "jsoup" % "1.10.2"

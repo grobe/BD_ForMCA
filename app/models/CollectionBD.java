@@ -39,31 +39,10 @@ public class CollectionBD extends Model {
     @OneToMany(mappedBy = "collection" ,cascade = CascadeType.ALL)
    // @Constraints.Required
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+  
     public List<ScraperBot> scraperBots;
     
-    @OneToMany(mappedBy = "collection" ,cascade = CascadeType.ALL)
-    // @Constraints.Required
-     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-    public List<BdData> bddata;
-    
-    
     public static Finder<Long, CollectionBD> find = new Finder<Long,CollectionBD>(CollectionBD.class);
-
-	public List<ScraperBot> getScraperBots() {
-		return scraperBots;
-	}
-
-	public void setScraperBots(List<ScraperBot> scraperBots) {
-		this.scraperBots = scraperBots;
-	}
-
-	public List<BdData> getBddata() {
-		return bddata;
-	}
-
-	public void setBddata(List<BdData> bddata) {
-		this.bddata = bddata;
-	}
 
 	public Long getId() {
 		return id;
