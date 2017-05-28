@@ -1,137 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>TEst of the API files</title>
 
+<div class="modal-body">
+			      				 
+				<div class="form-group">
+					<input type="file" name="picture" id="picture"  class="form-control" accept="image/*;capture=camera"> 
+				</div>
+				   
+				<div class="form-group">
+					<img src="@routes.Assets.versioned("images/no-image-available.png")" crossOrigin="anonymous" width="100" height="100" id="photo" alt="photo" class="img-thumbnail">
+				</div>
+				<div class="form-group">
+					<div id="name"></div>
+				</div>
+				<div class="form-group">
+					<div id="bdReturnedValues"></div>
+				</div>
 
+ </div>
+			      
 
-
-</head>
-<body>
-
-  <div id="videoEnabled">
-  
-    <video autoplay="true" id="videoElement">
-     
-    </video>
-    
-    <br>
-  </div>  
-    <input type="file" name="picture" id="picture"  accept="image/*;capture=camera">
-    
-   <!--    
-
-    <p>
-        <input type="submit">
-    </p>
-    
-    <canvas id="canvas" crossOrigin="anynymous" width="100" height="100"></canvas>
-    -->
- 
-
-
-
-
-<div id="name"></div>
-
-
-
-<img src="https://placekitten.com/g/320/261" crossOrigin="anynymous" width="100" height="100" id="photo" alt="photo">
-
-<div id="bdReturnedValues">
-
-</div>
-
-<!-- 
-
-
-
- -->
 <script>
-  (function() {
-    'use strict';
-    var video = document.querySelector('video')
-      , canvas;
-
-    /**
-     *  generates a still frame image from the stream in the <video>
-     *  appends the image to the <body>
-     */
-    function takeSnapshot() {
-      var img = document.querySelector('img') || document.createElement('img');
-      var context;
-      var width = video.offsetWidth
-        , height = video.offsetHeight;
-
-      canvas = canvas || document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-
-      context = canvas.getContext('2d');
-      context.drawImage(video, 0, 0, width, height);
-
-      img.src = canvas.toDataURL('image/png');
-      document.body.appendChild(img);
-    }
-
-    // use MediaDevices API
-    // docs: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-    if (navigator.mediaDevices) {
-      // access the web cam
-      navigator.mediaDevices.getUserMedia({video: true})
-      // permission granted:
-        .then(function(stream) {
-          video.src = window.URL.createObjectURL(stream);
-          video.addEventListener('click', takeSnapshot);
-        })
-        // permission denied:
-        .catch(function(error) {
-        	document.getElementById('videoEnabled').innerHTML = 'Could not access the camera. Error: ' + error.name;
-        });
-    }
-  })();
-
-</script>
 
 
-<!-- 
-
-
- -->
-<script>
 console.log("Start");
 
 //if (filesToUpload){
 	document.getElementById("picture").addEventListener("change",handleFiles , false);	
-	document.getElementById("photo").addEventListener("load",handleWebCam , false);	
-	document.getElementById("name").addEventListener("change",handleWebCamClicked , false);	
-	
 	console.log("afteraddEventListener");
 //}
 
-document.getElementById('bdReturnedValues').innerHTML  ="no value 1";
-document.getElementById('name').innerHTML  = "No value 2";
-
-var FileToSend  = document.getElementById('canvas');
+document.getElementById('bdReturnedValues').innerHTML  ="";
+document.getElementById('name').innerHTML  = "";
 
 
-function handleWebCam(evt) {
-	 console.log("The picture is loaded");
-}
-
-function handleWebCamClicked(evt) {
-	 console.log("The name is updated");
-}
-
-		function handleFiles(evt) {
+function handleFiles(evt) {
 		
 		        var files = evt.target.files;
 		        var photo        = document.getElementById('photo');
 		        var dislaySize = document.getElementById('bdReturnedValues');
 				var dislayName = document.getElementById('name');
 				var file = files[0];
-				dislaySize.innerHTML  = file.size;
+				dislaySize.innerHTML  = "Size of the file :"+ bytesToSize(file.size)+ "- Data is transfering, please wait";
 				dislayName.innerHTML  = file.name;
 				var reader = new FileReader();
 	            reader.onload = function(event) {
@@ -154,13 +62,7 @@ function handleWebCamClicked(evt) {
 				 console.log("before sendFile");
 				 sendFile (file);
 				 console.log("END");
-					 
-				 
-				 
-
-				 
-		
-							 
+		 
 		}			 
 
 		 
@@ -169,7 +71,7 @@ function sendFile (file){
 	
 	//var img = canevas.toDataURL();
 	//var file = dataURItoBlob(img);
-	
+	 console.log("sendFile");
 	var formData =new FormData();
 	   
 	  formData.append("picture", file);
@@ -191,13 +93,16 @@ function sendFile (file){
 		                
 	                }).then(function (value){
 	                	document.getElementById('bdReturnedValues').innerHTML=value;
+	                	console.log("sendFile : submitForm :test ");
+	                	addEventForsubmitForm("BDscan", "@routes.BdController.scannedBD");
+
+	                	
+
+
+	                	
 	                });
 }
-		 
+
 
 
 </script>
-
-
-</body>
-</html>

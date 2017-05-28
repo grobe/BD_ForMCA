@@ -4,7 +4,7 @@
 
 # Home page
 
-# used to demonstrate promise with Java and Play! 
+############################## used to demonstrate promise with Java and Play! ###################### 
 
 GET /webservice                         controllers.FuturController.webService
 
@@ -12,13 +12,28 @@ GET /webservice2                        controllers.FuturController.webService2
 
 GET /SayHello/:text					    controllers.ActorController.sayHello(text: String )
 
-#used by the bd.grobe.fr applciation
+#############################used by the bd.grobe.fr applciation ####################################
 
-POST /infoBD							controllers.BdController.infoBD()
+# Test purpose !!! used to test the use of the Webcam on a web page
+GET /scanTest								controllers.BdController.scanTest()
+
+
 
 GET /scan								controllers.BdController.scan()
 
+# Async Action : used to catch from a form POST the picture code and display into a for the result of the scan from the web store
+POST /infoBD							controllers.BdController.infoBD()
+
+
+#used for Update or Create a BD after a scan of the bar code
+POST /scannedBD							controllers.BdController.scannedBD()
+
+
+
+#Display the main page of the web site
 GET /									controllers.BdController.listBD()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+GET  /assets/*file  controllers.Assets.versioned(path="/public", file: Asset)
+#GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -1,6 +1,8 @@
 package service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -23,13 +25,14 @@ import play.mvc.Result;
 
 public class FnacScanBD  implements ScanBD {
 	
+	private static final int ArrayList = 0;
 	@Inject 
 	WSClient ws;
 	public FnacScanBD() {
 		
 	}
 
-	public  BdData extractDataFromSearch( String html, String isbn){
+	public  CollectionBD extractDataFromSearch( String html, String isbn){
 		play.Logger.debug("extractData 1");
 		
 			play.Logger.debug("extractData 2");
@@ -53,14 +56,13 @@ public class FnacScanBD  implements ScanBD {
 				//i check if the collection extracted from the web store alredy exist or not
 				//in order to know if i have to create it
 				bdCollection= CollectionBD.find.where().eq("title", FnacExtractData.getCollection(listBD.get(0))).findUnique();
-						//il faut chercher l'édituer --> classe "editorialInfo"
-				        //
+						
 				if (bdCollection==null){
 					play.Logger.debug("New ____extractData collection____New");
 					bdCollection = new CollectionBD();
 					bdCollection.setTitle(FnacExtractData.getCollection(listBD.get(0)));
 					bdCollection.setEditor(FnacExtractData.getEditor(listBD.get(0)));
-					bdCollection.save();
+					//bdCollection.save();
 					
 				}
 						
@@ -86,10 +88,29 @@ public class FnacScanBD  implements ScanBD {
 					play.Logger.error(this.getClass().getName()+"\n : "+e.getMessage());
 				}
 		    	play.Logger.debug("extractData 12");
+			}else{
+				//put here the setup of zn bdingo empty with only an isbn code
+				bdCollection= CollectionBD.find.where().eq("title", "Not Found").findUnique();
+				
+					if (bdCollection==null){
+						play.Logger.debug("New ____extractData collection____New");
+						bdCollection = new CollectionBD();
+						bdCollection.setTitle("Not Found");
+						bdCollection.setEditor("Not Found");
+						//bdCollection.save();
+					}
+					bdInfo.setCollection(bdCollection);
+					play.Logger.debug("extractData not bd found from Web store");
+			    	
+					bdInfo.setIsbn(isbn);
 			}
 	    	
-			 play.Logger.debug("extractData 13");
-		return   bdInfo;
+			List <BdData> bddata= new ArrayList <BdData>();
+			bddata.add(bdInfo);
+			bdCollection.setBddata(bddata); 
+			play.Logger.debug("extractData 13");
+			 
+		return   bdCollection;
 		
 
 	}

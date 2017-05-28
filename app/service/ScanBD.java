@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -17,8 +18,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.google.inject.ImplementedBy;
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.FormatException;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
@@ -49,8 +52,10 @@ public interface ScanBD {
 			    
 			  LuminanceSource source = new BufferedImageLuminanceSource(barCodeBufferedImage);  
 			  BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));  
-			  Reader reader = new MultiFormatReader();  
-			  com.google.zxing.Result result = reader.decode(bitmap);  
+			  Reader reader = new MultiFormatReader();
+			  Hashtable<DecodeHintType, Object> hint = new Hashtable<DecodeHintType, Object>();
+		       hint.put(DecodeHintType.TRY_HARDER, BarcodeFormat.EAN_13);
+			  com.google.zxing.Result result = reader.decode(bitmap,hint);  
 			  
 			  isbnCode=result.getText();
 			 
