@@ -1,5 +1,6 @@
 package models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Id;
@@ -26,7 +27,7 @@ public abstract class BdModel extends Model {
     public String title;
     
     @Constraints.Required
-    public int number;
+    public String number;
     
     @Constraints.Required
     public double price;
@@ -40,11 +41,35 @@ public abstract class BdModel extends Model {
     @Constraints.Required
     public String designer;
     
+    @javax.persistence.Column(length=20000)
+    @Constraints.Required
+    public String imageBase64;
 
     
     
     
+    public String getFormatedDate(){
+    	String date= "No creationDate exists for this bd, please set the creatino date before used the formatedDate";
+    	
+    	if (this.creationDate !=null){
+    		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    		
+    		date = formatter.format(this.creationDate);
+    		
+    	}
+    	
+    	return date;
+    }
+    
   
+
+	public String getImageBase64() {
+		return imageBase64;
+	}
+
+	public void setImageBase64(String imageBase64) {
+		this.imageBase64 = imageBase64;
+	}
 
 	public Date getCreationDate() {
 		return creationDate;
@@ -86,11 +111,11 @@ public abstract class BdModel extends Model {
 		this.title = title;
 	}
 
-	public int getNumber() {
+	public String getNumber() {
 		return number;
 	}
 
-	public void setNumber(int number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 

@@ -7,10 +7,10 @@
 				   
 				<div class="form-group">
 					<img src="@routes.Assets.versioned("images/no-image-available.png")" crossOrigin="anonymous" width="100" height="100" id="photo" alt="photo" class="img-thumbnail">
+				    <div id="name"></div>
+				    <div id="size"></div>
 				</div>
-				<div class="form-group">
-					<div id="name"></div>
-				</div>
+				
 				<div class="form-group">
 					<div id="bdReturnedValues"></div>
 				</div>
@@ -36,11 +36,13 @@ function handleFiles(evt) {
 		
 		        var files = evt.target.files;
 		        var photo        = document.getElementById('photo');
-		        var dislaySize = document.getElementById('bdReturnedValues');
+		        var dislaySize = document.getElementById('size');
 				var dislayName = document.getElementById('name');
+				var bdReturnedValues = document.getElementById('bdReturnedValues');
 				var file = files[0];
-				dislaySize.innerHTML  = "Size of the file :"+ bytesToSize(file.size)+ "- Data is transfering, please wait";
+				dislaySize.innerHTML  = "Size of the file :"+ bytesToSize(file.size);
 				dislayName.innerHTML  = file.name;
+				bdReturnedValues.innerHTML= "Data is transfering, please wait2";
 				var reader = new FileReader();
 	            reader.onload = function(event) {
 					    var dataUri = event.target.result,

@@ -2,6 +2,7 @@ package service;
 
 import java.util.Date;
 import java.util.List;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -71,8 +72,15 @@ public class FnacScanBD  implements ScanBD {
 		    	
 				bdInfo.setIsbn(isbn);
 				play.Logger.debug("extractData isbn-"+isbn);
-		    	bdInfo.setCreationDate(new Date());
+		    	
+			
+				
+				bdInfo.setCreationDate(new Date());
 		    	play.Logger.debug("extractData creationDate"+bdInfo.creationDate);
+		    	
+		    	bdInfo.setImageBase64(FnacExtractData.getImageBAse64(listBD.get(0)));
+		    	play.Logger.debug("extractData creationDate"+bdInfo.creationDate);
+		    	
 		    	bdInfo.setTitle(FnacExtractData.getTitleCleaned(listBD.get(0)));
 		    	play.Logger.debug("extractData 7");
 		    	bdInfo.setNumber(FnacExtractData.getNumber(listBD.get(0)));

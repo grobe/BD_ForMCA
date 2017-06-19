@@ -2,6 +2,8 @@ package models;
 
 import java.util.Date;
 
+import play.data.validation.Constraints;
+
 
 
 public class BdDisplay {
@@ -14,7 +16,7 @@ public class BdDisplay {
     public String title;
     
     
-    public int number;
+    public String number;
     
     
     public double price;
@@ -32,9 +34,18 @@ public class BdDisplay {
     
     public String availability;
 
-	
+
+    public String imageBase64;
 
 	
+	public String getImageBase64() {
+		return imageBase64;
+	}
+
+	public void setImageBase64(String imageBase64) {
+		this.imageBase64 = imageBase64;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -43,11 +54,11 @@ public class BdDisplay {
 		this.title = title;
 	}
 
-	public int getNumber() {
+	public String getNumber() {
 		return number;
 	}
 
-	public void setNumber(int number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 

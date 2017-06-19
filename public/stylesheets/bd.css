@@ -1,0 +1,186 @@
+@media (max-width: 768px) {
+    .hideColumnForMobile{display: none;}
+	
+	}
+	
+.highlight { background: #000; color: #fff; }
+
+
+
+
+@font-face {
+    font-family: 'action_manbold';
+    src: url('fonts/action_man_bold-webfont.eot');
+    src: url('fonts/action_man_bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/action_man_bold-webfont.woff2') format('woff2'),
+         url('fonts/action_man_bold-webfont.woff') format('woff'),
+         url('fonts/action_man_bold-webfont.ttf') format('truetype'),
+         url('fonts/action_man_bold-webfont.svg#action_manbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+@font-face {
+    font-family: 'eraserregular';
+    src: url('fonts/EraserRegular-webfont.eot');
+    src: url('fonts/EraserRegular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/EraserRegular-webfont.woff') format('woff'),
+         url('fonts/EraserRegular-webfont.ttf') format('truetype'),
+         url('fonts/EraserRegular-webfont.svg#eraserregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+@font-face {
+  font-family: 'picomca';
+  src: url('fonts/picomca.eot?3470506');
+  src: url('fonts/picomca.eot?3470506#iefix') format('embedded-opentype'),
+       url('fonts/picomca.woff?3470506') format('woff'),
+       url('fonts/picomca.ttf?3470506') format('truetype'),
+       url('fonts/picomca.svg?3470506#picomca') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.searchInput{ 
+	  font-size: 16px; 
+	  text-align: center;
+	  border-radius: 14px !important;
+	  border: solid 1px #E0BC93 !important;
+	  margin-top:5px;
+      margin-bottom:5px;
+	  margin-left:5px;
+      margin-right:5px;
+	  
+}
+
+h1 {
+   text-align:center;
+   font-family: 'eraserregular'!important;
+   color: #8A4A00 !important; 
+}
+
+h3 {
+   text-align:center;
+   font-family: 'action_manbold';
+  color: #E0BC93;
+}
+h4 {
+   text-align:center;
+  color: black;
+  font-size: 8px;
+  font-family: 'verdana';
+}
+
+
+table {
+	font-size: .8em;
+    margin-top:5px;
+	margin-bottom:5px;
+	margin-left:5px;
+	margin-right:5px;
+	width: 98%;
+	background-color: #EFE4D2;
+	border-collapse: separate;
+	border-spacing: 0px;
+	border-radius: 14px;
+	border: solid 1px;
+	border-color: #E0BC93;
+	text-align: left;
+}
+
+table  tr:first-child td {
+	border-top: none;
+}
+table tr:last-child td {
+	border-bottom: none;
+}
+td {
+	text-align: left; 
+	padding: 5px;
+	border-top: solid 1px #FFFFFF;
+	border-bottom: solid 1px #FFFFFF;
+}
+
+
+
+.maskBDWebstore{
+	
+clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%);
+width:75px;
+height:75px;
+margin-left: 10px;
+}
+
+
+.maskBDowned{
+	clip-path: polygon(50% 0%, 86% 0, 99% 11%, 100% 89%, 86% 100%, 50% 100%, 12% 100%, 0 90%, 1% 10%, 12% 0);
+	width:75px;
+    height:75px;
+    margin-left: 10px;
+}
+
+.TableauTextBody{ 
+	color: #A19E9A; 
+	margin-top:25px;
+	margin-left:15px;
+	}
+.TableauTextCollection{ 
+		color: black;
+		font-family: 'action_manbold';	
+ }
+ .TableauTextsearch{ 
+		color: black;
+		font-family: 'eraserregular';
+		font-size: 8px;		
+ }
+.trBackGround{ 
+	background-color: #f9f9f9;
+	font-size: 14px;
+	color:F0C799;
+}
+.TableauTextHeader{ 
+	
+	color: #E0BC93;
+	margin-top:25px;
+	margin-left:15px; }
+
+ .Numcollections{ 
+		color: #A19E9A;
+		font-family: 'verdana';
+		font-size: 8px;		
+ }
+.New{ color: #BB905F; }
+.watch{ color: #8A4A00; }
+
+.mysearch{text-align:center;} 
+.container{
+    margin-top:0px;
+	margin-bottom:0px;
+	margin-left:0px;
+	margin-right:0px;
+}
+.row{
+    margin-top:2px;
+	margin-bottom:2px;
+	margin-left:0px;
+	margin-right:0px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+html, body, div {margin-left:0px;
+          margin-right:0px; 
+		  padding: 0;}
+.picto-icon
+    {/* 
+	  <i class="demo-icon ">+</i>
+	  <i class="demo-icon ">n</i>
+	  <i class="demo-icon ">y</i>
+	*/
+      font-family: "picomca";
+      font-style: normal;
+      font-weight: normal;
+      speak: none;
+      font-size: 120%;
+     }
+/***********************************/

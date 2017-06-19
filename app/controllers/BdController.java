@@ -34,6 +34,7 @@ import models.CollectionBD;
 import models.CollectionDisplay;
 import models.ScraperResults;
 import play.data.DynamicForm;
+import play.data.Form;
 import play.data.FormFactory;
 import play.libs.Json;
 import play.libs.ws.WSClient;
@@ -41,6 +42,7 @@ import play.libs.ws.WSResponse;
 import play.mvc.*;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
+import service.FnacExtractData;
 import service.FnacScanBD;
 
 @Singleton
@@ -65,43 +67,84 @@ public class BdController extends Controller {
 	
 	
 	public Result  scan(){
-		play.Logger.debug("scan : MCA is HEre : scanTest");
+		play.Logger.debug("scan : MCA is HEre : scan");
 		return ok(views.html.scan.render());
 				} 
 	
 	
 	
 	
-	List<BdDisplay> createBdList(List<BdData> BdData ){
-		List<BdDisplay> bdDisplay =new ArrayList <BdDisplay>();
-		
-		BdData.forEach(item ->{
-			                   BdDisplay bd = new BdDisplay();
-			                   bd.availability=" to be complted";
-			                   //item.collection.id
-			                   bd.creationDate=item.getCreationDate();
-			                   bd.designer=item.getDesigner();
-			                   bd.isbn=item.getIsbn();
-			                   bd.number=item.getNumber();
-			                   bd.scenario=item.getScenario();
-			                   bd.title=item.getTitle();
-			                		   
-			                   bdDisplay.add(bd);
-			
-		              });
-		
-		return bdDisplay;
-	}
 	
 	//Action done for Create or Update a Scanned BD
 	public Result  scannedBD(){
+		play.Logger.debug("______________________________________________scannedBD___________________________________ ");
 		
+		Form<CollectionBD> collectionForm = formFactory.form(CollectionBD.class);
+		
+		CollectionBD formCollection = collectionForm.bindFromRequest().get();
+		/*
 		    DynamicForm requestData = formFactory.form().bindFromRequest();
 		    String editor = requestData.get("editor");
 		    String collection = requestData.get("collection");
 		    String title = requestData.get("title");
+		    String isbn = requestData.get("isbn");
+		    String number = requestData.get("number");
+		    String price = requestData.get("price");
+		   */
 		    
-		    play.Logger.debug("editor ="+editor +" & collection= " +collection + " & title = "+title);
+		    
+			//i check if the collection extracted from the web store alredy exist or not
+			//in order to know if i have to create it
+		    CollectionBD bdCollection= CollectionBD.find.where().eq("title", formCollection.title).findUnique();
+					
+			if (bdCollection==null){
+				play.Logger.debug("New scannedBD collection____New:"+formCollection.title);
+				bdCollection = formCollection;
+				bdCollection.save();
+			}else{
+				play.Logger.debug("Existing scannedBD collection____New:"+formCollection.title);
+				bdCollection.setEditor(formCollection.editor);
+				bdCollection.setTitle(formCollection.title);
+				bdCollection.update();
+				
+				// if you change the collection that mean's you have to update all the book of the collection to be link to the new connection.
+			}
+			play.Logger.debug("BD info__Before");
+			play.Logger.debug("BD info________:"+formCollection.bddata.get(0).isbn+"++++--");
+			play.Logger.debug("BD info__After");
+			
+			BdData bdInfo =BdData.find.where().eq("isbn", formCollection.bddata.get(0).isbn).findUnique();
+			if (bdInfo==null){
+				
+				
+				bdInfo =formCollection.bddata.get(0);
+				bdInfo.collection=bdCollection;
+				
+				bdInfo.save();
+				play.Logger.debug("New scannedBD BD____New");
+				//TODO
+			}else{
+				play.Logger.debug("existing bdinfo"+bdInfo.title);
+				play.Logger.debug("form collectionBD.bddata.get(0)"+formCollection.bddata.get(0).title);
+				// idon't know why but .update is not working with 
+				//bdInfo =collectionBD.bddata.get(0);
+				//only with setters as below :
+				bdInfo.setCollection(bdCollection);
+				bdInfo.setTitle(formCollection.bddata.get(0).getTitle());
+				bdInfo.setCreationDate(formCollection.bddata.get(0).getCreationDate());
+				bdInfo.setDesigner(formCollection.bddata.get(0).getDesigner());
+				bdInfo.setImageBase64(formCollection.bddata.get(0).getImageBase64());
+				bdInfo.setIsbn(formCollection.bddata.get(0).getIsbn());
+				bdInfo.setNumber(formCollection.bddata.get(0).getNumber());
+				bdInfo.setPrice(formCollection.bddata.get(0).getPrice());
+				bdInfo.setScenario(formCollection.bddata.get(0).getScenario());
+				
+				
+				bdInfo.update();
+				play.Logger.debug("existing scannedBD BD____Updated");
+			}
+		    
+		    play.Logger.debug("editor ="+bdCollection.editor +" & collection= " +bdCollection.title + " & BD title = "+bdInfo.title);
 		
 		return ok("C'est OK");
 	}
@@ -117,14 +160,13 @@ public class BdController extends Controller {
 			 // i catch all the collection content to be displayed in to the Web page
 			 List<CollectionDisplay> myBD = resultCollections.stream()
 					                   .map(rc->{
-					                	         CollectionDisplay tempRc = new CollectionDisplay();
+					                	         CollectionDisplay tempRc = new CollectionDisplay();	                	        
 					                	         //i catch all the BD from each collection to be displayed into the web page
-					                	         //List<BdDisplay>  bdDisplay2 = new ArrayList<BdDisplay> ();
-					                	         
-					                	         
-					                	         tempRc.setEditor(rc.editor);;
+					                	         //List<BdDisplay>  bdDisplay2 = new ArrayList<BdDisplay> ();	                	         
+					                	         tempRc.setEditor(rc.editor);
 					                	         tempRc.setTitle(rc.title);
-					                	         tempRc.setBdDisplay(createBdList(rc.bddata));
+					                	         tempRc.setFollowOnWebstore(rc.getFollowingOnWebstores());
+					                	         tempRc.setBdDisplay(rc.getBdDisplay());
 					                	        return tempRc;
 					                	   
 					                   })
@@ -132,8 +174,12 @@ public class BdController extends Controller {
 					                		   
 					                  );  
 					        
-			//return ok( Json.toJson(result));
-			 return ok(  views.html.listBD.render(myBD )); 	
+			 
+		
+			 
+			 //.stream().distinct().collect(Collectors.toList()) )
+			 //return ok( Json.toJson(result));
+			 return ok(  views.html.listBD.render(myBD)); 	
 		 } 
 	
 	//controller to display the data extract from the code bar scanned

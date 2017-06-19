@@ -21,6 +21,10 @@ libraryDependencies += "com.google.zxing" % "core" % "3.3.0"
 // https://mvnrepository.com/artifact/com.google.zxing/javase
 libraryDependencies += "com.google.zxing" % "javase" % "3.3.0"
 
+// https://mvnrepository.com/artifact/commons-io/commons-io
+libraryDependencies += "commons-io" % "commons-io" % "2.5"
+
+
 
 libraryDependencies ++= Seq(
   javaWs

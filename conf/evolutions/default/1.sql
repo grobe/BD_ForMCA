@@ -7,11 +7,12 @@ create table bd_data (
   id                            bigint auto_increment not null,
   collection_id                 bigint,
   title                         varchar(255),
-  number                        integer,
+  number                        varchar(255),
   price                         double,
   creation_date                 datetime(6),
   scenario                      varchar(255),
   designer                      varchar(255),
+  image_base64                  varchar(20000),
   isbn                          varchar(255),
   constraint pk_bd_data primary key (id)
 );
@@ -36,11 +37,12 @@ create table scraper_results (
   id                            bigint auto_increment not null,
   collection_id                 bigint,
   title                         varchar(255),
-  number                        integer,
+  number                        varchar(255),
   price                         double,
   creation_date                 datetime(6),
   scenario                      varchar(255),
   designer                      varchar(255),
+  image_base64                  varchar(20000),
   availability                  varchar(255),
   constraint pk_scraper_results primary key (id)
 );

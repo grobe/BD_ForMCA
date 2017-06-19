@@ -17,14 +17,10 @@
 }
 
 <form id="BDscan" name="BDscan" >
-<div class="form-group">
-	<label >Collection Id</label >
-	<input id=id name="id" type="text" class="form-control" value="@collection.getId()">
-</div>
 
 <div class="form-group">
 	<label>Collection Tilte</label>
-	<input id=collection name="collection" type="text" class="form-control" value="@collection.getTitle()">
+	<input id=title name="title" type="text" class="form-control" value="@collection.getTitle()">
 </div>
 
 <div class="form-group">
@@ -33,43 +29,66 @@
 </div>
 
 <div class="form-group">
+     
+     
+    <img id="imageBase64" name="imageBase64" class="img-thumbnail" alt="bddata[0].title" src="@collection.getBddata().get(0).getImageBase64()" >
+	<input id="bddata[0].imageBase64" name="bddata[0].imageBase64"  type="hidden" value="@collection.getBddata().get(0).getImageBase64()">
+	
+	<script>
+   
+    	var image ="@collection.getBddata().get(0).getImageBase64()";
+    	var imageToBeDisplay=document.getElementByName("imageBase64");
+    	var fieldToBeSent=document.getElementByName("bddata[0].imageBase64");
+    	
+    	imageToBeDisplay.setAttribute("src",image);
+    	fieldToBeSent.setAttribute("value",image);
+        console.log(image);
+        console.log("image has been displayed");
+    </script>
+
+	
+</div>
+
+
+<div class="form-group">
 	<label>Title</label>
-	<input id=title name="title"  type="text" class="form-control" value="@collection.getBddata().get(0).getTitle()">
+	<input id="bddata[0].title" name="bddata[0].title"  type="text" class="form-control" value="@collection.getBddata().get(0).getTitle()">
 </div>
 
 <div class="form-group">
 	<label>Number</label>
-	<input id=number name="number" type="text"  class="form-control" value="@collection.getBddata().get(0).getNumber()">
+	<input id="bddata[0].number" name="bddata[0].number" type="text"  class="form-control" value="@collection.getBddata().get(0).getNumber()">
 </div>
 
 <div class="form-group">
 	<label>Price</label>
-	<input id=price name="price"  type="text" class="form-control" value="@collection.getBddata().get(0).getPrice()">
+	<input id="bddata[0].price" name="bddata[0].price"  type="text" class="form-control" value="@collection.getBddata().get(0).getPrice()">
 </div>
 
 <div class="form-group">
-	<label>creationDate</label>
-	<input id=creationDate name="creationDate"  type="text" class="form-control" value="@collection.getBddata().get(0).getCreationDate()">
+	<label>Date of the creation in the DB</label>
+	<input id="bddata[0].creationDate" name="bddata[0].creationDate"  type="text" class="form-control" value="@collection.getBddata().get(0).getFormatedDate()">
 </div>
+
 
 <div class="form-group">
 	<label>scenario</label>
-	<input id=scenario name="scenario"  type="text" class="form-control" value="@collection.getBddata().get(0).getScenario()">
+	<input id="bddata[0].scenario" name="bddata[0].scenario"  type="text" class="form-control" value="@collection.getBddata().get(0).getScenario()">
 </div>
 
 <div class="form-group">
 	<label>designer</label>
-	<input id=designer name="designer"  type="text" class="form-control" value="@collection.getBddata().get(0).getDesigner()">
+	<input id="bddata[0].designer" name="bddata[0].designer"  type="text" class="form-control" value="@collection.getBddata().get(0).getDesigner()">
 </div>
 
 <div class="form-group">
 	<label>isbn</label>
-	<input id=isbn name="isbn" type="text" class="form-control" value="@collection.getBddata().get(0).getIsbn()">
+	<input id="bddata[0].isbn" name="bddata[0].isbn" type="text" class="form-control" value="@collection.getBddata().get(0).getIsbn()">
 </div>
  
 <div class="modal-footer">
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			        <button id="submitBDscan" name="submitBDscan" type="button" class="btn btn-primary">Save changes</button>
+			        <button id="submitBDscan" name="submitBDscan" type="button" class="btn btn-primary">@submit</button>
 </div>
 
 </form>

@@ -138,7 +138,7 @@ public class FnacCrawler {
         	           
         	        	
         	        	// take the number between" tome" and ":" and remove all the non numeric characters -
-        	            int number = FnacExtractData.getNumber(bdItem);
+        	            String number = FnacExtractData.getNumber(bdItem);
 		 
 		                   result = ScraperResults.find.where().eq("collection", collection).eq("number", number).findUnique();
 		                    
@@ -157,6 +157,10 @@ public class FnacCrawler {
 		                   result.setTitle(FnacExtractData.getTitleCleaned(bdItem));
 		                 
 		                 
+		                  //I look for the picture of the book
+		                   
+		                   result.setImageBase64(FnacExtractData.getImageBAse64(bdItem));
+		                   
 		                  //step2 :i'm looking for the author and the script writer  
 		              	 // Map<String, String> authorAndScriptWriter = FnacExtractData.getAuthorScriptWriter(bdItem);
 		              	  result.setDesigner(FnacExtractData.getAuthor(bdItem));

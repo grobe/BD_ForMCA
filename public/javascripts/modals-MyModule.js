@@ -18,7 +18,8 @@ $(function() {
 		                	 console.log("je suis succes avant par : "+this.id);
 		                     //$("#graphicals_remaining").html(responseText);
 		                     //$("#modal_remaining").modal("toggle");
-		                	 $("#scanForm").html(responseText);												
+		                	 $("#scanForm").html(responseText);
+		                	// $("#scanForm").parseHTML; ///not working
 		                     
 		                 }
 		             }) // using the done promise callback

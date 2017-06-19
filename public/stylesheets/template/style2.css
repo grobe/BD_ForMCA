@@ -35,7 +35,7 @@ body  {
 .contentListBD {
 	    background-color: #EFE4D2; /*top colour*/
 	    background-image:linear-gradient(to bottom, #EFE4D2,   #E0BC93);
-	    padding: 60px;
+	    padding: 10px;
 	    border-radius: 14px !important;
 }
 
@@ -52,6 +52,7 @@ body  {
 	-webkit-backface-visibility: hidden;
 	-webkit-transition: border-width 0.3s, background-color 0.3s, height 0s 0.3s;
 	transition: border-width 0.3s, background-color 0.3s, height 0s 0.3s;
+	z-index:1000;
 }
 
 .bt-menu.bt-menu-open {
@@ -60,6 +61,7 @@ body  {
 	background-color: rgba(0,0,0,0.3);
 	-webkit-transition: border-width 0.3s, background-color 0.3s;
 	transition: border-width 0.3s, background-color 0.3s;
+	z-index:1000;
 }
 
 .bt-overlay {
@@ -89,7 +91,7 @@ body  {
 	width: 100%;
 	height: 4px;
 	margin-top: -2px;
-	background-color: #E0BC93;
+	background-color: #8a4a00;
 	font-size: 0px;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -111,7 +113,7 @@ body  {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: #E0BC93;
+	background: #8a4a00;
 	content: '';
 	-webkit-transition: -webkit-transform 0.3s;
 	transition: transform 0.3s;
