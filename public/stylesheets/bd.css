@@ -102,7 +102,9 @@ td {
 	border-bottom: solid 1px #FFFFFF;
 }
 
-
+.bg-fromWebstore {
+    background-color: #BB905F;
+}
 
 .maskBDWebstore{
 	
@@ -120,11 +122,20 @@ margin-left: 10px;
     margin-left: 10px;
 }
 
-.TableauTextBody{ 
+.TableauTextBodyOwned{ 
 	color: #A19E9A; 
 	margin-top:25px;
-	margin-left:15px;
+	margin-left:20px;
+	padding-left: 20px!important;
 	}
+	
+.TableauTextBodyWebstore{ 
+	color: #5b5855; 
+	margin-top:25px;
+	margin-left:20px;
+	padding-left: 20px!important;
+	}
+	
 .TableauTextCollection{ 
 		color: black;
 		font-family: 'action_manbold';	
@@ -143,7 +154,12 @@ margin-left: 10px;
 	
 	color: #E0BC93;
 	margin-top:25px;
-	margin-left:15px; }
+    margin-left: 15px;
+	
+    padding-left: 0px!important;
+    padding-right: 0px!important;
+
+	}
 
  .Numcollections{ 
 		color: #A19E9A;
@@ -161,13 +177,21 @@ margin-left: 10px;
 	margin-right:0px;
 }
 .row{
-    margin-top:2px;
-	margin-bottom:2px;
-	margin-left:0px;
-	margin-right:0px;
-    padding-left: 10px;
-    padding-right: 10px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    border-bottom: #8a4a00;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    
 }
+
+
+.row:last-child { 
+
+    border-bottom-width: 0px;
+     }
 html, body, div {margin-left:0px;
           margin-right:0px; 
 		  padding: 0;}

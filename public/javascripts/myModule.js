@@ -31,6 +31,7 @@ function submitForm (formE1,urlToReach){
 	 var numFields =formE1.length;
 	 var form =formE1;
 	 var formData =new FormData();
+	 var returnFetchValue="";
 	  for (var i = 0; i < numFields; ++i) {
 			  console.log(form[i].name + " = " + form[i].value);
 			  formData.append(form[i].name, form[i].value);
@@ -50,11 +51,15 @@ function submitForm (formE1,urlToReach){
 
 	// Now use it!
 	fetch(request).then(function(returnedValue) {
-                    
-		                return returnedValue.text();
+		                 returnFetchValue=returnedValue.statusText;
+		                 console.log("returnedValue.status=" + returnedValue.status);
+		                 
+		                 return returnedValue.text();
 		                
 	                }).then(function (value){
 	                	 console.log("MCA=" + value);
+	                	 console.log("response.statusText=" + value.statusText);
+	                	 console.log("returnFetchValue.statusText=" + returnFetchValue);
 	                });
 }
 

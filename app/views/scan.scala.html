@@ -15,6 +15,9 @@
 					<div id="bdReturnedValues"></div>
 				</div>
 
+
+
+
  </div>
 			      
 
@@ -95,7 +98,7 @@ function sendFile (file){
 		                
 	                }).then(function (value){
 	                	document.getElementById('bdReturnedValues').innerHTML=value;
-	                	console.log("sendFile : submitForm :test ");
+	                	console.log("sendFile : submitForm ");
 	                	addEventForsubmitForm("BDscan", "@routes.BdController.scannedBD");
 
 	                	
