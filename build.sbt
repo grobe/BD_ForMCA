@@ -1,6 +1,6 @@
 name := """BD.grobe.fr"""
 
-version := "Release-V0.4"
+version := "Release-V0.6"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean,DebianPlugin)
 
