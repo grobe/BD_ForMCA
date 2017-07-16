@@ -20,7 +20,7 @@ GET /scanTest								controllers.BdController.scanTest()
 
 
 GET /scan								controllers.BdController.scan()
-
+#
 # Async Action : used to catch from a form POST the picture code and display into a for the result of the scan from the web store
 POST /infoBD							controllers.BdController.infoBD()
 
