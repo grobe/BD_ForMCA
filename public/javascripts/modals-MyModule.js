@@ -38,5 +38,13 @@ $(function() {
 		        	
 		    });
 	
+	   $('#myScanModal').on('hidden.bs.modal', function() {
+			
+	    	console.log("je suis appelé 1 par : closeFormOnCall");
+	    	window.location.reload(true);
+	  
+	        	
+	    });
+	
 	
 });

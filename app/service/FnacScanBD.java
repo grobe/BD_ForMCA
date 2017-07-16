@@ -54,10 +54,12 @@ public class FnacScanBD  implements ScanBD {
 			//I check if the answer from the Fnac webStore return a validated ITem based on the ISBN code 
 			if ((listBD.size()>0)){
 				
-				//i check if the collection extracted from the web store alredy exist or not
+				//i check if the collection extracted from the web store already exist or not
 				//in order to know if i have to create it
 				bdCollection= CollectionBD.find.where().eq("title", FnacExtractData.getCollection(listBD.get(0))).findUnique();
-						
+				
+				//Todo raise an error  if BD collection has more than one result
+				
 				if (bdCollection==null){
 					play.Logger.debug("New ____extractData collection____New");
 					bdCollection = new CollectionBD();

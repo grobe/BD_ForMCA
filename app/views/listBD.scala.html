@@ -1,5 +1,6 @@
 @import java.lang.String; var classImage=""
 @import java.lang.String; var classRow=""
+
 @( listOfMyBD: List[models.CollectionDisplay])
 
 
@@ -55,8 +56,8 @@
 		<div  class="contentListBD">
 			
 				 <div class="row lead">
-				     <div class="col-xs-2 col-md-2 TableauTextHeader"> Image </div> 
-				     <div class="col-xs-3 col-md-3 TableauTextHeader"> Title </div>
+				     <div class="col-xs-2 col-md-2 TableauTextHeader">  </div> 
+				     <div class="col-xs-2 col-md-2 TableauTextHeader"> Title </div>
 				     <div class="col-xs-1 col-md-1 TableauTextHeader"> Number</div>
 				     <div class="col-xs-2 col-md-2 hidden-xs TableauTextHeader"> Designer</div>
 				     <div class="col-xs-2 col-md-2 hidden-xs TableauTextHeader"> Scenario</div>
@@ -65,7 +66,7 @@
 				   </div>
 			  
 			@for(myBd <- listOfMyBD) {
-			<div class="row">
+			<div class="row"><a id="collection-@myBd.id"></a>
 			  <div class="col-xs-18 col-md-12 TableauTextCollection trBackGround "> @myBd.title (@myBd.editor)  
 					    @if(myBd.followOnWebstore ==true){
 							    <span class="picto-icon watch"> n</span>
@@ -74,10 +75,15 @@
 			  </div>
 			  @for(item <- myBd.bdDisplay){
 			    
+			    
+			    
 			       @if(item.isbn =="N/A"){
+			         
+			         <a id="@item.id"></a>
 			        <div class="row bg-fromWebstore"> 
 					@{classImage = "maskBDWebstore"}
 					@{classRow = "TableauTextBodyWebstore"}
+					
 				}else{
 				    <div class="row">
 					@{classImage = "maskBDowned"}
@@ -87,10 +93,14 @@
 			             <div class="col-xs-2 col-md-2">  <img  id="imageBase64" name="imageBase64" class="@classImage" alt="@item.title" src="@item.getImageBase64()" ></div> 
 			            
 			            
-					     <div class="col-xs-3 col-md-3 @classRow">@item.title</div>
+					     <div class="col-xs-3 col-md-2 @classRow">@item.title</div>
 					     <div class="col-xs-1 col-md-1  @classRow">@item.number</div>
 							    @if(item.isbn =="N/A"){
-							    <div class="col-xs-5 col-md-5  @classRow "> <b>Price: @item.price €</b>&nbsp;-&nbsp;@item.availability</div>
+							    <div class="col-xs-4 col-md-4  @classRow "> <b>Price: @item.price €</b>&nbsp;-&nbsp;@item.availability 
+							        <div class="commandButton"><a href='@routes.BdController.addBD( item.id )'><i  class="glyphicon glyphicon-plus-sign"></i></a>  </div>
+							          
+							    </div>
+							    
 							    }else{
 							     <div class="col-xs-2 col-md-2  @classRow hidden-xs">@item.designer</div>
 							     <div class="col-xs-2 col-md-2  @classRow hidden-xs">@item.scenario</div>

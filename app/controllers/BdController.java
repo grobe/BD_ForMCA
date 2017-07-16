@@ -72,7 +72,50 @@ public class BdController extends Controller {
 				} 
 	
 	
-	
+	//Action do to add a BD from the list from the WebStore
+	//
+	public Result  addBD(String id){
+		
+		String nextSection="No_NExt";
+		
+		ScraperResults bdscraper =ScraperResults.find.where().eq("id", String.valueOf(id)).findUnique();
+		BdData bdInfo = new BdData();
+		
+		bdInfo.setCollection(bdscraper.getCollection());
+		bdInfo.setCreationDate(new Date());
+		bdInfo.setDesigner(bdscraper.getDesigner());
+		bdInfo.setImageBase64(bdscraper.getImageBase64());
+		bdInfo.setIsbn("No isbn"+new Date());
+		bdInfo.setNumber(bdscraper.getNumber());
+		bdInfo.setPrice(bdscraper.getPrice());
+		bdInfo.setScenario(bdscraper.getScenario());
+		bdInfo.setTitle(bdscraper.getTitle());
+		bdInfo.save();
+
+		//The purpose is to Know the id of the next volume of the BD in order to display it to the user into the web page 
+		//
+		//TODO --> to be updated : not look for the next volume but the first volume searched on the collection.
+		//
+		
+		//I'mm looking for the next volume to be added on the BDlist screen
+		ScraperResults bdscraperNext =ScraperResults.find.where().eq("collection_id", bdscraper.getCollection().id).eq("number",String.valueOf(Double.valueOf(bdscraper.getNumber()).intValue()+1)).findUnique();
+		//I'm checking if the next volume is not already on my own collection  
+		BdData bdExistOnBdData =BdData.find.where().eq("collection_id", bdscraper.getCollection().id).eq("number",String.valueOf(Double.valueOf(bdscraper.getNumber()).intValue()+1)).findUnique();
+		
+		play.Logger.debug("addBD : the next volume is : " + String.valueOf(Double.valueOf(bdscraper.getNumber()).intValue()+1));
+		
+		//if the following item exist in ScrapperResult and not into BdData i will display the next item to be added on the screen
+		//if not i will display the collection title
+		//meaning the user will be sent to listBD page on the top of the collection he has added a volume
+		//
+		if (bdscraperNext!=null && bdExistOnBdData==null){
+			nextSection=String.valueOf(bdscraperNext.getId());
+		}else {
+			nextSection="collection-"+bdscraper.getCollection().getId();
+		}
+			
+		return redirect("/" + "#"+nextSection);
+	}
 	
 	
 	//Action done for Create or Update a Scanned BD
@@ -163,6 +206,7 @@ public class BdController extends Controller {
 					                	         CollectionDisplay tempRc = new CollectionDisplay();	                	        
 					                	         //i catch all the BD from each collection to be displayed into the web page
 					                	         //List<BdDisplay>  bdDisplay2 = new ArrayList<BdDisplay> ();	                	         
+					                	         tempRc.setId(String.valueOf(rc.id));//created to be used with BdController.addBD in order to display at least the collection to the user
 					                	         tempRc.setEditor(rc.editor);
 					                	         tempRc.setTitle(rc.title);
 					                	         tempRc.setFollowOnWebstore(rc.getFollowingOnWebstores());
@@ -207,6 +251,8 @@ public class BdController extends Controller {
 		    play.Logger.debug("before scanFromFnac.Scan");
 		    final String isbnCode =scanFromFnac.scan(file);
 		    play.Logger.debug(" after scanFromFnac.Scan");
+		    //TODO put the URL below at least on the application.conf
+		    //or into a technical table to be created
 		    String url ="http://recherche.fnac.com/SearchResult/ResultList.aspx?Search="+isbnCode;
 		  
 		  play.Logger.debug("BdController :  listBD :IsbnCode="+isbnCode+ " - size of the file :"+file.length());

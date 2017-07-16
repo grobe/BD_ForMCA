@@ -11,7 +11,7 @@ public class BdDisplay {
 	
    
     
-    
+	public String id;
     
     public String title;
     

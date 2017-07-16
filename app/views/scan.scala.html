@@ -45,7 +45,8 @@ function handleFiles(evt) {
 				var file = files[0];
 				dislaySize.innerHTML  = "Size of the file :"+ bytesToSize(file.size);
 				dislayName.innerHTML  = file.name;
-				bdReturnedValues.innerHTML= "Data is transfering, please wait2";
+				bdReturnedValues.innerHTML= "Data is transfering, please wait";
+				bdReturnedValues.className = "";
 				var reader = new FileReader();
 	            reader.onload = function(event) {
 					    var dataUri = event.target.result,
@@ -100,12 +101,10 @@ function sendFile (file){
 	                	document.getElementById('bdReturnedValues').innerHTML=value;
 	                	console.log("sendFile : submitForm ");
 	                	addEventForsubmitForm("BDscan", "@routes.BdController.scannedBD");
-
-	                	
-
-
-	                	
-	                });
+	                	return "c'est bon tu as compris";
+	                	}).then(function(answer){
+	                		console.log("Answer from the Web service called : "+answer);
+	                	});
 }
 
 

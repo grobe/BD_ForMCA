@@ -6,7 +6,21 @@
 .highlight { background: #000; color: #fff; }
 
 
+.commandButton{
+	
+	font-size: 20pt;
+	width:100%;
+	text-align: right;
+	margin-top:-20px ;
+	color: #8a4a00;
+	
+	
+}
 
+.commandButton a{
+	color : #8a4a00;
+	
+}  
 
 @font-face {
     font-family: 'action_manbold';
@@ -103,7 +117,7 @@ td {
 }
 
 .bg-fromWebstore {
-    background-color: #BB905F;
+    background-color: #c7b092;
 }
 
 .maskBDWebstore{
@@ -111,7 +125,9 @@ td {
 clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%);
 width:75px;
 height:75px;
-margin-left: 10px;
+margin-left: 0px;
+margin-top:5px;
+margin-bottom:5px;
 }
 
 
@@ -119,7 +135,9 @@ margin-left: 10px;
 	clip-path: polygon(50% 0%, 86% 0, 99% 11%, 100% 89%, 86% 100%, 50% 100%, 12% 100%, 0 90%, 1% 10%, 12% 0);
 	width:75px;
     height:75px;
-    margin-left: 10px;
+    margin-left: 0px;
+    margin-top:5px;
+    margin-bottom:5px;
 }
 
 .TableauTextBodyOwned{ 
@@ -133,7 +151,7 @@ margin-left: 10px;
 	color: #5b5855; 
 	margin-top:25px;
 	margin-left:20px;
-	padding-left: 20px!important;
+	pad: 0px!important;
 	}
 	
 .TableauTextCollection{ 
@@ -181,16 +199,22 @@ margin-left: 10px;
     margin-bottom: 0px;
     margin-left: 0px !important;
     margin-right: 0px !important;
-    border-bottom: #8a4a00;
+    border-bottom: #ffffff;
     border-bottom-style: solid;
     border-bottom-width: 1px;
+    padding :0px;
     
 }
 
-
+.row:first-child{
+	
+    border-bottom-width: 2px;
+}
 .row:last-child { 
 
     border-bottom-width: 0px;
+    border-bottom-right-radius: 14px;
+    border-bottom-left-radius: 14px;
      }
 html, body, div {margin-left:0px;
           margin-right:0px; 

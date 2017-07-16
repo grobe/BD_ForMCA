@@ -97,6 +97,7 @@ public class CollectionBD extends Model {
 				            //bd.availability=" to be complted";
 				            //item.collection.id
 			                BdDisplay scraperResults = new BdDisplay();
+			                scraperResults.id=String.valueOf(item.getId());
 			                scraperResults.creationDate=item.getCreationDate();
 							scraperResults.designer=item.getDesigner();
 							scraperResults.availability=item.getAvailability();

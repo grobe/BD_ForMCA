@@ -4,6 +4,7 @@ import java.util.List;
 
 public class CollectionDisplay {
     
+	public String id;
 	public String title;
 	public String editor;
     public boolean completed;
@@ -38,6 +39,12 @@ public class CollectionDisplay {
 	}
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	

@@ -32,6 +32,7 @@ function submitForm (formE1,urlToReach){
 	 var form =formE1;
 	 var formData =new FormData();
 	 var returnFetchValue="";
+	 var returnFetchValueText="";
 	  for (var i = 0; i < numFields; ++i) {
 			  console.log(form[i].name + " = " + form[i].value);
 			  formData.append(form[i].name, form[i].value);
@@ -51,14 +52,31 @@ function submitForm (formE1,urlToReach){
 
 	// Now use it!
 	fetch(request).then(function(returnedValue) {
-		                 returnFetchValue=returnedValue.statusText;
-		                 console.log("returnedValue.status=" + returnedValue.status);
-		                 
+		                 returnFetchValue=returnedValue.status;
+		                 returnFetchValueText=returnedValue.statusText;
+		                 console.log("returnedValue.status=" + returnFetchValue);
+		                
+		                 if (returnFetchValue!="200"){
+		                	 var bdReturnedValues=document.getElementById("error"+formE1.name);
+		                	 bdReturnedValues.innerHTML=returnFetchValueText;
+		                	 bdReturnedValues.className += " bg-danger lead";
+		                	 console.log("error on : " + formE1.name); 
+		                	 console.log("error Message : " + returnedValue.statusText); 
+		                 }else{                                            //to be updated to remove HArcoded :bdReturnedValues
+		                	 var bdReturnedValues = document.getElementById('bdReturnedValues');
+		                	 bdReturnedValues.innerHTML="Done";
+		                	 bdReturnedValues.className += " bg-success lead";
+		                	 console.log("NoError on : " + formE1.name);
+		                	 console.log("NoErrorMessage : " + returnedValue.statusText); 
+		                 }
 		                 return returnedValue.text();
 		                
 	                }).then(function (value){
-	                	 console.log("MCA=" + value);
+	                	 //console.log("MCA=" + value);
+	                	 
+	                	
 	                	 console.log("response.statusText=" + value.statusText);
+	                	 console.log("response.status=" + value.status);
 	                	 console.log("returnFetchValue.statusText=" + returnFetchValue);
 	                });
 }
