@@ -33,6 +33,11 @@ POST /scannedBD							controllers.BdController.scannedBD()
 #Display the main page of the web site
 GET /									controllers.BdController.listBD()
 
+
+#add a BD from the BD coming from the webstore
+
+GET /addBD/:id								controllers.BdController.addBD(id: String )
+
 # Map static resources from the /public folder to the /assets URL path
 
 GET  /assets/*file  controllers.Assets.versioned(path="/public", file: Asset)
