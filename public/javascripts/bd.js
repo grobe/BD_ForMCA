@@ -2,11 +2,15 @@ function Mysearch() {
 		
 		var searchStyle = document.getElementById('search_style');
 		document.getElementById('search').addEventListener('input', function() {
-		  if (!this.value) {
+		  
+			console.log("value = "+this.value);
+		    if (!this.value) {
 			searchStyle.innerHTML = "";
+			console.log("value dans if = "+this.value);
 			return;
 		  }
 		  searchStyle.innerHTML = ".searchable:not([data-index*=\"" + this.value.toLowerCase() + "\"]) { display: none; }";
+		  console.log("value dans else = "+this.value.toLowerCase());
 		});
 		
 		return ;              // The function returns nothing

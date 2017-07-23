@@ -40,7 +40,14 @@
 						Date mise à jour liste BD : <span class="Numcollections" id="DateMAJFichierBD">08/05/2017- 18:06:38</span> <br>
 						Date mise à jour recherche web : <span class="Numcollections" id="DateMAJRechercheWeb">26/05/2017- 08:59:01</span>
 						</h4>
-						<input class="searchInput x-webkit-speech " type="text" placeholder=" Look for me" id="search">
+						<input class="searchInput x-webkit-speech " type="text" placeholder="Look for me" id="search">
+						<style id="search_style"></style>
+						<script type="text/javascript">
+							Mysearch(); 
+						</script>
+						
+						
+						
 			</header>
 			<nav id="bt-menu" class="bt-menu">
 				<a href="#" class="bt-menu-trigger"><span>Menu</span></a>
@@ -66,7 +73,9 @@
 				   </div>
 			  
 			@for(myBd <- listOfMyBD) {
-			<div class="row"><a id="collection-@myBd.id"></a>
+			<div class="searchable row " data-index=" @myBd.title.toLowerCase()">
+			
+			<a id="collection-@myBd.id"></a>
 			  <div class="col-xs-18 col-md-12 TableauTextCollection trBackGround "> @myBd.title (@myBd.editor)  
 					    @if(myBd.followOnWebstore ==true){
 							    <span class="picto-icon watch"> n</span>
@@ -80,12 +89,12 @@
 			       @if(item.isbn =="N/A"){
 			         
 			         <a id="@item.id"></a>
-			        <div class="row bg-fromWebstore"> 
+			        <div class=" searchable row bg-fromWebstore" data-index=" @myBd.title.toLowerCase() "> 
 					@{classImage = "maskBDWebstore"}
 					@{classRow = "TableauTextBodyWebstore"}
 					
 				}else{
-				    <div class="row">
+				    <div class=" searchable row" data-index=" @myBd.title.toLowerCase()  ">
 					@{classImage = "maskBDowned"}
 					@{classRow = "TableauTextBodyOwned"}
 				}
