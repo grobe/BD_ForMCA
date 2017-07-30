@@ -20,9 +20,13 @@ public class ScraperResults extends BdModel {
 	
     @Constraints.Required
     public String availability;
+    
+    public Date lastReviewFromWebStore;
 	
 	
-    public static Finder<Long, ScraperResults> find = new Finder<Long,ScraperResults>(ScraperResults.class);
+
+
+	public static Finder<Long, ScraperResults> find = new Finder<Long,ScraperResults>(ScraperResults.class);
 
     public String getAvailability() {
   		return availability;
@@ -31,5 +35,11 @@ public class ScraperResults extends BdModel {
   	public void setAvailability(String availability) {
   		this.availability = availability;
   	}
-	
+    public Date getLastReviewFromWebStore() {
+		return lastReviewFromWebStore;
+	}
+
+	public void setLastReviewFromWebStore(Date lastReviewFromWebStore) {
+		this.lastReviewFromWebStore = lastReviewFromWebStore;
+	}
 }

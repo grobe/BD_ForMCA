@@ -174,6 +174,8 @@ public class FnacCrawler {
 		                  
 		                  String availability =FnacExtractData.getAvailability(bdItem);
 		                  result.setAvailability(availability);
+		                  
+		                  result.setLastReviewFromWebStore(new Date());
 		               
 		                  result.update();
 		                  play.Logger.debug(this.getClass().getName()+": crowlerResult.save()================================ :"+result.getTitle()+"- date ="+new Date()); 

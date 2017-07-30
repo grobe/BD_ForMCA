@@ -79,12 +79,7 @@ h3 {
    font-family: 'action_manbold';
   color: #E0BC93;
 }
-h4 {
-   text-align:center;
-  color: black;
-  font-size: 8px;
-  font-family: 'verdana';
-}
+
 
 
 table {
@@ -118,6 +113,15 @@ td {
 
 .bg-fromWebstore {
     background-color: #c7b092;
+}
+
+.position_stats{
+	text-align: center;
+}
+
+.stats {
+   
+   /* margin-left : 40%;*/
 }
 
 .maskBDWebstore{
@@ -180,9 +184,9 @@ margin-bottom:5px;
 	}
 
  .Numcollections{ 
-		color: #A19E9A;
+		color: #8a4a00;
 		font-family: 'verdana';
-		font-size: 8px;		
+		font-size: 15px;		
  }
 .New{ color: #BB905F; }
 .watch{ color: #8A4A00; }

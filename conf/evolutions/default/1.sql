@@ -44,6 +44,7 @@ create table scraper_results (
   designer                      varchar(255),
   image_base64                  varchar(20000),
   availability                  varchar(255),
+  last_review_from_web_store    datetime(6),
   constraint pk_scraper_results primary key (id)
 );
 

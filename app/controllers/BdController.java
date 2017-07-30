@@ -33,6 +33,8 @@ import models.BdDisplay;
 import models.CollectionBD;
 import models.CollectionDisplay;
 import models.ScraperResults;
+import models.StatisticsBD;
+import play.Configuration;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.data.FormFactory;
@@ -57,6 +59,9 @@ public class BdController extends Controller {
 	
 	@Inject
 	FormFactory formFactory;
+	
+	@Inject
+	Configuration configuration;
 	
 	//controller to display the scanTest page
 	//used to test the use of the webcam into a web page
@@ -156,8 +161,17 @@ public class BdController extends Controller {
 			play.Logger.debug("BD info________:"+formCollection.bddata.get(0).isbn+"++++--");
 			play.Logger.debug("BD info__After");
 			
-			BdData bdInfo =BdData.find.where().eq("isbn", formCollection.bddata.get(0).isbn).findUnique();
+			
+			/* A test has to be done here to know if i have to use isbn to look for the book
+			 * or the collection + title or number
+			 * because when a book is added from Webstore list there has no ISBN code
+			 */
+			BdData bdInfo =BdData.find.where().eq("collection", bdCollection).eq("number", formCollection.bddata.get(0).number).findUnique();
 			if (bdInfo==null){
+				bdInfo =BdData.find.where().eq("isbn", formCollection.bddata.get(0).isbn).findUnique();
+			}
+			
+			if (bdInfo==null){//the book doesn't exist no ISBN code existe and no same collection & same number 
 				
 				
 				bdInfo =formCollection.bddata.get(0);
@@ -166,7 +180,7 @@ public class BdController extends Controller {
 				bdInfo.save();
 				play.Logger.debug("New scannedBD BD____New");
 				//TODO
-			}else{
+			}else{ //the book exists and i will update it with the new value
 				play.Logger.debug("existing bdinfo"+bdInfo.title);
 				play.Logger.debug("form collectionBD.bddata.get(0)"+formCollection.bddata.get(0).title);
 				// idon't know why but .update is not working with 
@@ -213,21 +227,21 @@ public class BdController extends Controller {
 					                	         tempRc.setBdDisplay(rc.getBdDisplay());
 					                	        return tempRc;
 					                	   
-					                   })
+					                   })//test
 					                   .collect(Collectors.toList()
 					                		   
 					                  );  
 					        
-			 
+			 StatisticsBD myStat =new StatisticsBD();
 		
 			 
 			 //.stream().distinct().collect(Collectors.toList()) )
 			 //return ok( Json.toJson(result));
-			 return ok(  views.html.listBD.render(myBD)); 	
+			 return ok(  views.html.listBD.render(myBD, myStat)); 	
 		 } 
 	
 	//controller to display the data extract from the code bar scanned
-	//and based on the ISBN search the data on the website Fnac
+	//and based on the ISBN searches the data on the website Fnac
 	
 	  public CompletionStage<Result>   infoBD(){
 		
@@ -239,8 +253,8 @@ public class BdController extends Controller {
 		  MultipartFormData<File> body = request().body().asMultipartFormData();
 		  FilePart<File> picture = body.getFile("picture");
 		    if (picture != null) {
-		        String fileName = picture.getFilename();
-		        String contentType = picture.getContentType();
+		        //String fileName = picture.getFilename();
+		        //String contentType = picture.getContentType();
 		        file = picture.getFile();
 		        
 		    } else {
@@ -251,11 +265,12 @@ public class BdController extends Controller {
 		    play.Logger.debug("before scanFromFnac.Scan");
 		    final String isbnCode =scanFromFnac.scan(file);
 		    play.Logger.debug(" after scanFromFnac.Scan");
-		    //TODO put the URL below at least on the application.conf
-		    //or into a technical table to be created
-		    String url ="http://recherche.fnac.com/SearchResult/ResultList.aspx?Search="+isbnCode;
+		   
+		    
+		    String url =configuration.getString("webStore.fnac.searchUrl") +isbnCode;
 		  
-		  play.Logger.debug("BdController :  listBD :IsbnCode="+isbnCode+ " - size of the file :"+file.length());
+		    play.Logger.debug("BdController :  URL =  " +url);
+		    play.Logger.debug("BdController :  listBD :IsbnCode="+isbnCode+ " - size of the file :"+file.length());
 		  
 		  
 		
