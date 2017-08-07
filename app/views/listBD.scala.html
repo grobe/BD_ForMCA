@@ -24,8 +24,9 @@
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/template/icons.css")">
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/template/style2.css")">
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.css")">
-
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("javascripts/JqueryUI-1.12.1/jquery-ui.min.css")">
 		<script src="@routes.Assets.versioned("javascripts/jquery-3.2.1.min.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.versioned("javascripts/JqueryUI-1.12.1/jquery-ui.min.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.versioned("javascripts/myModule.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.versioned("lib/bootstrap/js/bootstrap.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.versioned("javascripts/template/modernizr.custom.js")" type="text/javascript"></script>
@@ -41,12 +42,15 @@
 				<div class="stats"> Collections : <span id="TotalsCollection" class="Numcollections">@myStat.getCollectionNumber()</span> </div>
 				<div class="stats">Comics strip : <span class="Numcollections" id="TotalsBD">@myStat.getBdNumber() (Last update : @myStat.getLastUpdateOwned())  </span></div>
 				<div class="stats">Last Web update : <span class="Numcollections" id="DateMAJRechercheWeb">@myStat.getLastUpdateWeb()</span></div>
-				<div class="stats"><input class="searchInput x-webkit-speech " type="text" placeholder="Look for me" id="search"></div>
+				<div class="stats"><input class="searchInput x-webkit-speech " type="text" placeholder="Look for me" id="search" name="search"></div>
 				</div>
 						
 						<style id="search_style"></style>
 						<script type="text/javascript"> 
 							Mysearch(); 
+							
+							
+					   	       console.log("listDB : after autocomplete  : autocomplete");
 						</script>
 						
 						

@@ -22,7 +22,15 @@ create table collection_bd (
   title                         varchar(255),
   editor                        varchar(255),
   completed                     tinyint(1) default 0,
+  owner_owner_id                bigint,
   constraint pk_collection_bd primary key (id)
+);
+
+create table owners (
+  owner_id                      bigint auto_increment not null,
+  login                         varchar(255),
+  password                      varchar(255),
+  constraint pk_owners primary key (owner_id)
 );
 
 create table scraper_bot (
@@ -59,6 +67,9 @@ create table test (
 alter table bd_data add constraint fk_bd_data_collection_id foreign key (collection_id) references collection_bd (id) on delete restrict on update restrict;
 create index ix_bd_data_collection_id on bd_data (collection_id);
 
+alter table collection_bd add constraint fk_collection_bd_owner_owner_id foreign key (owner_owner_id) references owners (owner_id) on delete restrict on update restrict;
+create index ix_collection_bd_owner_owner_id on collection_bd (owner_owner_id);
+
 alter table scraper_bot add constraint fk_scraper_bot_collection_id foreign key (collection_id) references collection_bd (id) on delete restrict on update restrict;
 create index ix_scraper_bot_collection_id on scraper_bot (collection_id);
 
@@ -71,6 +82,9 @@ create index ix_scraper_results_collection_id on scraper_results (collection_id)
 alter table bd_data drop foreign key fk_bd_data_collection_id;
 drop index ix_bd_data_collection_id on bd_data;
 
+alter table collection_bd drop foreign key fk_collection_bd_owner_owner_id;
+drop index ix_collection_bd_owner_owner_id on collection_bd;
+
 alter table scraper_bot drop foreign key fk_scraper_bot_collection_id;
 drop index ix_scraper_bot_collection_id on scraper_bot;
 
@@ -80,6 +94,8 @@ drop index ix_scraper_results_collection_id on scraper_results;
 drop table if exists bd_data;
 
 drop table if exists collection_bd;
+
+drop table if exists owners;
 
 drop table if exists scraper_bot;
 

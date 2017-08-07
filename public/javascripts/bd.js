@@ -1,5 +1,5 @@
 function Mysearch() {
-		
+		//auto filter of the list of BD into the html page
 		var searchStyle = document.getElementById('search_style');
 		document.getElementById('search').addEventListener('input', function() {
 		  
@@ -12,6 +12,31 @@ function Mysearch() {
 		  searchStyle.innerHTML = ".searchable:not([data-index*=\"" + this.value.toLowerCase() + "\"]) { display: none; }";
 		  console.log("value dans else = "+this.value.toLowerCase());
 		});
+		
+		//display the list of collection into the field "search"
+		$( "#search" ).autocomplete({
+   		  source: "/searchCollection",
+ 	          minLength: 2,
+ 	          select: function( event, ui ) { 
+                 console.log("listDB : select autocomplete  :"+ui.item.value);
+                 document.getElementById('search').value = ui.item.value;
+                 var event = new Event('input', {
+								    'bubbles': true,
+								    'cancelable': true
+								});
+								
+				   document.getElementById('search').dispatchEvent(event);
+                 return false;
+              }
+ 	      });
+ 	      
+ 	   
+ 	      
+     	 
+		
+		
+		
+		
 		
 		return ;              // The function returns nothing
 		};

@@ -6,6 +6,21 @@
 .highlight { background: #000; color: #fff; }
 
 
+
+
+/*hack for bootstrap autocomplete in a modal 
+*/
+ .ui-autocomplete { z-index: 1061 !important;
+ }
+ .ui-autocomplete-loading {
+    background: white url('/assets/images/ui-anim_basic_16x16.gif') right center no-repeat;
+    z-index: 1070 !important;
+}
+
+
+
+
+
 .commandButton{
 	
 	font-size: 20pt;

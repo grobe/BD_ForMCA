@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
@@ -35,6 +36,12 @@ public class CollectionBD extends Model {
     
     @Constraints.Required
     public boolean completed;
+    
+    @ManyToOne
+    @JsonIgnore
+    //@JsonManagedReference       
+    public Owners owner;
+    
     
     
      @OneToMany(mappedBy = "collection" ,cascade = CascadeType.ALL)
@@ -190,6 +197,20 @@ public class CollectionBD extends Model {
 
 	public void setScraperResults(List<ScraperResults> scraperResults) {
 		this.scraperResults = scraperResults;
+	}
+
+
+
+
+	public Owners getOwner() {
+		return owner;
+	}
+
+
+
+
+	public void setOwner(Owners owner) {
+		this.owner = owner;
 	}
     
     

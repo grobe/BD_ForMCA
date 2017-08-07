@@ -28,7 +28,9 @@ POST /infoBD							controllers.BdController.infoBD()
 #used for Update or Create a BD after a scan of the bar code
 POST /scannedBD							controllers.BdController.scannedBD()
 
+#used to get the list of collection of the owner connected
 
+GET /searchCollection 					controllers.BdController.searchCollection(term: String) 
 
 #Display the main page of the web site
 GET /									controllers.BdController.listBD()

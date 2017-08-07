@@ -32,9 +32,12 @@ import models.BdData;
 import models.BdDisplay;
 import models.CollectionBD;
 import models.CollectionDisplay;
+import models.Owners;
+//import models.Owners;
 import models.ScraperResults;
 import models.StatisticsBD;
 import play.Configuration;
+import play.Logger;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.data.FormFactory;
@@ -46,6 +49,7 @@ import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import service.FnacExtractData;
 import service.FnacScanBD;
+//import views.html.login;
 
 @Singleton
 public class BdController extends Controller {
@@ -75,6 +79,63 @@ public class BdController extends Controller {
 		play.Logger.debug("scan : MCA is HEre : scan");
 		return ok(views.html.scan.render());
 				} 
+	
+	
+	public Result searchCollection(String term) {
+    	//look for the list of distinct list of line managers
+    	
+    	response().setHeader(CACHE_CONTROL, "no-cache");
+    	play.Logger.debug(" searchCollection term=" + term);
+    	//List <CollectionBD> collection = CollectionBD.find.where().setDistinct(true).select("title").where().icontains("title", "").orderBy("title").findList();
+    	List <CollectionBD> collection = CollectionBD.find.where().setDistinct(true).where().icontains("title", term).findList();
+		play.Logger.debug(" searchCollection size:" + collection.size());
+	
+		
+		List<String> listOfCollection = collection.stream()
+				.filter((p)->{
+					         play.Logger.debug(" getBddata size:" + p.getBddata().size());
+					         play.Logger.debug(" getBdDisplay size:" + p.getBdDisplay().size());
+				             return (p.getBddata().size()==0||p.getBdDisplay().size()==0);})
+				.map(o->o.getTitle())
+				.collect(Collectors.toList());
+		
+		return ok(Json.toJson(listOfCollection),"utf-8");
+		
+	}
+	
+	
+	//action to manage the security
+	
+	public Result security() {
+/*
+		DynamicForm requestData = formFactory.form().bindFromRequest();
+		
+		String idDlp = requestData.get("idDlp");
+		String password =requestData.get("password");
+
+		//check if the owner exist --> match between login and password
+		Owners owner = Owners.find.where().eq("id_dlp",idDlp).eq("password", password).findUnique();
+
+		Logger.debug("idDlp : " + idDlp);
+		Logger.debug("password : " + password);
+
+		if (owner != null)  {
+			// the user is authenticated
+			Logger.debug("the user is authenticated ");
+			Logger.debug("owner.getId() "+owner.getId());
+			session("connected",String.valueOf(owner.getId()));
+			//session("miguel",String.valueOf("MIG3"));
+			return redirect(controllers.routes.HomeController.view());
+		}
+		Logger.debug("the user is not authenticated ");
+
+		session().clear();
+		return ok(login.render());
+		
+		*/ 
+		return ok("to be deleted");
+
+	}
 	
 	
 	//Action do to add a BD from the list from the WebStore
