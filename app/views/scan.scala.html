@@ -24,11 +24,11 @@
 <script>
 
 
-console.log("Start");
+console.log("scan.scala.html :  Start");
 
 //if (filesToUpload){
 	document.getElementById("picture").addEventListener("change",handleFiles , false);	
-	console.log("afteraddEventListener");
+	console.log("scan.scala.html : afteraddEventListener");
 //}
 
 document.getElementById('bdReturnedValues').innerHTML  ="";
@@ -63,11 +63,11 @@ function handleFiles(evt) {
 					    
 					};
 
-				 console.log("before readAsDataURL");
+				 console.log("scan.scala.html : before readAsDataURL");
 				 reader.readAsDataURL(file);
-				 console.log("before sendFile");
+				 console.log("scan.scala.html : before sendFile");
 				 sendFile (file);
-				 console.log("END");
+				 console.log("scan.scala.html : END");
 		 
 		}			 
 
@@ -77,7 +77,7 @@ function sendFile (file){
 	
 	//var img = canevas.toDataURL();
 	//var file = dataURItoBlob(img);
-	 console.log("sendFile");
+	 console.log("scan.scala.html : sendFile");
 	var formData =new FormData();
 	   
 	  formData.append("picture", file);
@@ -99,11 +99,11 @@ function sendFile (file){
 		                
 	                }).then(function (value){
 	                	document.getElementById('bdReturnedValues').innerHTML=value;
-	                	console.log("sendFile : submitForm ");
+	                	console.log("scan.scala.html : sendFile : submitForm ");
 	                	addEventForsubmitForm("BDscan", "@routes.BdController.scannedBD");
 	                	return "c'est bon tu as compris";
 	                	}).then(function(answer){
-	                		console.log("Answer from the Web service called : "+answer);
+	                		console.log("scan.scala.html : Answer from the Web service called : "+answer);
 	                	});
 }
 

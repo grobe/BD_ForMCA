@@ -32,6 +32,8 @@ import models.BdData;
 import models.BdDisplay;
 import models.CollectionBD;
 import models.CollectionDisplay;
+import models.LoginForm;
+//import models.LoginForm;
 import models.Owners;
 //import models.Owners;
 import models.ScraperResults;
@@ -67,6 +69,9 @@ public class BdController extends Controller {
 	@Inject
 	Configuration configuration;
 	
+	@Inject
+	StatisticsBD myStat;
+	
 	//controller to display the scanTest page
 	//used to test the use of the webcam into a web page
 	public Result  scanTest(){
@@ -75,19 +80,24 @@ public class BdController extends Controller {
 				} 
 	
 	
+	@Security.Authenticated(Secured.class)
 	public Result  scan(){
 		play.Logger.debug("scan : MCA is HEre : scan");
+		Logger.debug("BdController : scan : session(\"testMCA\") = "+session("testMCA"));
+		Logger.debug("BdController : scan : session(\"connectedBD\") = "+session("connectedBD"));
 		return ok(views.html.scan.render());
 				} 
 	
 	
-	public Result searchCollection(String term) {
+	public Result searchCollection(String term,String userFilter) {
     	//look for the list of distinct list of line managers
     	
     	response().setHeader(CACHE_CONTROL, "no-cache");
     	play.Logger.debug(" searchCollection term=" + term);
     	//List <CollectionBD> collection = CollectionBD.find.where().setDistinct(true).select("title").where().icontains("title", "").orderBy("title").findList();
-    	List <CollectionBD> collection = CollectionBD.find.where().setDistinct(true).where().icontains("title", term).findList();
+    	
+    	Owners owner =Owners.find.where().eq("login", userFilter).findUnique();
+    	List <CollectionBD> collection = CollectionBD.find.where().eq("owner",owner).setDistinct(true).where().icontains("title", term).findList();
 		play.Logger.debug(" searchCollection size:" + collection.size());
 	
 		
@@ -104,36 +114,80 @@ public class BdController extends Controller {
 	}
 	
 	
+	
+	
+	public Result login() {
+		
+	
+		response().setHeader(CACHE_CONTROL, "no-cache");
+	
+		Logger.debug("BdController : login : session(\"connectedBD\")" + session("connectedBD"));
+	
+		return ok(views.html.login.render("scan"));
+		
+	}
+	
+	
 	//action to manage the security
 	
 	public Result security() {
-/*
-		DynamicForm requestData = formFactory.form().bindFromRequest();
+
+		play.Logger.debug("______________________________________________security called___________________________________ ");
 		
-		String idDlp = requestData.get("idDlp");
-		String password =requestData.get("password");
-
+		Form<LoginForm> loginForm = formFactory.form(LoginForm.class).bindFromRequest();
+		
+		// here i check if my form is well filled
+		//if not go back the login form
+		Logger.debug("BdController :security : before loginForm.hasError  ");
+		if (loginForm.hasErrors()) {
+			Logger.debug("BdController :security : loginForm.hasError  ");
+			session().clear();
+			flash("Security", "Please fill correctly the form");
+			Logger.debug("BdController :security : loginForm.errors().size():"+loginForm.errors().size());
+		    return redirect(controllers.routes.BdController.login());
+		} 
+		Logger.debug("BdController :security: after loginForm.hasError  ");
+		LoginForm userLogin = loginForm.bindFromRequest().get();
+		//session("testMCA","testMCA is here !!!!!!!!!!!!!!");
 		//check if the owner exist --> match between login and password
-		Owners owner = Owners.find.where().eq("id_dlp",idDlp).eq("password", password).findUnique();
+		Owners owner = Owners.find.where().eq("login",userLogin.getLogin()).eq("password", userLogin.getPassword()).findUnique();
 
-		Logger.debug("idDlp : " + idDlp);
-		Logger.debug("password : " + password);
+		
 
 		if (owner != null)  {
 			// the user is authenticated
-			Logger.debug("the user is authenticated ");
-			Logger.debug("owner.getId() "+owner.getId());
-			session("connected",String.valueOf(owner.getId()));
-			//session("miguel",String.valueOf("MIG3"));
-			return redirect(controllers.routes.HomeController.view());
-		}
-		Logger.debug("the user is not authenticated ");
+			
+			Logger.debug("BdController : security :the user is authenticated :owner.getId() "+owner.getId());
+			session("connectedBD", String.valueOf(owner.getId()));
+            
+			
+			
+			/*
+			 * TODO define a way to dispatch more or less dynamically where the login page has to send
+			 * based on callBackURL parameter from the login form
+			 */
 
+			switch (userLogin.getCallBackURL()) {
+            case "scan":
+            	return ok(views.html.scan.render());
+        
+           
+            default:
+            	redirect(controllers.routes.BdController.listBD(userLogin.getLogin()));
+        }
+			
+			
+			//return ok(views.html.scan.render());
+			//redirect("/scan");
+		}
+		Logger.debug("BdController : security : :the user is not authenticated ");
 		session().clear();
-		return ok(login.render());
+		flash("Security", "You are not authenticated !");
 		
-		*/ 
-		return ok("to be deleted");
+		
+	
+		return redirect(controllers.routes.BdController.login());
+		
 
 	}
 	
@@ -185,8 +239,11 @@ public class BdController extends Controller {
 	
 	
 	//Action done for Create or Update a Scanned BD
+	@Security.Authenticated(Secured.class)
 	public Result  scannedBD(){
+		response().setHeader(CACHE_CONTROL, "no-cache");
 		play.Logger.debug("______________________________________________scannedBD___________________________________ ");
+		String resultToBeDisplayed;
 		
 		Form<CollectionBD> collectionForm = formFactory.form(CollectionBD.class);
 		
@@ -204,23 +261,31 @@ public class BdController extends Controller {
 		    
 			//i check if the collection extracted from the web store alredy exist or not
 			//in order to know if i have to create it
-		    CollectionBD bdCollection= CollectionBD.find.where().eq("title", formCollection.title).findUnique();
-					
+		    
+		    Owners owner =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
+		    CollectionBD bdCollection= CollectionBD.find.where().eq("owner",owner).eq("title", formCollection.title).findUnique();
+			
+		    formCollection.setOwner(owner);
+		    
 			if (bdCollection==null){
-				play.Logger.debug("New scannedBD collection____New:"+formCollection.title);
+				play.Logger.debug("BdController : scannedBD : New scannedBD collection____New:"+formCollection.title);
+				play.Logger.debug("BdController : scannedBD : New scannedBD owner:"+owner.login);
 				bdCollection = formCollection;
+				//bdCollection.setOwner(owner);
 				bdCollection.save();
+				
 			}else{
-				play.Logger.debug("Existing scannedBD collection____New:"+formCollection.title);
+				play.Logger.debug("BdController : scannedBD : Existing scannedBD collection____New:"+formCollection.title);
 				bdCollection.setEditor(formCollection.editor);
 				bdCollection.setTitle(formCollection.title);
 				bdCollection.update();
 				
+				
 				// if you change the collection that mean's you have to update all the book of the collection to be link to the new connection.
 			}
-			play.Logger.debug("BD info__Before");
-			play.Logger.debug("BD info________:"+formCollection.bddata.get(0).isbn+"++++--");
-			play.Logger.debug("BD info__After");
+			play.Logger.debug("BdController : scannedBD : BD info__Before");
+			play.Logger.debug("BdController : scannedBD : BD info________:"+formCollection.bddata.get(0).isbn+"++++--");
+			play.Logger.debug("BdController : scannedBD : BD info__After");
 			
 			
 			/* A test has to be done here to know if i have to use isbn to look for the book
@@ -239,11 +304,12 @@ public class BdController extends Controller {
 				bdInfo.collection=bdCollection;
 				
 				bdInfo.save();
-				play.Logger.debug("New scannedBD BD____New");
+				play.Logger.debug("BdController : scannedBD : New scannedBD BD____New");
+				resultToBeDisplayed ="Created";
 				//TODO
 			}else{ //the book exists and i will update it with the new value
-				play.Logger.debug("existing bdinfo"+bdInfo.title);
-				play.Logger.debug("form collectionBD.bddata.get(0)"+formCollection.bddata.get(0).title);
+				play.Logger.debug("BdController : scannedBD : existing bdinfo"+bdInfo.title);
+				play.Logger.debug("BdController : scannedBD : form collectionBD.bddata.get(0)"+formCollection.bddata.get(0).title);
 				// idon't know why but .update is not working with 
 				//bdInfo =collectionBD.bddata.get(0);
 				//only with setters as below :
@@ -259,20 +325,27 @@ public class BdController extends Controller {
 				
 				
 				bdInfo.update();
-				play.Logger.debug("existing scannedBD BD____Updated");
+				play.Logger.debug("BdController : scannedBD : existing scannedBD BD____Updated");
+				resultToBeDisplayed ="Updated";
 			}
 		    
-		    play.Logger.debug("editor ="+bdCollection.editor +" & collection= " +bdCollection.title + " & BD title = "+bdInfo.title);
+		    play.Logger.debug("BdController : scannedBD : editor ="+bdCollection.editor +" & collection= " +bdCollection.title + " & BD title = "+bdInfo.title);
 		
-		return ok("C'est OK");
+		return ok(views.html.scannedBD.render(resultToBeDisplayed));
 	}
 	
 	
 	//controller to display the scan page , bddata.number asc
-		public Result  listBD(){
+	//by default login ="grobe" defined in routes file.
+		public Result  listBD(String login){
 			play.Logger.debug("scan : MCA is HEre : ListBD");
 			
-			 List <CollectionBD> resultCollections = CollectionBD.find.where().orderBy("title asc").findList();
+		
+			play.Logger.debug("BdController -listBD session(\"connectedBD\")"+session("connectedBD"));
+			
+			Owners owner =Owners.find.where().eq("login", login).findUnique();
+			
+			 List <CollectionBD> resultCollections = CollectionBD.find.where().eq("owner",owner).orderBy("title asc").findList();
 			  
 			 
 			 // i catch all the collection content to be displayed in to the Web page
@@ -293,20 +366,22 @@ public class BdController extends Controller {
 					                		   
 					                  );  
 					        
-			 StatisticsBD myStat =new StatisticsBD();
-		
+			 //StatisticsBD myStat =new StatisticsBD();
+			 myStat.setStatisticsByLogin(login);
 			 
 			 //.stream().distinct().collect(Collectors.toList()) )
 			 //return ok( Json.toJson(result));
-			 return ok(  views.html.listBD.render(myBD, myStat)); 	
+			 return ok(  views.html.listBD.render(myBD, myStat,login)); 	
 		 } 
 	
 	//controller to display the data extract from the code bar scanned
 	//and based on the ISBN searches the data on the website Fnac
 	
 	  public CompletionStage<Result>   infoBD(){
-		
+		  
 		  play.Logger.debug("infoBD : MCA is HEre");
+		  Logger.debug("BdController : infoBD : session(\"testMCA\") = "+session("testMCA"));
+		  
 		  //String IsbnCode="No code";
 		 
 		  File file;

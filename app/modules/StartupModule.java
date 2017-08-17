@@ -9,6 +9,7 @@ import service.FnacScanBD;
 import service.ScanBD;
 import service.SchedulingStartUp;
 import actors.ActorsWebService;
+import models.StatisticsBD;
 import play.Configuration;
 import play.Environment;
 import play.libs.akka.AkkaGuiceSupport;
@@ -30,6 +31,7 @@ public class StartupModule extends AbstractModule implements AkkaGuiceSupport {
 		bindActor(ActorsWebService.class, "update-db-crawler");
         bind(SchedulingStartUp.class).asEagerSingleton(); 
         bind(FnacScanBD.class);
+        bind(StatisticsBD.class);
         
         play.Logger.debug("StartupModule : configure");
 		

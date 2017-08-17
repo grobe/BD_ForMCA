@@ -1,7 +1,11 @@
 package controllers;
 
 
-
+/*
+ * This class is not usefull for my project
+ * It was useful at the beginning when i choice my technical stack 
+ * and i did some test on future & asynchrone stuff 
+ */
 import javax.inject.Inject;
 import play.data.FormFactory;
 import play.db.jpa.JPAApi;

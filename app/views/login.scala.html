@@ -1,0 +1,57 @@
+@( callBackURL: String)	
+
+<div id ="loginReturnedValues">
+		<div class="modal-body">
+						<!-- Simple login form -->
+						<form id="login" name="login">
+							<div class="panel panel-body login-form">
+								
+								<h3 class="content-group text-center">Login to your account <small class="display-block">Enter your credentials below</small></h3>
+								
+								
+								<h4 class="content-group">
+								@if(flash.containsKey("Secured : Failed")) {
+									<div id="errorlogin" name="errorlogin" class ="bg-warning">
+                                       @flash.get("Secured : Failed")
+                                    </div>   
+								} 
+		                        @if(flash.containsKey("Security")) {
+									<div id="errorlogin" name="errorlogin" class ="bg-danger">
+                                       @flash.get("Security")
+                                    </div>   
+								} 
+		                        </h4>
+								<div class="form-group has-feedback has-feedback-left">
+									<input name="login" type="text" class="form-control" placeholder="Login">
+									<div class="form-control-feedback">
+										<i class="glyphicon glyphicon-user "></i>
+									</div>
+								</div>
+		
+								<div class="form-group has-feedback has-feedback-left">
+									<input name="password" type="password" class="form-control" placeholder="Password">
+									<div class="form-control-feedback">
+										<i class="glyphicon glyphicon-lock "></i>
+									</div>
+								</div>
+								
+						     <div class="form-group has-feedback has-feedback-left">
+									<input name="callBackURL" type="text" class="form-control" placeholder="callBackURL" value ="@callBackURL">
+									
+								</div>
+		
+								<div class="form-group">
+									<button id="submitlogin" name="submitlogin" type="button" class="btn btn-primary btn-block">Sign in <i class="glyphicon glyphicon-ok position-right"></i></button>
+								</div>
+		
+								
+							</div>
+						</form>
+		 </div>
+						<!-- /simple login form -->
+						<script>
+						addEventForsubmitForm("login", "@routes.BdController.security");
+						console.log("Login Form : form login Displayed !!!");
+						</script>
+						
+</div>

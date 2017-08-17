@@ -19,6 +19,12 @@ GET /scanTest								controllers.BdController.scanTest()
 
 
 
+# the two following routes are to authentication purpose
+GET /login								controllers.BdController.login()
+POST /security							controllers.BdController.security()
+
+
+#used for send to the backend the picturte of the barcode
 GET /scan								controllers.BdController.scan()
 #
 # Async Action : used to catch from a form POST the picture code and display into a for the result of the scan from the web store
@@ -30,11 +36,12 @@ POST /scannedBD							controllers.BdController.scannedBD()
 
 #used to get the list of collection of the owner connected
 
-GET /searchCollection 					controllers.BdController.searchCollection(term: String) 
+GET /searchCollection 					controllers.BdController.searchCollection(term: String, userFilter:String) 
 
 #Display the main page of the web site
-GET /									controllers.BdController.listBD()
-
+# by default my login is always grobe :)
+GET /								        controllers.BdController.listBD(login ="grobe") 
+GET /:login									controllers.BdController.listBD(login : String)
 
 #add a BD from the BD coming from the webstore
 

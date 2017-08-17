@@ -8,6 +8,8 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
 
+import play.Logger;
+
 public class StatisticsBD {
 	
 	private String bdNumber="0";
@@ -17,6 +19,18 @@ public class StatisticsBD {
 	
 	public  StatisticsBD(){
 		
+		Logger.debug("StatisticsBD : StatisticsBD"); 
+		
+		
+		
+	}
+	
+	/*
+	 * TODO refactor  StatisticsBD(String login) & StatisticsBD() to mutualise
+	 */
+	public  void setStatisticsByLogin (String login){
+		
+		Logger.debug("StatisticsBD : setStatisticsByLogin"); 
 		String dateTimeFormatPattern = "dd/MM/YYYY z";
 		final DateFormat format = new SimpleDateFormat(dateTimeFormatPattern);
 		
@@ -25,16 +39,24 @@ public class StatisticsBD {
 		
 		//collectionNumber
 		int resultCollectionValue;
-		resultCollectionValue = CollectionBD.find.where().findRowCount();
+		
+		Owners owner =Owners.find.where().eq("login", login).findUnique();
+		
+		resultCollectionValue = CollectionBD.find.where().eq("owner",owner).findRowCount();
 		collectionNumber = String.valueOf(resultCollectionValue);
 		
 		//bdNumber
 		int resultBdvalue;
-		resultBdvalue = BdData.find.where().findRowCount();
+		List<CollectionBD> collectionList =CollectionBD.find.where().eq("owner",owner).findList();
+		resultBdvalue = BdData.find.where().in("collection", collectionList).findRowCount();
 		bdNumber = String.valueOf(resultBdvalue);
 		
 		//lastUpdateOwned
-		String sql ="SELECT max(creation_date) as lastDate FROM bd.bd_data;";
+		//String sql ="SELECT max(creation_date) as lastDate FROM bd.bd_data;";
+		String sql ="SELECT max(creation_date) as lastDate FROM bd.bd_data, bd.collection_bd,bd.owners";
+		sql=sql+" where bd.owners.login='"+login+"'";
+		sql=sql+" and bd.collection_bd.owner_owner_id=bd.owners.owner_id";
+		sql=sql+" and bd.collection_bd.id=bd.bd_data.collection_id;";
 		RawSql rawSql =	RawSqlBuilder
 						  .parse(sql)
 						  .create();
@@ -44,8 +66,14 @@ public class StatisticsBD {
 		if (lastDateOwned.getLastDate()!=null) lastUpdateOwned = format.format(lastDateOwned.getLastDate()); 
 		 
 		//lastUpdateWeb
-	   String sqlWebStore ="SELECT max(last_review_from_web_store) as lastDate FROM bd.scraper_results;";
-	   RawSql rawSqlWebStore =	RawSqlBuilder
+	   //String sqlWebStore ="SELECT max(last_review_from_web_store) as lastDate FROM bd.scraper_results;";
+
+		String sqlWebStore ="SELECT max(last_review_from_web_store) as lastDate FROM bd.scraper_results, bd.collection_bd, bd.owners";
+		sqlWebStore=sqlWebStore+" where bd.owners.login='"+login+"'";
+		sqlWebStore=sqlWebStore+" and bd.collection_bd.owner_owner_id=bd.owners.owner_id";
+		sqlWebStore=sqlWebStore+" and bd.collection_bd.id=bd.scraper_results.collection_id;";
+		
+		RawSql rawSqlWebStore =	RawSqlBuilder
 	    					  .parse(sqlWebStore)
 							  .create();
 	   LastDate lastDateWebStore = Ebean.find(LastDate.class)
@@ -55,7 +83,7 @@ public class StatisticsBD {
 		
 		
 	}
-	
+		
 	
 	public String getBdNumber(){
 		

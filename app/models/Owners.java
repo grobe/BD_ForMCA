@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,7 +16,9 @@ import com.avaje.ebean.annotation.Formula;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import play.Logger;
 import play.data.validation.Constraints;
+import play.data.validation.ValidationError;
 
 @Entity
 public class Owners extends Model {
@@ -40,6 +43,7 @@ public class Owners extends Model {
     public List<CollectionBD> collectionBD;
     
    
+	
     
     
     public static Finder<Long, Owners> find = new Finder<Long,Owners>(Owners.class);

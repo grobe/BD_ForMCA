@@ -1,4 +1,4 @@
-function Mysearch() {
+function Mysearch(userFilter) {
 		//auto filter of the list of BD into the html page
 		var searchStyle = document.getElementById('search_style');
 		document.getElementById('search').addEventListener('input', function() {
@@ -15,7 +15,7 @@ function Mysearch() {
 		
 		//display the list of collection into the field "search"
 		$( "#search" ).autocomplete({
-   		  source: "/searchCollection",
+   		  source: "/searchCollection?userFilter="+userFilter,
  	          minLength: 2,
  	          select: function( event, ui ) { 
                  console.log("listDB : select autocomplete  :"+ui.item.value);

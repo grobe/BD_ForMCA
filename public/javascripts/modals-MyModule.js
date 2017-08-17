@@ -15,20 +15,20 @@ $(function() {
 		                 url: "/scan",
 		                 context: document.body,
 		                 success: function(responseText) {
-		                	 console.log("je suis succes avant par : "+this.id);
+		                	 console.log("modals-MyModule.js : je suis succes avant : ");
 		                     //$("#graphicals_remaining").html(responseText);
 		                     //$("#modal_remaining").modal("toggle");
 		                	 $("#scanForm").html(responseText);
 		                	// $("#scanForm").parseHTML; ///not working
-		                     
+		                	 console.log("modals-MyModule.js : je suis succes aprés ");
 		                 }
 		             }) // using the done promise callback
 		             .done(function(data) {
 		             	
 		             	//window.location.reload(true);
 		                 // log data to the console so we can see
-		                // console.log("done Scanner:" + data); 
-		                 event.preventDefault();
+		                //console.log("done Scanner:" + data); 
+		                 //event.preventDefault();
 		                 // here we will handle errors and validation messages
 		             });
 		        	
@@ -40,7 +40,7 @@ $(function() {
 	
 	   $('#myScanModal').on('hidden.bs.modal', function() {
 			
-	    	console.log("je suis appelé 1 par : closeFormOnCall");
+	    	console.log("modals-MyModule.js : je suis appelé 1 par : closeFormOnCall");
 	    	window.location.reload(true);
 	  
 	        	
