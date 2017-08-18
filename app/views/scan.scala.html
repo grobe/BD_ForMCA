@@ -84,6 +84,7 @@ function sendFile (file){
 	
 	var request = new Request('@routes.BdController.infoBD', {
 		method: 'POST',
+		credentials: 'same-origin',
 		body: formData
 		//mode: 'cors', 
 		/*redirect: 'follow',

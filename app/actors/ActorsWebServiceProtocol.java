@@ -11,22 +11,25 @@ import play.api.Play;
 public class ActorsWebServiceProtocol {
 
 	 public static class SayHello {
-	        public final String name;
+		    
+		 //@Inject
+		 //FnacCrawler crawler;  //inject is not working here maybe because of the static class
+	     public final String name;
 	        
 	    	
 
-	        public SayHello(String name) {
+	        public SayHello(String name ) {
 	            
 	        
-	        	
+	        	 play.Logger.debug("ActorsWebServiceProtocol : SayHello begining  :"+ name  );
 	        	//FnacCrawler serviceFnacCrawler =crawler;
-	        	Play.current().injector().instanceOf(FnacCrawler.class);
+	        	FnacCrawler crawler =Play.current().injector().instanceOf(FnacCrawler.class);
 	        	
-	        	
+	        	crawler.launchFnacCrawler();
 	        	
 	        	this.name = name+ new Date();
 	        	
-	    	    play.Logger.debug("ActorsWebServiceProtocol : SayHello :"+ name  );
+	    	    play.Logger.debug("ActorsWebServiceProtocol : SayHello end :"+ name  );
 
 	        }
 	    }

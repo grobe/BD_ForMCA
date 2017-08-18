@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +51,7 @@ import play.libs.ws.WSResponse;
 import play.mvc.*;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
+import play.twirl.api.Content;
 import service.FnacExtractData;
 import service.FnacScanBD;
 //import views.html.login;
@@ -83,7 +86,7 @@ public class BdController extends Controller {
 	@Security.Authenticated(Secured.class)
 	public Result  scan(){
 		play.Logger.debug("scan : MCA is HEre : scan");
-		Logger.debug("BdController : scan : session(\"testMCA\") = "+session("testMCA"));
+		
 		Logger.debug("BdController : scan : session(\"connectedBD\") = "+session("connectedBD"));
 		return ok(views.html.scan.render());
 				} 
@@ -163,18 +166,35 @@ public class BdController extends Controller {
 			
 			
 			/*
-			 * TODO define a way to dispatch more or less dynamically where the login page has to send
+			 * Below : define a way to dispatch more or less dynamically where the login page has to send
 			 * based on callBackURL parameter from the login form
 			 */
-
+			
+			try {
+				Logger.debug("BdController : security :1");
+				Class<?>  myViewTobeDisplayed = Class.forName("views.html."+userLogin.getCallBackURL());
+				Logger.debug("BdController : security :2"); 
+				Method method = myViewTobeDisplayed.getMethod("render");
+				Logger.debug("BdController : security :3");
+				Content result = (Content) method.invoke(null);
+				Logger.debug("BdController : security :4");
+				return ok((Content) result);
+			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				Logger.error("BdController : security : Class.forName "+e.getMessage() +"/n cause = "+e.getCause());
+				//return redirect(controllers.routes.BdController.listBD(userLogin.getLogin()));
+			}
+			
+  /*
 			switch (userLogin.getCallBackURL()) {
             case "scan":
+            	
             	return ok(views.html.scan.render());
         
            
             default:
-            	redirect(controllers.routes.BdController.listBD(userLogin.getLogin()));
-        }
+            	return redirect(controllers.routes.BdController.listBD(userLogin.getLogin()));
+        }*/
 			
 			
 			//return ok(views.html.scan.render());
@@ -273,13 +293,14 @@ public class BdController extends Controller {
 				bdCollection = formCollection;
 				//bdCollection.setOwner(owner);
 				bdCollection.save();
+				resultToBeDisplayed ="Created_Collection";
 				
 			}else{
 				play.Logger.debug("BdController : scannedBD : Existing scannedBD collection____New:"+formCollection.title);
 				bdCollection.setEditor(formCollection.editor);
 				bdCollection.setTitle(formCollection.title);
 				bdCollection.update();
-				
+				resultToBeDisplayed ="Updated_Collection";
 				
 				// if you change the collection that mean's you have to update all the book of the collection to be link to the new connection.
 			}
@@ -288,10 +309,14 @@ public class BdController extends Controller {
 			play.Logger.debug("BdController : scannedBD : BD info__After");
 			
 			
+			
+			
 			/* A test has to be done here to know if i have to use isbn to look for the book
 			 * or the collection + title or number
 			 * because when a book is added from Webstore list there has no ISBN code
 			 */
+			
+			
 			BdData bdInfo =BdData.find.where().eq("collection", bdCollection).eq("number", formCollection.bddata.get(0).number).findUnique();
 			if (bdInfo==null){
 				bdInfo =BdData.find.where().eq("isbn", formCollection.bddata.get(0).isbn).findUnique();
@@ -340,7 +365,9 @@ public class BdController extends Controller {
 		public Result  listBD(String login){
 			play.Logger.debug("scan : MCA is HEre : ListBD");
 			
-		
+		 /*
+		  * TODO : intercept login is session("connectedBD exist") to use it instead of the value of the input parameter of this action  
+		  */
 			play.Logger.debug("BdController -listBD session(\"connectedBD\")"+session("connectedBD"));
 			
 			Owners owner =Owners.find.where().eq("login", login).findUnique();
@@ -376,7 +403,7 @@ public class BdController extends Controller {
 	
 	//controller to display the data extract from the code bar scanned
 	//and based on the ISBN searches the data on the website Fnac
-	
+	  @Security.Authenticated(Secured.class)
 	  public CompletionStage<Result>   infoBD(){
 		  
 		  play.Logger.debug("infoBD : MCA is HEre");

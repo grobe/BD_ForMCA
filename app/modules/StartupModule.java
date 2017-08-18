@@ -32,6 +32,7 @@ public class StartupModule extends AbstractModule implements AkkaGuiceSupport {
         bind(SchedulingStartUp.class).asEagerSingleton(); 
         bind(FnacScanBD.class);
         bind(StatisticsBD.class);
+        bind(FnacCrawler.class); //not working don't understand why to see later
         
         play.Logger.debug("StartupModule : configure");
 		

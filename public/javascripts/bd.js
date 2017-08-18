@@ -13,7 +13,7 @@ function Mysearch(userFilter) {
 		  console.log("value dans else = "+this.value.toLowerCase());
 		});
 		
-		//display the list of collection into the field "search"
+		//display the list of collection into the field "search" filter by the one viewing the list of comics
 		$( "#search" ).autocomplete({
    		  source: "/searchCollection?userFilter="+userFilter,
  	          minLength: 2,

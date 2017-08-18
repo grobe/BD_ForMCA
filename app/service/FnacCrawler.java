@@ -32,6 +32,13 @@ public class FnacCrawler {
 	 * Controller which invoke a promise to crawl all the URL from the Fnac web site
 	 */
 	public  FnacCrawler() {
+		
+		 
+    	
+    }
+	
+	
+	public void launchFnacCrawler() {
 		//play.Logger.debug("FnacCrawler : FnacCrawler1 : :"+ new Date());
 		 CompletionStage<String> promiseOfcrawler = CompletableFuture.supplyAsync(() -> crawler());
 		 
@@ -40,9 +47,9 @@ public class FnacCrawler {
 	    	 play.Logger.debug(this.getClass().getName()+": FnacCrawler :done promiseOfcrawler"+ promiseOfcrawler.toString() +" "+ new Date());
 	    	   return "done promiseOfcrawler";
 	          } );
-		 
-    	
-    }
+	}
+	
+	
 	
 	/*
 	 * Private function to launch by promise all the URL from the object collection.crowlerBots which contains all the URLS

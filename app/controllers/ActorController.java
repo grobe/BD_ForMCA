@@ -4,6 +4,8 @@ import javax.inject.*;
 import akka.actor.*;
 import play.mvc.*;
 import scala.compat.java8.FutureConverters;
+import service.FnacCrawler;
+
 import java.util.concurrent.CompletionStage;
 import actors.ActorsWebServiceProtocol.*;
 
@@ -12,7 +14,8 @@ import static akka.pattern.Patterns.ask;
 @Singleton
 public class ActorController extends Controller {
 
-	
+	@Inject
+	FnacCrawler crawler;
 	final ActorRef actorsWebService;
 
     @Inject 
