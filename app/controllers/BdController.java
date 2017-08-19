@@ -312,17 +312,20 @@ public class BdController extends Controller {
 			
 			
 			/* A test has to be done here to know if i have to use isbn to look for the book
-			 * or the collection + title or number
+			 * or the collection + number
 			 * because when a book is added from Webstore list there has no ISBN code
 			 */
 			
+			play.Logger.debug("BdController : scannedBD : look for ISBN"+formCollection.bddata.get(0).isbn);
 			
-			BdData bdInfo =BdData.find.where().eq("collection", bdCollection).eq("number", formCollection.bddata.get(0).number).findUnique();
+			BdData bdInfo =BdData.find.where().eq("isbn", formCollection.bddata.get(0).isbn).findUnique();
+			
 			if (bdInfo==null){
-				bdInfo =BdData.find.where().eq("isbn", formCollection.bddata.get(0).isbn).findUnique();
+				 play.Logger.debug("BdController : scannedBD : look for Number ISBN failed so look for number into the collection "+formCollection.bddata.get(0).number);
+				 bdInfo =BdData.find.where().eq("collection", bdCollection).eq("number", formCollection.bddata.get(0).number).findUnique();
 			}
 			
-			if (bdInfo==null){//the book doesn't exist no ISBN code existe and no same collection & same number 
+			if (bdInfo==null){//the book doesn't exist no ISBN code exists and no same collection & same number exits too !!
 				
 				
 				bdInfo =formCollection.bddata.get(0);
@@ -454,8 +457,9 @@ public class BdController extends Controller {
 		  	        		bdInfo = scanFromFnac.extractDataFromSearch( response.getBody(),isbnCode) ;
 		  	        		
 		  	        		
-		  	        	    //i' check if the Bd extracted is already existing on my DB
-		  	        		boolean bdExist =scanFromFnac.bdExist(isbnCode);
+		  	        	    //First:  i' check if the Bd extracted is already existing on my DB from isbn code
+		  	        		boolean bdExist =scanFromFnac.bdExist(isbnCode, bdInfo);
+		  	        		
 			  	        	//if (bdExist==false) bdInfo.save();
 			  	        	play.Logger.debug("infoBD 2 + bdExist ="+bdExist);
 			  	        	return ok(views.html.bdInfo.render(bdInfo,bdExist));

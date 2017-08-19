@@ -34,13 +34,13 @@ public class FnacScanBD  implements ScanBD {
 	}
 
 	public  CollectionBD extractDataFromSearch( String html, String isbn){
-		play.Logger.debug("extractData 1");
+		play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 1");
 		
-			play.Logger.debug("extractData 2");
+			play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 2");
 			BdData bdInfo =new BdData();
 			CollectionBD bdCollection;
 			
-			play.Logger.debug("extractData 3");
+			play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 3");
 			               
 			/*i get the result from the HTML
 			 * the HTML should content only
@@ -49,7 +49,7 @@ public class FnacScanBD  implements ScanBD {
 			 */
 			Elements listBD = FnacExtractData.getItemsList(html);  
 			
-			play.Logger.debug("extractData 3.5 length= "+listBD.size());
+			play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 3.5 length= "+listBD.size());
 			
 			//I check if the answer from the Fnac webStore return a validated ITem based on the ISBN code 
 			if ((listBD.size()>0)){
@@ -61,7 +61,7 @@ public class FnacScanBD  implements ScanBD {
 				//Todo raise an error  if BD collection has more than one result
 				
 				if (bdCollection==null){
-					play.Logger.debug("New ____extractData collection____New");
+					play.Logger.debug("FnacScanBD : extractDataFromSearch : New ____extractData collection____New");
 					bdCollection = new CollectionBD();
 					bdCollection.setTitle(FnacExtractData.getCollection(listBD.get(0)));
 					bdCollection.setEditor(FnacExtractData.getEditor(listBD.get(0)));
@@ -70,47 +70,48 @@ public class FnacScanBD  implements ScanBD {
 				}
 						
 				bdInfo.setCollection(bdCollection);
-				play.Logger.debug("extractData collection");
+				play.Logger.debug("FnacScanBD : extractDataFromSearch : FnacScanBD : extractDataFromSearch : extractData collection");
 		    	
 				bdInfo.setIsbn(isbn);
-				play.Logger.debug("extractData isbn-"+isbn);
+				play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData isbn-"+isbn);
 		    	
 			
 				
 				bdInfo.setCreationDate(new Date());
-		    	play.Logger.debug("extractData creationDate"+bdInfo.creationDate);
+		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData creationDate"+bdInfo.creationDate);
 		    	
 		    	bdInfo.setImageBase64(FnacExtractData.getImageBAse64(listBD.get(0)));
-		    	play.Logger.debug("extractData creationDate"+bdInfo.creationDate);
+		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData creationDate"+bdInfo.creationDate);
 		    	
 		    	bdInfo.setTitle(FnacExtractData.getTitleCleaned(listBD.get(0)));
-		    	play.Logger.debug("extractData 7");
+		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 7");
 		    	bdInfo.setNumber(FnacExtractData.getNumber(listBD.get(0)));
-		    	play.Logger.debug("extractData 8");
+		    	
+		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 8 :FnacExtractData.getNumber(listBD.get(0)=" + FnacExtractData.getNumber(listBD.get(0)));
 		    	bdInfo.setDesigner(FnacExtractData.getAuthor(listBD.get(0)));
-		    	play.Logger.debug("extractData 9");
+		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 9");
 		    	bdInfo.scenario=FnacExtractData.getScriptWriter(listBD.get(0));
-		    	play.Logger.debug("extractData 10");
+		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 10");
 		    	try {
 					bdInfo.price=FnacExtractData.getPrice(listBD.get(0));
-					play.Logger.debug("extractData 11");
+					play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 11");
 				} catch (Exception e) {
 					play.Logger.error(this.getClass().getName()+"\n : "+e.getMessage());
 				}
-		    	play.Logger.debug("extractData 12");
+		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 12");
 			}else{
 				//put here the setup of zn bdingo empty with only an isbn code
 				bdCollection= CollectionBD.find.where().eq("title", "Not Found").findUnique();
 				
 					if (bdCollection==null){
-						play.Logger.debug("New ____extractData collection____New");
+						play.Logger.debug("FnacScanBD : extractDataFromSearch : New ____extractData collection____New");
 						bdCollection = new CollectionBD();
 						bdCollection.setTitle("Not Found");
 						bdCollection.setEditor("Not Found");
 						//bdCollection.save();
 					}
 					bdInfo.setCollection(bdCollection);
-					play.Logger.debug("extractData not bd found from Web store");
+					play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData not bd found from Web store");
 			    	
 					bdInfo.setIsbn(isbn);
 			}
@@ -118,7 +119,7 @@ public class FnacScanBD  implements ScanBD {
 			List <BdData> bddata= new ArrayList <BdData>();
 			bddata.add(bdInfo);
 			bdCollection.setBddata(bddata); 
-			play.Logger.debug("extractData 13");
+			play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 13");
 			 
 		return   bdCollection;
 		

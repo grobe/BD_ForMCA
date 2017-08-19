@@ -31,6 +31,7 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
 import models.BdData;
+import models.CollectionBD;
 import models.ScraperResults;
 
 @ImplementedBy(FnacScanBD.class)
@@ -70,10 +71,18 @@ public interface ScanBD {
 	}
 	
 	//check if the isbnCode already exist in the Database
-	default boolean bdExist(String isbnCode){
-		BdData bdData = BdData.find.where().eq("isbn", isbnCode).findUnique();
+	default boolean bdExist(String isbnCode, CollectionBD bdInfo){
+		play.Logger.debug("ScanBD : bdExist : isbnCode ="+isbnCode);
+		play.Logger.debug("ScanBD : bdExist : bdInfo.id ="+bdInfo.id);
+		play.Logger.debug("ScanBD : bdExist : bdInfo.getBddata().get(0).number ="+bdInfo.getBddata().get(0).number);
 		
-		return (!(bdData==null));
+		BdData bdDataWithISBN = BdData.find.where().eq("isbn", isbnCode).findUnique();
+		 play.Logger.debug("ScanBD : bdExist : bdDataWithISBN ="+bdDataWithISBN);
+		BdData bdDataWithCollectionAndNumber = BdData.find.where().eq("collection_id", bdInfo.id).eq("number", bdInfo.getBddata().get(0).number).findUnique();
+		play.Logger.debug("ScanBD : bdExist : bdDataWithCollectionAndNumber ="+bdDataWithCollectionAndNumber);
+		
+		
+		return (!(bdDataWithISBN==null&&bdDataWithCollectionAndNumber==null));
 	}
 	
 }
