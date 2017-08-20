@@ -28,14 +28,20 @@ public class FnacExtractData {
 	
 	
 	
-	  //i'm looking for something like :"Trolls de Troy - Tome 5 : Les maléfices de la Thaumaturge"
-    //the number of the comic should be always between " Tome" and ":"
-    //bdTitle.matches(".*\\bTome\\b.*")&&  (StringUtils.countMatches(bdTitle, "Tome")==1) &&(StringUtils.countMatches(bdTitle, ":")==1)
-	
-	static boolean isItemArticleValidated (Element bdItem){
+	  /*i'm looking for something like :"Trolls de Troy - Tome 5 : Les maléfices de la Thaumaturge"
+        the number of the comic should be always between " Tome" and ":"
+       bdTitle.matches(".*\\bTome\\b.*")&&  (StringUtils.countMatches(bdTitle, "Tome")==1) &&(StringUtils.countMatches(bdTitle, ":")==1)
+	   i also double check the collection.title, because i don't know why but the result from Fnac web store some times return more items taht olny the colelction asked
+	*/
+	static boolean isItemArticleValidated (Element bdItem, String collectionSeeked){
+		play.Logger.debug("FnacExtractData : isItemArticleValidated ? ");
 		
 		String bdTitle=getTitle(bdItem);
-		return (bdTitle.matches(".*\\bTome\\b.*")&&  (StringUtils.countMatches(bdTitle, "Tome")==1) &&(StringUtils.countMatches(bdTitle, ":")==1));
+		String bdcollection=getCollection(bdItem);
+		play.Logger.debug("FnacExtractData : isItemArticleValidated - collectionSeeked = "+collectionSeeked);
+		play.Logger.debug("FnacExtractData : isItemArticleValidated - bdcollectionItem = "+bdcollection);
+		play.Logger.debug("FnacExtractData : isItemArticleValidated - bdTitle = "+bdTitle);
+		return (bdTitle.matches(".*\\bTome\\b.*")&&  (StringUtils.countMatches(bdTitle, "Tome")==1) &&(StringUtils.countMatches(bdTitle, ":")==1)&&bdcollection.equals(collectionSeeked));
 	}
 	
 	

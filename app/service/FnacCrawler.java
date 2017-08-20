@@ -135,7 +135,7 @@ public class FnacCrawler {
           //i'm looking for something like :"Trolls de Troy - Tome 5 : Les maléfices de la Thaumaturge"
           //the number of the comic should be always between " Tome" and ":"
           //bdTitle.matches(".*\\bTome\\b.*")&&  (StringUtils.countMatches(bdTitle, "Tome")==1) &&(StringUtils.countMatches(bdTitle, ":")==1)
-          if (FnacExtractData.isItemArticleValidated(bdItem)==true) {
+          if (FnacExtractData.isItemArticleValidated(bdItem, collection.title)==true) {
        	    	         	    	    
         	        try{
         	        	//STEP1 : i'm looking for the title and the number of the comic in the collection	 
