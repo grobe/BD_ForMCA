@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Model;
 import com.avaje.ebean.Model.Finder;
 import com.avaje.ebean.annotation.Formula;
@@ -48,6 +49,13 @@ public class Owners extends Model {
     
     public static Finder<Long, Owners> find = new Finder<Long,Owners>(Owners.class);
 
+    public static Owners findById(Long id) {
+        return Ebean.find(Owners.class)
+            .fetch("collectionBD.bddata")
+            .where() 
+            .eq("id", id)
+            .findUnique();
+    }
 
 
 

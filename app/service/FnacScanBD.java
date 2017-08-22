@@ -18,6 +18,7 @@ import org.jsoup.select.Elements;
 
 import models.BdData;
 import models.CollectionBD;
+import models.Owners;
 import models.ScraperResults;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
@@ -33,7 +34,7 @@ public class FnacScanBD  implements ScanBD {
 		
 	}
 
-	public  CollectionBD extractDataFromSearch( String html, String isbn){
+	public  CollectionBD extractDataFromSearch( String html, String isbn, Owners owner){
 		play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 1");
 		
 			play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 2");
@@ -56,8 +57,11 @@ public class FnacScanBD  implements ScanBD {
 				
 				//i check if the collection extracted from the web store already exist or not
 				//in order to know if i have to create it
-				bdCollection= CollectionBD.find.where().eq("title", FnacExtractData.getCollection(listBD.get(0))).findUnique();
-				
+				bdCollection=owner.getCollectionBD().stream()
+						.filter(e -> e.getTitle().equals(FnacExtractData.getCollection(listBD.get(0))))
+			            .findFirst()
+			            .orElse(null);
+			            
 				//Todo raise an error  if BD collection has more than one result
 				
 				if (bdCollection==null){
@@ -65,6 +69,7 @@ public class FnacScanBD  implements ScanBD {
 					bdCollection = new CollectionBD();
 					bdCollection.setTitle(FnacExtractData.getCollection(listBD.get(0)));
 					bdCollection.setEditor(FnacExtractData.getEditor(listBD.get(0)));
+					bdCollection.setOwner(owner);
 					//bdCollection.save();
 					
 				}
@@ -100,16 +105,22 @@ public class FnacScanBD  implements ScanBD {
 				}
 		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 12");
 			}else{
-				//put here the setup of zn bdingo empty with only an isbn code
-				bdCollection= CollectionBD.find.where().eq("title", "Not Found").findUnique();
+				//put here the setup of an bdingo empty with only an isbn code
+				bdCollection=owner.getCollectionBD().stream()
+						.filter(e -> e.getTitle().equals("Not Found"))
+			            .findFirst()
+			            .orElse(null);
 				
+				play.Logger.debug("FnacScanBD : extractDataFromSearch : bdCollection");
 					if (bdCollection==null){
-						play.Logger.debug("FnacScanBD : extractDataFromSearch : New ____extractData collection____New");
+						play.Logger.debug("FnacScanBD : extractDataFromSearch : bdCollection = null");
 						bdCollection = new CollectionBD();
 						bdCollection.setTitle("Not Found");
 						bdCollection.setEditor("Not Found");
+						bdCollection.setOwner(owner);
 						//bdCollection.save();
 					}
+					play.Logger.debug("FnacScanBD : extractDataFromSearch : bdCollection = null after if");
 					bdInfo.setCollection(bdCollection);
 					play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData not bd found from Web store");
 			    	

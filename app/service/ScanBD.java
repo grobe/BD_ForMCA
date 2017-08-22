@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -32,6 +33,7 @@ import com.google.zxing.common.HybridBinarizer;
 
 import models.BdData;
 import models.CollectionBD;
+import models.Owners;
 import models.ScraperResults;
 
 @ImplementedBy(FnacScanBD.class)
@@ -70,19 +72,48 @@ public interface ScanBD {
 		return (isbnCode);
 	}
 	
-	//check if the isbnCode already exist in the Database
-	default boolean bdExist(String isbnCode, CollectionBD bdInfo){
+	//i'm looking for if ISBN or title or number  exist on the current collection into the database for the connected owner
+	default boolean bdExist(String isbnCode, CollectionBD bdInfo, Owners ownerLogged){
 		play.Logger.debug("ScanBD : bdExist : isbnCode ="+isbnCode);
-		play.Logger.debug("ScanBD : bdExist : bdInfo.id ="+bdInfo.id);
+		play.Logger.debug("ScanBD : bdExist : bdInfo.title ="+bdInfo.title); //title and not id because id can be null for a new collection.
 		play.Logger.debug("ScanBD : bdExist : bdInfo.getBddata().get(0).number ="+bdInfo.getBddata().get(0).number);
 		
-		BdData bdDataWithISBN = BdData.find.where().eq("isbn", isbnCode).findUnique();
-		 play.Logger.debug("ScanBD : bdExist : bdDataWithISBN ="+bdDataWithISBN);
-		BdData bdDataWithCollectionAndNumber = BdData.find.where().eq("collection_id", bdInfo.id).eq("number", bdInfo.getBddata().get(0).number).findUnique();
-		play.Logger.debug("ScanBD : bdExist : bdDataWithCollectionAndNumber ="+bdDataWithCollectionAndNumber);
 		
 		
-		return (!(bdDataWithISBN==null&&bdDataWithCollectionAndNumber==null));
+        boolean bdDataFound = ownerLogged.collectionBD.stream()
+		 
+				               .filter(collection->{play.Logger.debug("ScanBD : bdExist : collection.title="+collection.title);
+				               						play.Logger.debug("ScanBD : bdExist : bdInfo.title="+bdInfo.title);
+				            	                    return (collection.title.equals(bdInfo.title));})
+        		
+        		               .filter((collection)->{
+				            	BdData bd =collection.bddata.stream()
+				            			 .filter(e -> { 
+				            				            play.Logger.debug("ScanBD : bdExist : e.number="+e.number);
+				            				            return( e.number.equals(bdInfo.getBddata().get(0).number)
+				            				            		||e.isbn.equals(bdInfo.getBddata().get(0).isbn)
+				            				            		||e.title.equals(bdInfo.getBddata().get(0).title));
+				            				           })
+				            	         .findFirst()
+				            	         .orElse(null);
+			            	
+				            	return    ((bd!=null));
+				            })
+				            .map((collection)->{
+				            	return (collection.getBddata().size()>0);
+				            })
+				            .findFirst()
+				            .orElse(false);
+		 
+		  if (bdDataFound){
+			  play.Logger.debug("ScanBD : bdExist : bdDataFound ="+bdDataFound);
+			  }
+		  else {
+			  play.Logger.debug("ScanBD : bdExist : bdDataWithISBN is null ");
+		  }
+		
+		
+		return ((bdDataFound));
 	}
 	
 }

@@ -89,6 +89,13 @@ h1 {
    color: #8A4A00 !important; 
 }
 
+.bdHead {
+   text-align:center;
+   font-family: 'eraserregular'!important;
+   color: #8A4A00 !important;
+   font-size: 35px; 
+}
+
 h3 {
    text-align:center;
    font-family: 'action_manbold';

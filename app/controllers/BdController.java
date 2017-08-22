@@ -97,18 +97,19 @@ public class BdController extends Controller {
     	
     	response().setHeader(CACHE_CONTROL, "no-cache");
     	play.Logger.debug(" searchCollection term=" + term);
-    	//List <CollectionBD> collection = CollectionBD.find.where().setDistinct(true).select("title").where().icontains("title", "").orderBy("title").findList();
+        Owners owner =Owners.find.where().eq("login", userFilter).findUnique();
+    	List <CollectionBD> collection =owner.getCollectionBD();
     	
-    	Owners owner =Owners.find.where().eq("login", userFilter).findUnique();
-    	List <CollectionBD> collection = CollectionBD.find.where().eq("owner",owner).setDistinct(true).where().icontains("title", term).findList();
-		play.Logger.debug(" searchCollection size:" + collection.size());
+    	play.Logger.debug(" searchCollection size:" + collection.size());
 	
 		
 		List<String> listOfCollection = collection.stream()
 				.filter((p)->{
-					         play.Logger.debug(" getBddata size:" + p.getBddata().size());
-					         play.Logger.debug(" getBdDisplay size:" + p.getBdDisplay().size());
-				             return (p.getBddata().size()==0||p.getBdDisplay().size()==0);})
+					         play.Logger.debug(" getBddata size:" + p.getBddata().size() +"p.title"+p.title);
+					         play.Logger.debug(" getBdDisplay size:" + p.getBdDisplay().size()+"p.title"+p.title);
+					         play.Logger.debug(" getBdDisplay term:" + term +"(p.getTitle().indexOf(term) ="+(p.getTitle().indexOf(term)));
+					         play.Logger.debug("p.getTitle().indexOf(term) >-1 &&( (p.getBddata().size()>0||p.getBdDisplay().size()>0):" + (p.getTitle().indexOf(term) >-1 &&(  p.getBddata().size()>0||p.getBdDisplay().size()>0)));
+				             return (p.getTitle().toLowerCase().indexOf(term.toLowerCase()) >-1 &&(  p.getBddata().size()>0||p.getBdDisplay().size()>0));})
 				.map(o->o.getTitle())
 				.collect(Collectors.toList());
 		
@@ -268,96 +269,86 @@ public class BdController extends Controller {
 		Form<CollectionBD> collectionForm = formFactory.form(CollectionBD.class);
 		
 		CollectionBD formCollection = collectionForm.bindFromRequest().get();
-		/*
-		    DynamicForm requestData = formFactory.form().bindFromRequest();
-		    String editor = requestData.get("editor");
-		    String collection = requestData.get("collection");
-		    String title = requestData.get("title");
-		    String isbn = requestData.get("isbn");
-		    String number = requestData.get("number");
-		    String price = requestData.get("price");
-		   */
+			    
 		    
-		    
-			//i check if the collection extracted from the web store alredy exist or not
+			//i check if the collection extracted from the web store (data into the form) already exist or not
 			//in order to know if i have to create it
 		    
 		    Owners owner =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
-		    CollectionBD bdCollection= CollectionBD.find.where().eq("owner",owner).eq("title", formCollection.title).findUnique();
-			
+		  
+		    CollectionBD bdCollection=owner.getCollectionBD().stream()
+								    		.filter(e -> e.getTitle().equals( formCollection.title))
+								            .findFirst()
+								            .orElse(null);
 		    formCollection.setOwner(owner);
 		    
 			if (bdCollection==null){
 				play.Logger.debug("BdController : scannedBD : New scannedBD collection____New:"+formCollection.title);
 				play.Logger.debug("BdController : scannedBD : New scannedBD owner:"+owner.login);
-				bdCollection = formCollection;
-				//bdCollection.setOwner(owner);
-				bdCollection.save();
-				resultToBeDisplayed ="Created_Collection";
-				
+				bdCollection = formCollection; 
+				bdCollection.save(); //the bdDATA object is also saved
+				resultToBeDisplayed ="Created";
+				 
 			}else{
+				/* here i need to update the collection
+				  and check if i need to update an existing comic or 
+				  add a new one
+				
+				*/
 				play.Logger.debug("BdController : scannedBD : Existing scannedBD collection____New:"+formCollection.title);
+				formCollection.setId(bdCollection.getId()); //here i update the ID collection of the form object 	
 				bdCollection.setEditor(formCollection.editor);
 				bdCollection.setTitle(formCollection.title);
-				bdCollection.update();
-				resultToBeDisplayed ="Updated_Collection";
 				
-				// if you change the collection that mean's you have to update all the book of the collection to be link to the new connection.
+				BdData bdData =bdCollection.getBddata().stream()
+						               .filter((item)->{
+						            		play.Logger.debug("BdController : scannedBD :formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
+						            		play.Logger.debug("BdController : scannedBD :item.getTitle() ="+item.getTitle());
+						            	   return (  formCollection.bddata.get(0).getTitle().equals(item.getTitle())
+						            			   ||formCollection.bddata.get(0).getIsbn().equals(item.getIsbn())
+						            			   ||formCollection.bddata.get(0).getNumber().equals(item.getNumber())
+						            			   );
+						               })
+						               .findFirst()
+						               .orElse(null);
+				
+				
+				List <BdData> BdDataList =bdCollection.getBddata();
+				
+				
+				if (bdData==null) {//New BD into an existing collection
+					play.Logger.debug("BdController : scannedBD : bdData is null");
+					
+					BdDataList.add(formCollection.getBddata().get(0));
+					resultToBeDisplayed ="Created";
+				}else { //Update BD into an existing collection
+				    play.Logger.debug("BdController : scannedBD : bdData is not null");
+					play.Logger.debug("BdController : scannedBD : formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
+					play.Logger.debug("BdController : scannedBD : formCollection.bddata.get(0).number ="+formCollection.bddata.get(0).number);
+					BdDataList = BdDataList.stream()
+							.map(item ->{if (item.getTitle().equals(formCollection.bddata.get(0).getTitle())
+									         ||item.getIsbn().equals(formCollection.bddata.get(0).getIsbn())
+									         ||item.getNumber().equals(formCollection.bddata.get(0).getNumber())) {
+								          return formCollection.bddata.get(0);
+							             }else {
+							            	 return item;
+							             }
+								          
+							})
+							
+							.collect(Collectors.toList());
+
+					resultToBeDisplayed ="Updated";		
+				}
+				
+				bdCollection.setBddata(BdDataList); 
+				bdCollection.update(); 
+				
+				
+				//!\ if you change the collection that mean's you have to update all the book of the collection to be link to the new connection./!\
 			}
-			play.Logger.debug("BdController : scannedBD : BD info__Before");
-			play.Logger.debug("BdController : scannedBD : BD info________:"+formCollection.bddata.get(0).isbn+"++++--");
-			play.Logger.debug("BdController : scannedBD : BD info__After");
-			
-			
-			
-			
-			/* A test has to be done here to know if i have to use isbn to look for the book
-			 * or the collection + number
-			 * because when a book is added from Webstore list there has no ISBN code
-			 */
-			
 			play.Logger.debug("BdController : scannedBD : look for ISBN"+formCollection.bddata.get(0).isbn);
-			
-			BdData bdInfo =BdData.find.where().eq("isbn", formCollection.bddata.get(0).isbn).findUnique();
-			
-			if (bdInfo==null){
-				 play.Logger.debug("BdController : scannedBD : look for Number ISBN failed so look for number into the collection "+formCollection.bddata.get(0).number);
-				 bdInfo =BdData.find.where().eq("collection", bdCollection).eq("number", formCollection.bddata.get(0).number).findUnique();
-			}
-			
-			if (bdInfo==null){//the book doesn't exist no ISBN code exists and no same collection & same number exits too !!
-				
-				
-				bdInfo =formCollection.bddata.get(0);
-				bdInfo.collection=bdCollection;
-				
-				bdInfo.save();
-				play.Logger.debug("BdController : scannedBD : New scannedBD BD____New");
-				resultToBeDisplayed ="Created";
-				//TODO
-			}else{ //the book exists and i will update it with the new value
-				play.Logger.debug("BdController : scannedBD : existing bdinfo"+bdInfo.title);
-				play.Logger.debug("BdController : scannedBD : form collectionBD.bddata.get(0)"+formCollection.bddata.get(0).title);
-				// idon't know why but .update is not working with 
-				//bdInfo =collectionBD.bddata.get(0);
-				//only with setters as below :
-				bdInfo.setCollection(bdCollection);
-				bdInfo.setTitle(formCollection.bddata.get(0).getTitle());
-				bdInfo.setCreationDate(formCollection.bddata.get(0).getCreationDate());
-				bdInfo.setDesigner(formCollection.bddata.get(0).getDesigner());
-				bdInfo.setImageBase64(formCollection.bddata.get(0).getImageBase64());
-				bdInfo.setIsbn(formCollection.bddata.get(0).getIsbn());
-				bdInfo.setNumber(formCollection.bddata.get(0).getNumber());
-				bdInfo.setPrice(formCollection.bddata.get(0).getPrice());
-				bdInfo.setScenario(formCollection.bddata.get(0).getScenario());
-				
-				
-				bdInfo.update();
-				play.Logger.debug("BdController : scannedBD : existing scannedBD BD____Updated");
-				resultToBeDisplayed ="Updated";
-			}
-		    
-		    play.Logger.debug("BdController : scannedBD : editor ="+bdCollection.editor +" & collection= " +bdCollection.title + " & BD title = "+bdInfo.title);
+		    play.Logger.debug("BdController : scannedBD : editor ="+bdCollection.editor +" & collection= " +bdCollection.title );
 		
 		return ok(views.html.scannedBD.render(resultToBeDisplayed));
 	}
@@ -368,15 +359,20 @@ public class BdController extends Controller {
 		public Result  listBD(String login){
 			play.Logger.debug("scan : MCA is HEre : ListBD");
 			
-		 /*
-		  * TODO : intercept login is session("connectedBD exist") to use it instead of the value of the input parameter of this action  
-		  */
+			
 			play.Logger.debug("BdController -listBD session(\"connectedBD\")"+session("connectedBD"));
 			
-			Owners owner =Owners.find.where().eq("login", login).findUnique();
-			
-			 List <CollectionBD> resultCollections = CollectionBD.find.where().eq("owner",owner).orderBy("title asc").findList();
-			  
+		 /*
+		  * Done : Override login if session("connectedBD exist") to use it instead of the value of the input parameter of this action  
+		  */
+			Owners owner;
+			if (session("connectedBD")!=null)
+				{ owner =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
+				  login=owner.getLogin();
+				}else {
+					owner =Owners.find.where().eq("login", login).findUnique();
+				}
+             List <CollectionBD> resultCollections =owner.getCollectionBD();
 			 
 			 // i catch all the collection content to be displayed in to the Web page
 			 List<CollectionDisplay> myBD = resultCollections.stream()
@@ -409,11 +405,14 @@ public class BdController extends Controller {
 	  @Security.Authenticated(Secured.class)
 	  public CompletionStage<Result>   infoBD(){
 		  
+		  //String loginConnected;
 		  play.Logger.debug("infoBD : MCA is HEre");
 		  Logger.debug("BdController : infoBD : session(\"testMCA\") = "+session("testMCA"));
 		  
-		  //String IsbnCode="No code";
+		 //here i get the connected owner
+		  Owners ownerLogged =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
 		 
+		  
 		  File file;
 		 
 		  MultipartFormData<File> body = request().body().asMultipartFormData();
@@ -441,7 +440,7 @@ public class BdController extends Controller {
 		  
 		
 		  
-		  //return scanFromFnac.extractDataFromSearch(IsbnCode);
+		  //return scanFromFnac.extractDataFromSearch(IsbnCode);  
 		  
 		  return ws.url(url).get().thenApply(
 	  	           response ->{
@@ -454,14 +453,16 @@ public class BdController extends Controller {
 		  	        	     * in order to save only validated IsbnCode
 		  	        	     */
 		  	        		
-		  	        		bdInfo = scanFromFnac.extractDataFromSearch( response.getBody(),isbnCode) ;
-		  	        		
+		  	        		bdInfo = scanFromFnac.extractDataFromSearch( response.getBody(),isbnCode,ownerLogged) ;
+		  	        		play.Logger.debug("infoBD 1.5 + bdExist bdInfo ="+bdInfo);
+		  	        		play.Logger.debug("infoBD 1.5 + bdExist bdInfo.id ="+bdInfo.getId());
 		  	        		
 		  	        	    //First:  i' check if the Bd extracted is already existing on my DB from isbn code
-		  	        		boolean bdExist =scanFromFnac.bdExist(isbnCode, bdInfo);
+		  	        		boolean bdExist =scanFromFnac.bdExist(isbnCode, bdInfo,ownerLogged);
 		  	        		
 			  	        	//if (bdExist==false) bdInfo.save();
 			  	        	play.Logger.debug("infoBD 2 + bdExist ="+bdExist);
+			  	        	play.Logger.debug("infoBD 3 + bdInfo.getOwner().getLogin() ="+bdInfo.getOwner().getLogin());
 			  	        	return ok(views.html.bdInfo.render(bdInfo,bdExist));
 		  	        	}else{
 		  	        		return ok("Barcode not recognized !! ");
