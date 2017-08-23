@@ -24,15 +24,19 @@ public class Secured extends Security.Authenticator {
 	    	Logger.debug("Secured : getUsername : session(\"connectedBD\")" + ctx.session().get("connectedBD"));
 	    	String idOwner =ctx.session().get("connectedBD");
 			String mig =ctx.session().get("miguel");
-		
-			Logger.debug("Secured-getUsername ctx.session().get(\"connectedDB\") "+idOwner);
-		
+
+			Logger.debug("Secured : getUsername : ctx.request().uri().toString() = "+ctx.request().uri());
+
+			String callBackURL =ctx.request().uri().replaceAll("/", "").split("\\?")[0];
+			
+			
 			
 			if (idOwner !=null){
 				Logger.debug("Secured-getUsername already connected : idOwner="+idOwner);
 					return ("ok");
 				}
-			Logger.info("Secured-getUsername : not connected yet");
+			Logger.info("Secured-getUsername : not connected yet : callBackURL = "+callBackURL);
+			ctx.flash().put("callBackURL", callBackURL);
 			return null;
 			
 	    }
@@ -41,16 +45,21 @@ public class Secured extends Security.Authenticator {
 	    public Result onUnauthorized(Context ctx) {
 	    	String idOwner =ctx.session().get("connected");
 			String mig =ctx.session().get("miguel");
+			String callBackURL="not used";
+			
 	    	Logger.debug("Secured-onUnauthorized  ctx.session().size(); "+ctx.session().size());
 			Logger.debug("Secured-onUnauthorized ctx.session().get(\"connectedDB\") "+idOwner);
-			Logger.debug("Secured-onUnauthorized ctx.session().get(\"miguel\") "+ mig);
+		
 			
 		    ctx.flash().put("Secured : Failed", "You have to log in first before to be able to use this feature !!");
 		    //ctx.session().clear();
 	    	/*TODO implement the redirect
 	    	 * 
 	    	 */
-		    return redirect(controllers.routes.BdController.login());
+		    callBackURL= ctx.flash().get("callBackURL");
+		    ctx.flash().put("callBackURL", callBackURL);
+		    Logger.debug("Secured-onUnauthorized ctx.session().get(\"miguel\") "+ mig);
+		    return redirect(controllers.routes.BdController.login(callBackURL));
 	        
 	    }
 }

@@ -120,14 +120,14 @@ public class BdController extends Controller {
 	
 	
 	
-	public Result login() {
+	public Result login(String callBackURL) {
 		
 	
 		response().setHeader(CACHE_CONTROL, "no-cache");
 	
 		Logger.debug("BdController : login : session(\"connectedBD\")" + session("connectedBD"));
 	
-		return ok(views.html.login.render("scan"));
+		return ok(views.html.login.render(callBackURL));
 		
 	}
 	
@@ -148,7 +148,9 @@ public class BdController extends Controller {
 			session().clear();
 			flash("Security", "Please fill correctly the form");
 			Logger.debug("BdController :security : loginForm.errors().size():"+loginForm.errors().size());
-		    return redirect(controllers.routes.BdController.login());
+			Logger.debug("BdController :security :loginForm.data().get(\"callBackURL\")1:"+loginForm.data().get("callBackURL"));
+		    //return redirect(controllers.routes.BdController.login(loginForm.data().get("callBackURL")));
+			return redirect(controllers.routes.BdController.login(loginForm.data().get("callBackURL")));
 		} 
 		Logger.debug("BdController :security: after loginForm.hasError  ");
 		LoginForm userLogin = loginForm.bindFromRequest().get();
@@ -186,29 +188,18 @@ public class BdController extends Controller {
 				//return redirect(controllers.routes.BdController.listBD(userLogin.getLogin()));
 			}
 			
-  /*
-			switch (userLogin.getCallBackURL()) {
-            case "scan":
-            	
-            	return ok(views.html.scan.render());
-        
-           
-            default:
-            	return redirect(controllers.routes.BdController.listBD(userLogin.getLogin()));
-        }*/
-			
-			
-			//return ok(views.html.scan.render());
-			//redirect("/scan");
+
 		}
 		Logger.debug("BdController : security : :the user is not authenticated ");
 		session().clear();
 		flash("Security", "You are not authenticated !");
 		
 		
-	
-		return redirect(controllers.routes.BdController.login());
+		Logger.debug("BdController :security : loginForm.field(callBackURL)2:"+ loginForm.field("callBackURL"));
+		Logger.debug("BdController :security : userLogin.getCallBackURL()2:"+ userLogin.getCallBackURL());
 		
+		return redirect(controllers.routes.BdController.login(loginForm.data().get("callBackURL")));
+		//return badRequest(views.html.login.render(loginForm.data().get("callBackURL")));
 
 	}
 	
