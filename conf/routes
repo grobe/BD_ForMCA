@@ -20,7 +20,8 @@ GET /scanTest								controllers.BdController.scanTest()
 
 
 # the two following routes are to authentication purpose
-GET /login								controllers.BdController.login()
+GET /login								controllers.BdController.login(callBackURL : String)
+
 POST /security							controllers.BdController.security()
 
 

@@ -18,7 +18,7 @@ function addEventForsubmitForm (formSubmited,urlToFetch ){
 
 //Call a form by name to submit it
 function handleFormSubmit(evt, formByID, url) {
-	                        console.log("myModule.js : handleBdFormSubmit :BDscan ");
+	                        console.log("myModule.js : handleBdFormSubmit : "+formByID);
 	                        console.log("evt = "+evt.type);
 	                        console.log("formByName = "+formByID);
 	                		submitForm (document.getElementById(formByID), url)
@@ -75,7 +75,7 @@ function submitForm (formE1,urlToReach){
 		                
 	                }).then(function (value){
 	                	var bdReturnedValues;
-	                	//console.log("MCA=" + value);
+	                	console.log("MCA=" + value);
 	                	if (formE1.name!="login"){
 	                		bdReturnedValues = document.getElementById('bdReturnedValues');
 	                		 bdReturnedValues.className += " bg-success lead";
@@ -96,15 +96,15 @@ function submitForm (formE1,urlToReach){
 	                	    var script = scripts[i];
 	                	    eval(script.innerHTML);
 	                	  }
-	                	 //console.log("myModule.js :after script for"); 
+	                	 console.log("myModule.js :after script for"); 
 	                	
-	                	 //console.log("myModule.js : response.status=" + value.status);
+	                	 console.log("myModule.js : response.status=" + value.status);
 	                	
-	                	 //console.log("myModule.js : MCAreturnFetchValue.status=" + returnFetchValue);
+	                	 console.log("myModule.js : MCAreturnFetchValue.status=" + returnFetchValue);
 	                });
 }
 
-//used to convert the octet size of a picture to its size on Mo, Go or To in needed.... :) 
+//used to convert the octet size of a picture to its size on Mo, Go or To if needed.... :) 
 function bytesToSize(bytes) {
     var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
     if (bytes == 0) return 'n/a';

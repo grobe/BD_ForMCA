@@ -126,7 +126,8 @@ public class BdController extends Controller {
 		response().setHeader(CACHE_CONTROL, "no-cache");
 	
 		Logger.debug("BdController : login : session(\"connectedBD\")" + session("connectedBD"));
-	
+		Logger.debug("BdController : login : callBackURL" + callBackURL);
+		
 		return ok(views.html.login.render(callBackURL));
 		
 	}
@@ -149,7 +150,6 @@ public class BdController extends Controller {
 			flash("Security", "Please fill correctly the form");
 			Logger.debug("BdController :security : loginForm.errors().size():"+loginForm.errors().size());
 			Logger.debug("BdController :security :loginForm.data().get(\"callBackURL\")1:"+loginForm.data().get("callBackURL"));
-		    //return redirect(controllers.routes.BdController.login(loginForm.data().get("callBackURL")));
 			return redirect(controllers.routes.BdController.login(loginForm.data().get("callBackURL")));
 		} 
 		Logger.debug("BdController :security: after loginForm.hasError  ");
@@ -161,8 +161,20 @@ public class BdController extends Controller {
 		
 
 		if (owner != null)  {
-			// the user is authenticated
+			/*i'm looking for urls like /scan or /addBD/523 
+			 *first value between / & / is Object to be instanciate
+			 *the others values between the others / & / are parameter
+			 *meaning 
+			*/
+			String callBAckURL =userLogin.getCallBackURL().replaceFirst("/", "").split("\\?")[0];
+			/*
+			 * First value of the tab objectParameters = Object to instantiate
+			 * others values are parameters 
+			 */
+			String []objectParameters =callBAckURL.split("/");
 			
+			// the user is authenticated
+			Logger.debug("BdController : security :the user is authenticated :callBAckURL "+objectParameters[0]);
 			Logger.debug("BdController : security :the user is authenticated :owner.getId() "+owner.getId());
 			session("connectedBD", String.valueOf(owner.getId()));
             
@@ -175,16 +187,50 @@ public class BdController extends Controller {
 			
 			try {
 				Logger.debug("BdController : security :1");
-				Class<?>  myViewTobeDisplayed = Class.forName("views.html."+userLogin.getCallBackURL());
-				Logger.debug("BdController : security :2"); 
-				Method method = myViewTobeDisplayed.getMethod("render");
-				Logger.debug("BdController : security :3");
-				Content result = (Content) method.invoke(null);
+				Class<?>  myViewTobeDisplayed = Class.forName("controllers.BdController"); //."+objectParameters[0]+"()");
+				Object obj =myViewTobeDisplayed.newInstance();
+				
+				Logger.debug("BdController : security :2 : objectParameters[0]=" +objectParameters[0]); 
+			
+				int numParams = objectParameters.length;//methode.getParameterCount();
+				Logger.debug("BdController : security :3.6: objectParameters.length ="+numParams);
+				Result result=null;
+				
+				if (numParams ==1) {
+					Logger.debug("BdController : security :3.7.0: if ==0"); 
+					//result = (Content) method.invoke(null);
+					Method methode = obj.getClass().getMethod(objectParameters[0]);
+					result= (Result)methode.invoke(myViewTobeDisplayed.newInstance());
+					//call = controllers.routes.BdController.scan();
+					Logger.debug("BdController : security :3.7.1: after if invoke");
+				}else {
+					Logger.debug("BdController : security :3.7.2: else");
+						String[] paramString = new String[numParams];
+						
+						for (int i = 1; i< paramString.length;i++) {
+							Logger.debug("BdController : security :3.7.3: in the for : objectParameters[i]="+ objectParameters[i]);
+							paramString[i] = objectParameters[i];
+						}
+						Logger.debug("BdController : security :3.7.4: before else invoke");
+						//result = (Content) method.invoke(paramString);
+						Method methode = obj.getClass().getMethod(objectParameters[0],String.class);
+						result= (Result)methode.invoke(myViewTobeDisplayed.newInstance(),new String(objectParameters[1]));
+						Logger.debug("BdController : security :3.7.5: after else invoke");
+					}
+					
+				
+				
+				
 				Logger.debug("BdController : security :4");
-				return ok((Content) result);
-			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				return result;
+				//return redirect((Call)call);
+			} catch (NoSuchMethodException 
+					| SecurityException 
+					| IllegalAccessException 
+					| IllegalArgumentException 
+					| InvocationTargetException | ClassNotFoundException | InstantiationException e) {
 				// TODO Auto-generated catch block
-				Logger.error("BdController : security : Class.forName "+e.getMessage() +"/n cause = "+e.getCause());
+				Logger.error("BdController : security : Class.forName "+ e.getMessage() +"\n cause = "+e.getCause());
 				//return redirect(controllers.routes.BdController.listBD(userLogin.getLogin()));
 			}
 			
@@ -205,24 +251,65 @@ public class BdController extends Controller {
 	
 	
 	//Action do to add a BD from the list from the WebStore
-	//
+	@Security.Authenticated(Secured.class)
 	public Result  addBD(String id){
 		
 		String nextSection="No_NExt";
+        boolean fromModalLoginCalled = false;  
 		
+		/*
+		 * if id contains an id with "_NotConnected" : e.g :"453_NotConnected"
+		 * that means i come from the login modal 
+		 * and i need to close it through dedicated view & javascript
+		 * if not that means i can make my redirect normally : e.g :"453"
+		 */
+        play.Logger.debug("BdController : addBD : id before indexOf(_): " + id);
+        if (id.indexOf("_") !=-1) {
+        	play.Logger.debug("BdController : addBD : id.indexOf(\"_\") ==-1 : true");
+        	id=id.split("_")[0];
+			fromModalLoginCalled=true;
+		}
+		play.Logger.debug("BdController : addBD : id after indexOf(_): " + id);
+		play.Logger.debug("BdController : addBD :  fromModalLoginCalled : " + fromModalLoginCalled);
+		play.Logger.debug("BdController : addBD :  Long.valueOf(id) : " + String.valueOf(Long.valueOf(id)));
+		
+		
+		//i check if the collection extracted from the web store (data into the form) already exist or not
+		//in order to know if i have to create it
+	    
+	   
 		ScraperResults bdscraper =ScraperResults.find.where().eq("id", String.valueOf(id)).findUnique();
-		BdData bdInfo = new BdData();
 		
-		bdInfo.setCollection(bdscraper.getCollection());
-		bdInfo.setCreationDate(new Date());
-		bdInfo.setDesigner(bdscraper.getDesigner());
-		bdInfo.setImageBase64(bdscraper.getImageBase64());
-		bdInfo.setIsbn("No isbn"+new Date());
-		bdInfo.setNumber(bdscraper.getNumber());
-		bdInfo.setPrice(bdscraper.getPrice());
-		bdInfo.setScenario(bdscraper.getScenario());
-		bdInfo.setTitle(bdscraper.getTitle());
-		bdInfo.save();
+		/*
+		 * Now i check if the ID from ScraperResults come from the connected user
+		 */
+		 Owners owner =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
+		  
+		 CollectionBD bdCollection=owner.getCollectionBD().stream()
+		    		.filter(e -> e.id==bdscraper.getCollection().id)
+		            .findFirst()
+		            .orElse(null);  
+		 
+		
+		
+		if (bdCollection !=null) {
+			play.Logger.debug("BdController : addBD :  The owner has the collection updated title : " + bdCollection.title);
+			BdData bdInfo = new BdData();
+			bdInfo.setCollection(bdscraper.getCollection());
+			bdInfo.setCreationDate(new Date());
+			bdInfo.setDesigner(bdscraper.getDesigner());
+			bdInfo.setImageBase64(bdscraper.getImageBase64());
+			bdInfo.setIsbn("No isbn"+new Date());
+			bdInfo.setNumber(bdscraper.getNumber());
+			bdInfo.setPrice(bdscraper.getPrice());
+			bdInfo.setScenario(bdscraper.getScenario());
+			bdInfo.setTitle(bdscraper.getTitle());
+			bdInfo.save();
+			
+		}else {
+			play.Logger.debug("BdController : addBD :  The owner has not the the collection updated title : " + bdCollection.title);
+		}
+	
 
 		//The purpose is to Know the id of the next volume of the BD in order to display it to the user into the web page 
 		//
@@ -246,7 +333,12 @@ public class BdController extends Controller {
 			nextSection="collection-"+bdscraper.getCollection().getId();
 		}
 			
-		return redirect("/" + "#"+nextSection);
+		if (fromModalLoginCalled==false ) {
+			return redirect("/" + "#"+nextSection);
+		}else {
+			return ok(views.html.addBD.render());
+		}
+		
 	}
 	
 	
