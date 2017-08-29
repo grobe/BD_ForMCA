@@ -87,12 +87,12 @@ public interface ScanBD {
 				            	                    return (collection.title.equals(bdInfo.title));})
         		
         		               .filter((collection)->{
-				            	BdData bd =collection.bddata.stream()
+				            	         BdData bd =collection.bddata.stream()
 				            			 .filter(e -> { 
 				            				            play.Logger.debug("ScanBD : bdExist : e.number="+e.number);
 				            				            return( e.number.equals(bdInfo.getBddata().get(0).number)
 				            				            		||e.isbn.equals(bdInfo.getBddata().get(0).isbn)
-				            				            		||e.title.equals(bdInfo.getBddata().get(0).title));
+				            				            		/*||e.title.equals(bdInfo.getBddata().get(0).title)*/);
 				            				           })
 				            	         .findFirst()
 				            	         .orElse(null);

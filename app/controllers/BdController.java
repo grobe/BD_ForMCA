@@ -387,8 +387,8 @@ public class BdController extends Controller {
 						               .filter((item)->{
 						            		play.Logger.debug("BdController : scannedBD :formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
 						            		play.Logger.debug("BdController : scannedBD :item.getTitle() ="+item.getTitle());
-						            	   return (  formCollection.bddata.get(0).getTitle().equals(item.getTitle())
-						            			   ||formCollection.bddata.get(0).getIsbn().equals(item.getIsbn())
+						            	   return (  /*formCollection.bddata.get(0).getTitle().equals(item.getTitle())
+						            			   ||*/formCollection.bddata.get(0).getIsbn().equals(item.getIsbn())
 						            			   ||formCollection.bddata.get(0).getNumber().equals(item.getNumber())
 						            			   );
 						               })
@@ -409,8 +409,8 @@ public class BdController extends Controller {
 					play.Logger.debug("BdController : scannedBD : formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
 					play.Logger.debug("BdController : scannedBD : formCollection.bddata.get(0).number ="+formCollection.bddata.get(0).number);
 					BdDataList = BdDataList.stream()
-							.map(item ->{if (item.getTitle().equals(formCollection.bddata.get(0).getTitle())
-									         ||item.getIsbn().equals(formCollection.bddata.get(0).getIsbn())
+							.map(item ->{if (/*item.getTitle().equals(formCollection.bddata.get(0).getTitle())
+									         ||*/item.getIsbn().equals(formCollection.bddata.get(0).getIsbn())
 									         ||item.getNumber().equals(formCollection.bddata.get(0).getNumber())) {
 								          return formCollection.bddata.get(0);
 							             }else {
@@ -455,8 +455,13 @@ public class BdController extends Controller {
 				}else {
 					owner =Owners.find.where().eq("login", login).findUnique();
 				}
-             List <CollectionBD> resultCollections =owner.getCollectionBD();
+             List <CollectionBD> resultCollections =(List<CollectionBD>) owner.getCollectionBD().stream()
+            		                                                       .sorted((o1, o2)->o1.getTitle().compareTo(o2.getTitle())
+            		                                                               )
+            		                                                       .collect(Collectors.toList());
 			 
+             
+             
 			 // i catch all the collection content to be displayed in to the Web page
 			 List<CollectionDisplay> myBD = resultCollections.stream()
 					                   .map(rc->{
