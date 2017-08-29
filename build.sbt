@@ -1,6 +1,6 @@
 name := """BD.grobe.fr"""
 
-version := "0.7"
+version := "1.0"
 
 lazy val root = (project in file(".")).enablePlugins(BuildInfoPlugin, PlayJava, PlayEbean,DebianPlugin, WindowsPlugin).settings(
   buildInfoKeys := Seq[BuildInfoKey](name, version),
