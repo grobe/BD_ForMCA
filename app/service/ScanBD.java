@@ -78,39 +78,67 @@ public interface ScanBD {
 		play.Logger.debug("ScanBD : bdExist : bdInfo.title ="+bdInfo.title); //title and not id because id can be null for a new collection.
 		play.Logger.debug("ScanBD : bdExist : bdInfo.getBddata().get(0).number ="+bdInfo.getBddata().get(0).number);
 		
+
 		
-		
-        boolean bdDataFound = ownerLogged.collectionBD.stream()
+        boolean bdDataFound ;
+        play.Logger.debug("ScanBD : bdExist : owner ="+ownerLogged.getLogin());
+        
+        
+        play.Logger.debug("ScanBD : bdExist : collectionScanned size of collections ="+ownerLogged.getCollectionBD().size());
+        
+        
+        CollectionBD collectionScanned = ownerLogged.getCollectionBD().stream()
 		 
-				               .filter(collection->{play.Logger.debug("ScanBD : bdExist : collection.title="+collection.title);
+				               .filter(collection1->{play.Logger.debug("ScanBD : bdExist : collection1.title="+collection1.title);
 				               						play.Logger.debug("ScanBD : bdExist : bdInfo.title="+bdInfo.title);
-				            	                    return (collection.title.equals(bdInfo.title));})
-        		
-        		               .filter((collection)->{
-				            	         BdData bd =collection.bddata.stream()
-				            			 .filter(e -> { 
-				            				            play.Logger.debug("ScanBD : bdExist : e.number="+e.number);
-				            				            return( e.number.equals(bdInfo.getBddata().get(0).number)
-				            				            		||e.isbn.equals(bdInfo.getBddata().get(0).isbn)
-				            				            		/*||e.title.equals(bdInfo.getBddata().get(0).title)*/);
-				            				           })
-				            	         .findFirst()
-				            	         .orElse(null);
-			            	
-				            	return    ((bd!=null));
-				            })
-				            .map((collection)->{
-				            	return (collection.getBddata().size()>0);
-				            })
-				            .findFirst()
-				            .orElse(false);
+				            	                    return (collection1.title.equals(bdInfo.title));})
+				                .findFirst()
+				                .orElse(null);
 		 
-		  if (bdDataFound){
-			  play.Logger.debug("ScanBD : bdExist : bdDataFound ="+bdDataFound);
-			  }
-		  else {
-			  play.Logger.debug("ScanBD : bdExist : bdDataWithISBN is null ");
-		  }
+        //
+        
+        if   (collectionScanned !=null){
+			play.Logger.debug("ScanBD : bdExist : collectionScanned is not null");
+			play.Logger.debug("ScanBD : bdExist : collectionScanned size of BdDAta ="+collectionScanned.getBddata().size());
+			
+			/*I don't understand why but i cannot used collectionScanned.getBddata() to retrieve all the comics from the selected
+			 * collection. I have to make a new SQL request thanks to Ebean to get all the data from BDdata.
+			 * To be investigate later. 
+			 */
+			 
+			CollectionBD collection= CollectionBD.find.where().eq("id",collectionScanned.getId() ).findUnique();
+			 
+			 BdData bdFromCollectionScanned =collection.bddata.stream()
+					 .filter(e -> { 
+					  play.Logger.debug("ScanBD : bdExist : collectionScanned="+collectionScanned.title);
+					  play.Logger.debug("ScanBD : bdExist : e.title="+e.title); 
+					  play.Logger.debug("ScanBD : bdExist : e.isbn="+e.isbn); 
+					  play.Logger.debug("ScanBD : bdExist : e.number="+e.number);
+			            return( e.number.equals(bdInfo.getBddata().get(0).number)
+			            		||e.isbn.equals(bdInfo.getBddata().get(0).isbn));
+			            		
+			           })
+				      .findFirst()
+				      .orElse(null);
+		      if (bdFromCollectionScanned != null) {
+		    	  bdDataFound=true;
+		    	  play.Logger.debug("ScanBD : bdExist : bd is not null");
+		      }else {
+		    	  bdDataFound=false;
+		    	  play.Logger.debug("ScanBD : bdExist : bd is null");
+		      }
+		    	  
+		
+		}else {
+			bdDataFound=false;
+			play.Logger.debug("ScanBD : bdExist : collectionScanned is null");
+		}
+		  
+        
+        
+		play.Logger.debug("ScanBD : bdExist : bdDataFound ="+bdDataFound);
+		
+		 
 		
 		
 		return ((bdDataFound));

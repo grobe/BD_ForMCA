@@ -21,8 +21,8 @@
 /*hack for bootstrap autocomplete to add bottom borders on the list 
 */
 .ui-widget-content {
-	    border-bottom-right-radius: 14px !important;;
-	    border-bottom-left-radius: 14px !important;;
+	    border-bottom-right-radius: 14px !important;
+	    border-bottom-left-radius: 14px !important;
 }
 
 
@@ -81,7 +81,7 @@
 	  font-size: 16px; 
 	  text-align: center;
 	  border-radius: 14px !important;
-	  border: solid 1px #E0BC93 !important;
+	  border: solid 1px #8A4A00 !important;
 	  margin-top:5px;
       margin-bottom:5px;
 	  margin-left:5px;
@@ -89,6 +89,15 @@
 	  
 }
 
+.searchInput:focus{
+	 border: solid 2px #8A4A00 !important;
+	 outline: none;
+	   border-top-right-radius: 14px !important;
+	  border-top-left-radius: 14px !important;
+	  border-bottom-right-radius: 0px !important;
+	  border-bottom-left-radius: 0px !important;
+	
+}
 h1 {
    text-align:center;
    font-family: 'eraserregular'!important;

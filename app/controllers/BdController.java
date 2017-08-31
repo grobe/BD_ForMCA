@@ -383,46 +383,57 @@ public class BdController extends Controller {
 				bdCollection.setEditor(formCollection.editor);
 				bdCollection.setTitle(formCollection.title);
 				
-				BdData bdData =bdCollection.getBddata().stream()
-						               .filter((item)->{
-						            		play.Logger.debug("BdController : scannedBD :formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
-						            		play.Logger.debug("BdController : scannedBD :item.getTitle() ="+item.getTitle());
-						            	   return (  /*formCollection.bddata.get(0).getTitle().equals(item.getTitle())
-						            			   ||*/formCollection.bddata.get(0).getIsbn().equals(item.getIsbn())
-						            			   ||formCollection.bddata.get(0).getNumber().equals(item.getNumber())
-						            			   );
-						               })
-						               .findFirst()
-						               .orElse(null);
+//				BdData bdData =bdCollection.getBddata().stream()
+//						               .filter((item)->{
+//						            		play.Logger.debug("BdController : scannedBD :formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
+//						            		play.Logger.debug("BdController : scannedBD :item.getTitle() ="+item.getTitle());
+//						            	   return (  /*formCollection.bddata.get(0).getTitle().equals(item.getTitle())
+//						            			   ||*/formCollection.bddata.get(0).getIsbn().equals(item.getIsbn())
+//						            			   ||formCollection.bddata.get(0).getNumber().equals(item.getNumber())
+//						            			   );
+//						               })
+//						               .findFirst()
+//						               .orElse(null);
+//						               
 				
 				
 				List <BdData> BdDataList =bdCollection.getBddata();
 				
+				boolean BdExisting = BdDataList.stream()
+						                       .filter((e)->{
+						                    	   return (formCollection.bddata.get(0).getNumber().equals(e.getNumber())
+						                    			   ||formCollection.bddata.get(0).getIsbn().equals(e.getIsbn()));
+						                       })
+						                       .map(returnedValue -> true)
+						                       .findFirst()
+								               .orElse(false);
 				
-				if (bdData==null) {//New BD into an existing collection
+				if (BdExisting==false) {//New BD into an existing collection
 					play.Logger.debug("BdController : scannedBD : bdData is null");
 					
 					BdDataList.add(formCollection.getBddata().get(0));
 					resultToBeDisplayed ="Created";
 				}else { //Update BD into an existing collection
-				    play.Logger.debug("BdController : scannedBD : bdData is not null");
-					play.Logger.debug("BdController : scannedBD : formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
-					play.Logger.debug("BdController : scannedBD : formCollection.bddata.get(0).number ="+formCollection.bddata.get(0).number);
-					BdDataList = BdDataList.stream()
-							.map(item ->{if (/*item.getTitle().equals(formCollection.bddata.get(0).getTitle())
-									         ||*/item.getIsbn().equals(formCollection.bddata.get(0).getIsbn())
-									         ||item.getNumber().equals(formCollection.bddata.get(0).getNumber())) {
-								          return formCollection.bddata.get(0);
-							             }else {
-							            	 return item;
-							             }
-								          
-							})
-							
-							.collect(Collectors.toList());
+				   
 
 					resultToBeDisplayed ="Updated";		
 				}
+				
+				play.Logger.debug("BdController : scannedBD : bdData is not null");
+				play.Logger.debug("BdController : scannedBD : formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
+				play.Logger.debug("BdController : scannedBD : formCollection.bddata.get(0).number ="+formCollection.bddata.get(0).number);
+				BdDataList = BdDataList.stream()
+						.map(item ->{if (/*item.getTitle().equals(formCollection.bddata.get(0).getTitle())
+								         ||*/item.getIsbn().equals(formCollection.bddata.get(0).getIsbn())
+								         ||item.getNumber().equals(formCollection.bddata.get(0).getNumber())) {
+							          return formCollection.bddata.get(0);
+						             }else {
+						            	 return item;
+						             }
+							          
+						})
+						
+						.collect(Collectors.toList());
 				
 				bdCollection.setBddata(BdDataList); 
 				bdCollection.update(); 
@@ -494,8 +505,8 @@ public class BdController extends Controller {
 	  public CompletionStage<Result>   infoBD(){
 		  
 		  //String loginConnected;
-		  play.Logger.debug("infoBD : MCA is HEre");
-		  Logger.debug("BdController : infoBD : session(\"testMCA\") = "+session("testMCA"));
+		  play.Logger.debug("BdController : infoBD ");
+		
 		  
 		 //here i get the connected owner
 		  Owners ownerLogged =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
@@ -515,15 +526,15 @@ public class BdController extends Controller {
 		        return    (CompletionStage<Result>) badRequest("bad request");
 		    }
 		
-		    play.Logger.debug("before scanFromFnac.Scan");
+		    play.Logger.debug("BdController : infoBD : before scanFromFnac.Scan");
 		    final String isbnCode =scanFromFnac.scan(file);
-		    play.Logger.debug(" after scanFromFnac.Scan");
+		    play.Logger.debug(" BdController : infoBD : after scanFromFnac.Scan");
 		   
 		    
 		    String url =configuration.getString("webStore.fnac.searchUrl") +isbnCode;
 		  
-		    play.Logger.debug("BdController :  URL =  " +url);
-		    play.Logger.debug("BdController :  listBD :IsbnCode="+isbnCode+ " - size of the file :"+file.length());
+		    play.Logger.debug("BdController : infoBD :  URL =  " +url);
+		    play.Logger.debug("BdController : infoBD :  listBD :IsbnCode="+isbnCode+ " - size of the file :"+file.length());
 		  
 		  
 		
@@ -534,7 +545,7 @@ public class BdController extends Controller {
 	  	           response ->{
 	  	        	 CollectionBD bdInfo;
 		                  // play.Logger.debug("FnacCrawler : crawler2 :thenApply :"+url+" "+ new Date());
-		  	        	 play.Logger.debug("infoBD 1 + isbnCode="+isbnCode);
+		  	        	 play.Logger.debug("BdController : infoBDinfoBD : isbnCode="+isbnCode);
 		  	        	//play.Logger.debug("response.getBody() : "+response.getBody());
 		  	        	if (!isbnCode.isEmpty()){
 		  	        	    /*Here we check that the IsbnCode is not empty
@@ -542,15 +553,15 @@ public class BdController extends Controller {
 		  	        	     */
 		  	        		
 		  	        		bdInfo = scanFromFnac.extractDataFromSearch( response.getBody(),isbnCode,ownerLogged) ;
-		  	        		play.Logger.debug("infoBD 1.5 + bdExist bdInfo ="+bdInfo);
+		  	        		play.Logger.debug("BdController : infoBD 1.5 : bdExist bdInfo ="+bdInfo);
 		  	        		play.Logger.debug("infoBD 1.5 + bdExist bdInfo.id ="+bdInfo.getId());
 		  	        		
 		  	        	    //First:  i' check if the Bd extracted is already existing on my DB from isbn code
 		  	        		boolean bdExist =scanFromFnac.bdExist(isbnCode, bdInfo,ownerLogged);
 		  	        		
 			  	        	//if (bdExist==false) bdInfo.save();
-			  	        	play.Logger.debug("infoBD 2 + bdExist ="+bdExist);
-			  	        	play.Logger.debug("infoBD 3 + bdInfo.getOwner().getLogin() ="+bdInfo.getOwner().getLogin());
+			  	        	play.Logger.debug("BdController : infoBD 2 : bdExist ="+bdExist);
+			  	        	play.Logger.debug("BdController : infoBD 3 : bdInfo.getOwner().getLogin() ="+bdInfo.getOwner().getLogin());
 			  	        	return ok(views.html.bdInfo.render(bdInfo,bdExist));
 		  	        	}else{
 		  	        		return ok("Barcode not recognized !! ");
