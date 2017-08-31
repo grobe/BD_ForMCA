@@ -18,6 +18,12 @@
 }
 
 
+/*hack for bootstrap autocomplete to add bottom borders on the list 
+*/
+.ui-widget-content {
+	    border-bottom-right-radius: 14px !important;;
+	    border-bottom-left-radius: 14px !important;;
+}
 
 
 
@@ -132,6 +138,9 @@ td {
 	border-top: solid 1px #FFFFFF;
 	border-bottom: solid 1px #FFFFFF;
 }
+
+
+
 
 .bg-fromWebstore {
     background-color: #c7b092;
