@@ -47,5 +47,14 @@ public class CollectionDisplay {
 		this.id = id;
 	}
 	
+	public boolean getExistingNewBD() {
+		boolean result =this.getBdDisplay().stream()
+				  .filter(e->e.getIsbn().equals("N/A"))
+				  .map(e->true)
+				  .findFirst()
+				  .orElse(false);
+		return result;
+		
+	}
 	
 }

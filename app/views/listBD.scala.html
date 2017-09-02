@@ -82,7 +82,7 @@
 				   </div>
 			  
 			@for(myBd <- listOfMyBD) {
-			<div class="searchable row " data-index=" @myBd.title.toLowerCase()">
+			<div class="searchable row " data-index=" @myBd.title.toLowerCase() @if(myBd.getExistingNewBD==true){+} ">
 			
 			<a id="collection-@myBd.id"></a>
 			  <div class="col-xs-18 col-md-12 TableauTextCollection trBackGround "> @myBd.title (@myBd.editor)  
@@ -98,7 +98,7 @@
 			       @if(item.isbn =="N/A"){
 			         
 			         <a id="@item.id"></a>
-			        <div class=" searchable row bg-fromWebstore" data-index=" @myBd.title.toLowerCase() "> 
+			        <div class=" searchable row bg-fromWebstore" data-index=" @myBd.title.toLowerCase() +"> 
 					@{classImage = "maskBDWebstore"}
 					@{classRow = "TableauTextBodyWebstore"}
 					

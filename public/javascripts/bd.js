@@ -20,6 +20,8 @@ function Mysearch(userFilter) {
  	          select: function( event, ui ) { 
                  console.log("listDB : select autocomplete  :"+ui.item.value);
                  document.getElementById('search').value = ui.item.value;
+                 //i'm generating an event 'input' in order to be able to filter the page content thx to the listener function i have 
+                 //created above.
                  var event = new Event('input', {
 								    'bubbles': true,
 								    'cancelable': true
