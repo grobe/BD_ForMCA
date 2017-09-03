@@ -111,7 +111,10 @@ public class BdController extends Controller {
 					         play.Logger.debug("p.getTitle().indexOf(term) >-1 &&( (p.getBddata().size()>0||p.getBdDisplay().size()>0):" + (p.getTitle().indexOf(term) >-1 &&(  p.getBddata().size()>0||p.getBdDisplay().size()>0)));
 				             return (p.getTitle().toLowerCase().indexOf(term.toLowerCase()) >-1 &&(  p.getBddata().size()>0||p.getBdDisplay().size()>0));})
 				.map(o->o.getTitle())
+				.sorted()
 				.collect(Collectors.toList());
+		//listOfCollection=listOfCollection.stream().sorted();
+		
 		
 		return ok(Json.toJson(listOfCollection),"utf-8");
 		
