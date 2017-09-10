@@ -156,9 +156,19 @@ public class BdController extends Controller {
 			return redirect(controllers.routes.BdController.login(loginForm.data().get("callBackURL")));
 		} 
 		Logger.debug("BdController :security: after loginForm.hasError  ");
+		
+		Logger.debug("BdController :security: loginForm.data().get(login)="+loginForm.data().get("password"));
+		
+		Logger.debug("BdController :security: loginForm.data().get(password)="+loginForm.data().get("password"));
+		
 		LoginForm userLogin = loginForm.bindFromRequest().get();
 		//session("testMCA","testMCA is here !!!!!!!!!!!!!!");
 		//check if the owner exist --> match between login and password
+		
+		Logger.debug("BdController :security: userLogin.getLogin()="+userLogin.getLogin());
+		
+		Logger.debug("BdController :security: userLogin.getPassword()="+userLogin.getPassword());
+		
 		Owners owner = Owners.find.where().eq("login",userLogin.getLogin()).eq("password", userLogin.getPassword()).findUnique();
 
 		
@@ -310,7 +320,7 @@ public class BdController extends Controller {
 			bdInfo.save();
 			
 		}else {
-			play.Logger.debug("BdController : addBD :  The owner has not the the collection updated title : " + bdCollection.title);
+			play.Logger.debug("BdController : addBD :  The owner has not the the collection updated title : ");
 		}
 	
 
@@ -470,7 +480,7 @@ public class BdController extends Controller {
 					owner =Owners.find.where().eq("login", login).findUnique();
 				}
              List <CollectionBD> resultCollections =(List<CollectionBD>) owner.getCollectionBD().stream()
-            		                                                       .sorted((o1, o2)->o1.getTitle().compareTo(o2.getTitle())
+            		                                                       .sorted((o1, o2)->o1.getTitle().compareToIgnoreCase(o2.getTitle())
             		                                                               )
             		                                                       .collect(Collectors.toList());
 			 
@@ -565,6 +575,8 @@ public class BdController extends Controller {
 			  	        	//if (bdExist==false) bdInfo.save();
 			  	        	play.Logger.debug("BdController : infoBD 2 : bdExist ="+bdExist);
 			  	        	play.Logger.debug("BdController : infoBD 3 : bdInfo.getOwner().getLogin() ="+bdInfo.getOwner().getLogin());
+			  	        	
+			  	        	
 			  	        	return ok(views.html.bdInfo.render(bdInfo,bdExist));
 		  	        	}else{
 		  	        		return ok("Barcode not recognized !! ");

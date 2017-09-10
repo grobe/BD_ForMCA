@@ -2,8 +2,19 @@
 <div class="modal-body">
 			      				 
 				<div class="form-group">
-					<input type="file" name="picture" id="picture"  class="form-control" accept="image/*;capture=camera"> 
+					<input type="text" name="isbn" id ="isbn" placeholder ="Fill manually your ISBN Code" size="50%">
+					<button id="sendManually" name="sendManually" type="button" class="btn btn-primary">Send Code</button>
 				</div>
+				<div class="form-group">
+				<strong>or</strong> 
+				</div>
+				
+				<div class="form-group">
+					<input type="file" name="picture" id="picture" placeholder="scan your ISBN code" class="form-control" accept="image/*;capture=camera"> 
+				</div>
+			
+				
+				
 				   
 				<div class="form-group">
 					<img src="@routes.Assets.versioned("images/no-image-available.png")" crossOrigin="anonymous" width="100" height="100" id="photo" alt="photo" class="img-thumbnail">
@@ -105,6 +116,17 @@ function sendFile (file){
 	                	return "c'est bon tu as compris";
 	                	}).then(function(answer){
 	                		console.log("scan.scala.html : Answer from the Web service called : "+answer);
+	                		
+	                		 //i'm looking for scripts into the HTML fragment injected
+	                	     //if i found it/them, i execute then
+	                	    var scripts = document.getElementById('BDscan').getElementsByTagName("script");
+	                	    console.log("scan.html :before script for"); 
+	                	     for (var i = 0; i < scripts.length; ++i) {
+	                		      console.log("i="+i); 
+	                	         var script = scripts[i];
+	                	        eval(script.innerHTML);
+	                	  }
+	                		 console.log("scan.html :after script for");
 	                	});
 }
 

@@ -32,17 +32,25 @@ function Mysearch(userFilter) {
               }
  	      });
  	      
- 	   
- 	      
-     	 
-		
-		
-		
-		
+
 		
 		return ;              // The function returns nothing
 		};
+
 		
+function titleCollection(userFilter) {
+			
+			$( "#title" ).autocomplete({
+		 		  source: "/searchCollection?userFilter="+userFilter,
+			          minLength: 2,
+			          select: function( event, ui ) { 
+		               console.log("bdInfo : select autocomplete  :"+ui.item.value);
+		               document.getElementById('search').value = ui.item.value;
+		               document.getElementById('title').dispatchEvent(event);
+		               return false;
+		            }
+			      });
+		}	
 		
 function totaux(TotalBD,Totalcollection,DateFichierBD,DateRechercheWeb ){
 	    

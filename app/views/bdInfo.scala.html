@@ -19,6 +19,12 @@
 <div class="form-group">
 	<label>Collection Tilte</label>
 	<input id=title name="title" type="text" class="form-control" value="@collection.getTitle()">
+	<script>
+	     console.log("bdInfo : before titleCollection");
+	     titleCollection("@collection.getOwner().getLogin()");
+	     console.log("bdInfo : after titleCollection");
+	</script>
+	
 </div>
 
 <div class="form-group">
@@ -32,17 +38,7 @@
     <img id="imageBase64" name="imageBase64" class="img-thumbnail" alt="bddata[0].title" src="@collection.getBddata().get(0).getImageBase64()" >
 	<input id="bddata[0].imageBase64" name="bddata[0].imageBase64"  type="hidden" value="@collection.getBddata().get(0).getImageBase64()">
 	
-	<script>
-   
-    	var image ="@collection.getBddata().get(0).getImageBase64()";
-    	var imageToBeDisplay=document.getElementByName("imageBase64");
-    	var fieldToBeSent=document.getElementByName("bddata[0].imageBase64");
-    	
-    	imageToBeDisplay.setAttribute("src",image);
-    	fieldToBeSent.setAttribute("value",image);
-        console.log(image);
-        console.log("image has been displayed");
-    </script>
+	
 
 	
 </div>
