@@ -177,7 +177,7 @@ public class BdController extends Controller {
 			/*i'm looking for urls like /scan or /addBD/523 
 			 *first value between / & / is Object to be instanciate
 			 *the others values between the others / & / are parameter
-			 *meaning 
+			 *meaning
 			*/
 			String callBAckURL =userLogin.getCallBackURL().replaceFirst("/", "").split("\\?")[0];
 			/*
@@ -297,9 +297,17 @@ public class BdController extends Controller {
 		 * Now i check if the ID from ScraperResults come from the connected user
 		 */
 		 Owners owner =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
-		  
+		 
+		// owner.getCollectionBD().get(0).getBdDisplay().stream()
+		 
 		 CollectionBD bdCollection=owner.getCollectionBD().stream()
-		    		.filter(e -> e.id==bdscraper.getCollection().id)
+		    		.filter(e ->{ 
+		    			          play.Logger.debug("BdController : addBD : in filter : e.id ="+e.id);
+		    			          play.Logger.debug("BdController : addBD : in filter : bdscraper.getCollection().id ="+bdscraper.getCollection().id);
+		    			          play.Logger.debug("BdController : addBD : in filter : (e.id==bdscraper.getCollection().id) ="+(e.id==bdscraper.getCollection().id));
+		    			          // i have to use longValue to compare the value, otherwise  the comparison is not working
+		    			          return(e.id.longValue()==bdscraper.getCollection().id.longValue());
+		    		              }) //-->
 		            .findFirst()
 		            .orElse(null);  
 		 
