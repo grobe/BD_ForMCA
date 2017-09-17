@@ -27,7 +27,7 @@ public class FnacCrawler {
 	@Inject 
 	WSClient ws;
 	
-	
+	int i;
 	/*
 	 * Controller which invoke a promise to crawl all the URL from the Fnac web site
 	 */
@@ -39,14 +39,18 @@ public class FnacCrawler {
 	
 	
 	public void launchFnacCrawler() {
-		//play.Logger.debug("FnacCrawler : FnacCrawler1 : :"+ new Date());
-		 CompletionStage<String> promiseOfcrawler = CompletableFuture.supplyAsync(() -> crawler());
+		play.Logger.info("FnacCrawler : launchFnacCrawler begining  : "+ new Date());
+		/* CompletionStage<String> promiseOfcrawler = CompletableFuture.supplyAsync(() -> crawler());
 		 
 		 promiseOfcrawler.thenApply(
 	     reponse->{
-	    	 play.Logger.debug(this.getClass().getName()+": FnacCrawler :done promiseOfcrawler"+ promiseOfcrawler.toString() +" "+ new Date());
+	    	 play.Logger.info("FnacCrawler : launchFnacCrawler end  : "+ new Date());
 	    	   return "done promiseOfcrawler";
 	          } );
+	          
+	          */
+		this.crawler();
+		 play.Logger.info("FnacCrawler : launchFnacCrawler end  : "+ new Date());
 	}
 	
 	
@@ -57,18 +61,18 @@ public class FnacCrawler {
 	 * each call by WS is a single promise 
 	 */
 	private String crawler(){
-		
+		//play.Logger.info(this.getClass().getName()+": FnacCrawler : Crawler Start : "+ new Date());
 		//CompletableFuture<String> future = new CompletableFuture<>();
 		 //Test test;
 		//List <String> urlTab = new ArrayList<>();
 		//Look for all the collection 
 		List <CollectionBD> collection =  CollectionBD.find.all();
 		
-		play.Logger.debug(this.getClass().getName()+": crawler1 : : collection.size() :" +collection.size() + new Date());
-		
+		play.Logger.debug(this.getClass().getName()+": crawler 1 : : collection.size() :" + collection.size() + new Date());
+		i=0;
 		collection.stream().forEach((col)->{
-		            
-			play.Logger.debug(this.getClass().getName()+": crawler1.5 : : col.size() :" +col.scraperBots.size()+ new Date());
+		    i=i+1; 
+			play.Logger.debug(this.getClass().getName()+": crawler 1.5 : : collection seeked : "+i+ "DB ID: "+col.id+" title="+col.title+" with number of links =" +col.scraperBots.size()+ new Date());
 			 col.scraperBots.stream().forEach((bot)->{		
 			        
 				    //Look for the URL to be used by the bot to search into the store FNAC
@@ -76,13 +80,16 @@ public class FnacCrawler {
 				   
 			        CompletionStage<String> retour = ws.url(url).get().thenApply(
 			  	           response ->{
-			                  // play.Logger.debug("FnacCrawler : crawler2 :thenApply :"+url+" "+ new Date());
+			                 // play.Logger.debug("FnacCrawler : crawler2 :thenApply :"+url+" "+ new Date());
 			                   
 			                   
 			                   return (response.getBody());
 			                }
 			         ).whenComplete((value, exception) -> {
-			                 //play.Logger.debug("FnacCrawler : crawler3 : whenComplete :"+url+" "+ new Date());
+			        	 
+			        	     Date d = new Date();
+			                 play.Logger.info("FnacCrawler : crawler3 : whenComplete :bot.ID"+bot.id +" - "+ d);
+			                 //play.Logger.debug("FnacCrawler : crawler3.5 : whenComplete :"+value+" : "+ d);
 			                 if (exception != null) {
 			              	   play.Logger.error(this.getClass().getName()+": crawler4 : ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ exception:"+exception.getMessage()+ "---"+url+"--"+ new Date()); 
 			                   //future.completeExceptionally(exception);
@@ -90,7 +97,7 @@ public class FnacCrawler {
 			                 else {	              	  
 			              	  	 setAllCrowlerResult(value, bot);
 			              	  }
-			             });
+			             }); 
 			 });        
 		});
 		
@@ -110,7 +117,7 @@ public class FnacCrawler {
      	   
      	   
      	   
-     	   play.Logger.debug(this.getClass().getName()+": setAllCrowlerResult :listBD.size()     ________________________________ :"+" listBD.size() :"+ listBD.size()); 
+     	  // play.Logger.debug(this.getClass().getName()+": setAllCrowlerResult :listBD.size()     ________________________________ :"+" listBD.size() :"+ listBD.size()); 
      	   listBD.forEach(bd -> {
      		                  
      		                  setCrowlerItemResult (bd, bot.collection);
@@ -141,7 +148,7 @@ public class FnacCrawler {
         	        	//STEP1 : i'm looking for the title and the number of the comic in the collection	 
         	            
         	  		  String bdGlobalTitle = FnacExtractData.getTitle(bdItem);
-        	            play.Logger.debug(this.getClass().getName()+": setCrowlerItemResult1 :_____MCA___________________________ : bdTitle "+ bdGlobalTitle+ " --- "+ new Date()); 
+        	          //  play.Logger.debug(this.getClass().getName()+": setCrowlerItemResult1 :_____MCA___________________________ : bdTitle "+ bdGlobalTitle+ " --- "+ new Date()); 
         	           
         	        	
         	        	// take the number between" tome" and ":" and remove all the non numeric characters -
@@ -152,7 +159,7 @@ public class FnacCrawler {
 		                   //if new comics i create the row
 		                   if (result ==null){
 		                	   result= new ScraperResults();
-		                	    play.Logger.debug("crowlerResult :New"); 
+		                	    //play.Logger.debug("crowlerResult :New"); 
 		                	    result.setCollection(collection);
 		                	    result.setNumber(number);
 		                	    result.setCreationDate(new Date());
@@ -185,15 +192,15 @@ public class FnacCrawler {
 		                  result.setLastReviewFromWebStore(new Date());
 		               
 		                  result.update();
-		                  play.Logger.debug(this.getClass().getName()+": crowlerResult.save()================================ :"+result.getTitle()+"- date ="+new Date()); 
+		                //  play.Logger.debug(this.getClass().getName()+": crowlerResult.save()================================ :"+result.getTitle()+"- date ="+new Date()); 
         	        }catch (Exception e){
-        	        	play.Logger.error(this.getClass().getName()+": setCrowlerItemResult error++++++++++++++++++++++++++++++++ Exception:"+e.getMessage()); 
+        	        	play.Logger.error(this.getClass().getName()+": setCrowlerItemResult error++ "+ collection.getTitle()+ "++++++++++++++++++++++++++++ Exception:"+e.getMessage()); 
         	        }
         	        
           
           
           }else{
-   	    	 play.Logger.debug(this.getClass().getName()+": setCrowlerItemResult4  :_________________ : Line NOT selected : " + FnacExtractData.getTitle(bdItem)) ;    
+   	    	 //play.Logger.debug(this.getClass().getName()+": setCrowlerItemResult4  :_________________ : Line NOT selected : " + FnacExtractData.getTitle(bdItem)) ;    
    	       }
        	    	 
              

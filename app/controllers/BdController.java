@@ -96,7 +96,7 @@ public class BdController extends Controller {
     	//look for the list of distinct list of line managers
     	
     	response().setHeader(CACHE_CONTROL, "no-cache");
-    	play.Logger.debug(" searchCollection term=" + term);
+    	//play.Logger.debug(" searchCollection term=" + term);
         Owners owner =Owners.find.where().eq("login", userFilter).findUnique();
     	List <CollectionBD> collection =owner.getCollectionBD();
     	
@@ -105,10 +105,10 @@ public class BdController extends Controller {
 		
 		List<String> listOfCollection = collection.stream()
 				.filter((p)->{
-					         play.Logger.debug(" getBddata size:" + p.getBddata().size() +"p.title"+p.title);
-					         play.Logger.debug(" getBdDisplay size:" + p.getBdDisplay().size()+"p.title"+p.title);
-					         play.Logger.debug(" getBdDisplay term:" + term +"(p.getTitle().indexOf(term) ="+(p.getTitle().indexOf(term)));
-					         play.Logger.debug("p.getTitle().indexOf(term) >-1 &&( (p.getBddata().size()>0||p.getBdDisplay().size()>0):" + (p.getTitle().indexOf(term) >-1 &&(  p.getBddata().size()>0||p.getBdDisplay().size()>0)));
+					         //play.Logger.debug(" getBddata size:" + p.getBddata().size() +"p.title"+p.title);
+					         //play.Logger.debug(" getBdDisplay size:" + p.getBdDisplay().size()+"p.title"+p.title);
+					         //play.Logger.debug(" getBdDisplay term:" + term +"(p.getTitle().indexOf(term) ="+(p.getTitle().indexOf(term)));
+					         //play.Logger.debug("p.getTitle().indexOf(term) >-1 &&( (p.getBddata().size()>0||p.getBdDisplay().size()>0):" + (p.getTitle().indexOf(term) >-1 &&(  p.getBddata().size()>0||p.getBdDisplay().size()>0)));
 				             return (p.getTitle().toLowerCase().indexOf(term.toLowerCase()) >-1 &&(  p.getBddata().size()>0||p.getBdDisplay().size()>0));})
 				.map(o->o.getTitle())
 				.sorted()
@@ -328,7 +328,7 @@ public class BdController extends Controller {
 			bdInfo.save();
 			
 		}else {
-			play.Logger.debug("BdController : addBD :  The owner has not the the collection updated title : ");
+			play.Logger.error("BdController : addBD :  The owner has not the the collection updated title : ");
 		}
 	
 
@@ -472,7 +472,7 @@ public class BdController extends Controller {
 	//controller to display the scan page , bddata.number asc
 	//by default login ="grobe" defined in routes file.
 		public Result  listBD(String login){
-			play.Logger.debug("scan : MCA is HEre : ListBD");
+			//play.Logger.debug("scan : MCA is HEre : ListBD");
 			
 			
 			play.Logger.debug("BdController -listBD session(\"connectedBD\")"+session("connectedBD"));

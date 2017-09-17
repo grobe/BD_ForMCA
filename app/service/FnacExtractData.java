@@ -34,14 +34,18 @@ public class FnacExtractData {
 	   i also double check the collection.title, because i don't know why but the result from Fnac web store some times return more items taht olny the colelction asked
 	*/
 	static boolean isItemArticleValidated (Element bdItem, String collectionSeeked){
-		play.Logger.debug("FnacExtractData : isItemArticleValidated ? ");
+		//play.Logger.debug("FnacExtractData : isItemArticleValidated ? ");
 		
 		String bdTitle=getTitle(bdItem);
 		String bdcollection=getCollection(bdItem);
-		play.Logger.debug("FnacExtractData : isItemArticleValidated - collectionSeeked = "+collectionSeeked);
-		play.Logger.debug("FnacExtractData : isItemArticleValidated - bdcollectionItem = "+bdcollection);
-		play.Logger.debug("FnacExtractData : isItemArticleValidated - bdTitle = "+bdTitle);
-		return (bdTitle.matches(".*\\bTome\\b.*")&&  (StringUtils.countMatches(bdTitle, "Tome")==1) &&(StringUtils.countMatches(bdTitle, ":")==1)&&bdcollection.equals(collectionSeeked));
+		//play.Logger.debug("FnacExtractData : isItemArticleValidated - collectionSeeked = "+collectionSeeked);
+		//play.Logger.debug("FnacExtractData : isItemArticleValidated - bdcollectionItem = "+bdcollection);
+		//play.Logger.debug("FnacExtractData : isItemArticleValidated - bdTitle = "+bdTitle);
+		String bdNumber=getNumber(bdItem);
+		boolean goodNumber=false;
+		if (Double.valueOf(bdNumber).floatValue()>=0 && Double.valueOf(bdNumber).floatValue()<100) goodNumber=true;
+		
+		return (goodNumber==true && bdTitle.matches(".*\\bTome\\b.*")&&  (StringUtils.countMatches(bdTitle, "Tome")==1) &&(StringUtils.countMatches(bdTitle, ":")==1)&&bdcollection.equals(collectionSeeked));
 	}
 	
 	
@@ -88,21 +92,21 @@ public class FnacExtractData {
 				
 			} catch (MalformedURLException e1) {
 				// TODO Auto-generated catch block
-				play.Logger.debug("MalformedURLException:"+e1.getMessage());
+				play.Logger.error("MalformedURLException:"+e1.getMessage());
 							
 			} catch (IOException e2) {
 				// TODO Auto-generated catch block
-				play.Logger.debug("IOException:"+e2.getMessage());
+				play.Logger.error("IOException:"+e2.getMessage());
 			}
         	
         	
         	
         	image=base64Image;
         	
-        	play.Logger.debug("FnacExtractData : getImageBAse64 :bdImage !=null");
+        	//play.Logger.debug("FnacExtractData : getImageBAse64 :bdImage !=null");
      	    }
      	   
-        	play.Logger.debug("FnacExtractData : getImageBAse64 :_____MCA___________________________ :"+"Image : "+ image);
+        	//play.Logger.debug("FnacExtractData : getImageBAse64 :_____MCA___________________________ :"+"Image : "+ image);
                       	    
     return   image; 
 	}
@@ -130,7 +134,7 @@ public class FnacExtractData {
      	    	editor= editor.split(" - ")[2].trim();
      	    }
      	   
-        	play.Logger.debug("FnacExtractData : bdEditor :_____MCA___________________________ :"+"bdEditor : "+ bdEditor.text());
+        	//play.Logger.debug("FnacExtractData : bdEditor :_____MCA___________________________ :"+"bdEditor : "+ bdEditor.text());
                       	    
         }
 		
@@ -148,7 +152,7 @@ public class FnacExtractData {
         		
         		collection = (collection.split("Tome"))[0];
         	};
-     	   play.Logger.debug("FnacExtractData : getCollection :_____MCA___________________________ :"+"collection : "+ collection);
+     	   //play.Logger.debug("FnacExtractData : getCollection :_____MCA___________________________ :"+"collection : "+ collection);
                       	    
        
 		return collection.replaceAll(" - ", "").trim();
@@ -163,7 +167,7 @@ public class FnacExtractData {
      	  
         	title = bdTitle.text();
         	
-     	   play.Logger.debug("FnacExtractData : getTitle :_____MCA___________________________ :"+"bdTitle : "+ bdTitle.text());
+     	 //  play.Logger.debug("FnacExtractData : getTitle :_____MCA___________________________ :"+"bdTitle : "+ bdTitle.text());
                       	    
         }
 		return title.trim();
@@ -180,7 +184,7 @@ public class FnacExtractData {
         		
         		title = (title.split(":"))[1];
         	};
-     	   play.Logger.debug("FnacExtractData : getTitleCleaned :_____MCA___________________________ :"+"title : "+ title);
+     	 //  play.Logger.debug("FnacExtractData : getTitleCleaned :_____MCA___________________________ :"+"title : "+ title);
                       	    
        
 		return title;
@@ -212,14 +216,14 @@ public class FnacExtractData {
         			number = (((bdNumber.split("Tome"))[1].split(":"))[0].replaceAll("[^\\d.]", " ").trim().replaceAll(" ", ""));
         			num =Double.valueOf(number);
         		}catch (NumberFormatException  e){
-        			play.Logger.debug("FnacExtractData : getNumber error"+ e.getMessage());
+        			play.Logger.error("FnacExtractData : getNumber error"+ e.getMessage());
         			number="-1";
         			num=0;
         		}
         		
         	}
         	
-     	   play.Logger.debug("FnacExtractData : getNumber :_____MCA___________________________ :"+"bdNumber : "+ bdNumber);
+     	  // play.Logger.debug("FnacExtractData : getNumber :_____MCA___________________________ :"+"bdNumber : "+ bdNumber);
                       	    
         }
 		return number;
@@ -233,7 +237,7 @@ public class FnacExtractData {
         if (bdAvailability !=null){
      	  
         	availability = bdAvailability.text();
-     	   play.Logger.debug("FnacExtractData : getAvailability :_____MCA___________________________ :"+"bdAvailability : "+ bdAvailability.text());
+     	   //play.Logger.debug("FnacExtractData : getAvailability :_____MCA___________________________ :"+"bdAvailability : "+ bdAvailability.text());
                       	    
         }
 		return availability;
@@ -250,7 +254,7 @@ public class FnacExtractData {
       	   sfs.setDecimalSeparator('€'); 
       	   df.setDecimalFormatSymbols(sfs);
       	   price = df.parse(bdPrice.text()).doubleValue();
-      	   play.Logger.debug("FnacExtractData : getPrice :_____MCA___________________________ :"+"bdPrice : "+ bdPrice.text());
+      	   //play.Logger.debug("FnacExtractData : getPrice :_____MCA___________________________ :"+"bdPrice : "+ bdPrice.text());
                        	    
          }
 		return price;
@@ -260,7 +264,7 @@ public class FnacExtractData {
 	private static Map<String, String> getAuthorScriptWriter(Element bdItem) {
 		 Elements bdAuthorScriptWriter = bdItem.select("p[class=Article-descSub]");
          
-         play.Logger.debug("FnacExtractData : getAuthorScriptWriter :_____MCA___________________________ :"+"bdAuthorScriptWriter.size"+ bdAuthorScriptWriter.size()); 
+        // play.Logger.debug("FnacExtractData : getAuthorScriptWriter :_____MCA___________________________ :"+"bdAuthorScriptWriter.size"+ bdAuthorScriptWriter.size()); 
          
          
          
@@ -276,7 +280,7 @@ public class FnacExtractData {
         	 
       	   String [] authorOrScriptWriter= bdAuthorScriptWriter.get(0).text().split(",");
       	   
-      	  play.Logger.debug("FnacExtractData : authorOrScriptWriter.length="+authorOrScriptWriter.length) ;
+      	  //play.Logger.debug("FnacExtractData : authorOrScriptWriter.length="+authorOrScriptWriter.length) ;
       	   if (authorOrScriptWriter.length ==1){
       		   author=authorOrScriptWriter[0].split(Pattern.quote("("))[0];
       		   ScriptWriter=authorOrScriptWriter[0].split(Pattern.quote("("))[0];
@@ -295,7 +299,7 @@ public class FnacExtractData {
       	   
       	   
       	  
-      	   play.Logger.debug("FnacExtractData : getAuthorScriptWriter2:_ bdAuthorScriptWriter.get(0).text()_"+   bdAuthorScriptWriter.get(0).text());
+      	  // play.Logger.debug("FnacExtractData : getAuthorScriptWriter2:_ bdAuthorScriptWriter.get(0).text()_"+   bdAuthorScriptWriter.get(0).text());
       	    	 
          }
          
@@ -309,14 +313,14 @@ public class FnacExtractData {
 	
 	static String getAuthor (Element bdItem) {
 		Map<String, String> authorAndScriptWriter = getAuthorScriptWriter(bdItem);
-		 play.Logger.debug("FnacExtractData : getAuthor");
+		 //play.Logger.debug("FnacExtractData : getAuthor");
 		return authorAndScriptWriter.get("author");
 		
 	}
 	
 	static String getScriptWriter(Element bdItem) {
 		Map<String, String> authorAndScriptWriter = getAuthorScriptWriter(bdItem);
-		 play.Logger.debug("FnacExtractData : getScriptWriter");
+		// play.Logger.debug("FnacExtractData : getScriptWriter");
 		return authorAndScriptWriter.get("ScriptWriter");
 		
 	}
