@@ -66,3 +66,40 @@ function totaux(TotalBD,Totalcollection,DateFichierBD,DateRechercheWeb ){
 	   
 	return ;              // The function returns nothing
 		};
+		
+		
+		function getCover (coverSeeked ){ 
+		       
+
+		var imgMCA        = document.getElementById(coverSeeked);
+			  
+           
+            var request = "/displayCover/"+coverSeeked;
+
+            fetch(request).then(function(returnedValue) {
+	                 returnFetchValue=returnedValue.status;
+	                 returnFetchValueText=returnedValue.text();
+	                 contentType = returnedValue.headers.get("content-type");
+	                 //console.log("cover=" + contentType);
+	                 //console.log("cover : returnFetchValue.status=" + returnFetchValue);
+	                 //console.log("cover : returnFetchValueText=" + returnFetchValueText);
+	                
+	                 if (returnFetchValue!="200"){
+	                	
+	                
+	                	 console.log("cover : error Message : " + returnedValue.statusText); 
+	                 }else{                                            //to be updated to remove HArcoded :bdReturnedValues
+	                	
+	                	 console.log("cover : NoError on : " );
+	                	 //console.log("myModule.js :NoErrorMessage : " + returnFetchValueText); 
+	                 }
+	                 return returnFetchValueText;
+	                
+           }).then(function (value){
+           
+           	console.log("fetch.cover.then=" + value);
+           	 imgMCA.setAttribute("src", value);
+           	
+           });
+            return ; 
+			}

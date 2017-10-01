@@ -97,6 +97,7 @@ public class CollectionBD extends Model {
 						    		bdData.scenario=item.getScenario();
 						    		bdData.imageBase64=item.getImageBase64();
 						    		bdData.title=item.getTitle();
+						    		bdData.id=String.valueOf(item.getId());
 			                        bdDisplay.add(bdData);
 			
 		              });

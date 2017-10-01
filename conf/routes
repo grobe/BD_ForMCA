@@ -14,6 +14,11 @@ GET /SayHello/:text					    controllers.ActorController.sayHello(text: String )
 
 #############################used by the bd.grobe.fr applciation ####################################
 
+
+
+
+
+
 # Test purpose !!! used to test the use of the Webcam on a web page
 GET /scanTest								controllers.BdController.scanTest()
 
@@ -24,6 +29,13 @@ GET /login								controllers.BdController.login(callBackURL : String)
 
 POST /security							controllers.BdController.security()
 
+#to get the cover of the comics strip and call them async from javascript
+GET /listCoversJs/:user				controllers.BdController.listCoversJs(user : String)
+
+
+
+#to get the cover of the comics strip and call them async from javascript
+GET /displayCover/:coverSeeked			controllers.BdController.displayCover(coverSeeked:String)
 
 #used for send to the backend the picturte of the barcode
 GET /scan								controllers.BdController.scan()
@@ -39,14 +51,16 @@ POST /scannedBD							controllers.BdController.scannedBD()
 
 GET /searchCollection 					controllers.BdController.searchCollection(term: String, userFilter:String) 
 
-#Display the main page of the web site
-# by default my login is always grobe :)
-GET /								        controllers.BdController.listBD(login ="grobe") 
-GET /:login									controllers.BdController.listBD(login : String)
 
 #add a BD from the BD coming from the webstore
 
 GET /addBD/:id								controllers.BdController.addBD(id: String )
+
+#Display the main page of the web site
+# by default my login is always grobe :)
+GET /:login									controllers.BdController.listBD(login : String)
+GET /								        controllers.BdController.listBD(login ="grobe") 
+
 
 # Map static resources from the /public folder to the /assets URL path
 

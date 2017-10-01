@@ -75,6 +75,51 @@ public class BdController extends Controller {
 	@Inject
 	StatisticsBD myStat;
 	
+	
+	// private function used by some actions to get the list of CollectionDisplay from one user
+		private List<CollectionDisplay>  askForCollectionsToBeDisplayed(String login){
+			Owners owner;
+			
+			 /*
+			  * Done : Override login if session("connectedBD exist") to use it instead of the value of the input parameter of this action  
+			  */
+			if (session("connectedBD")!=null)
+				{ owner =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
+				  login=owner.getLogin();
+				}else {
+					owner =Owners.find.where().eq("login", login).findUnique();
+				}
+	         List <CollectionBD> resultCollections =(List<CollectionBD>) owner.getCollectionBD().stream()
+	        		                                                       .sorted((o1, o2)->o1.getTitle().compareToIgnoreCase(o2.getTitle())
+	        		                                                               )
+	        		                                                       .collect(Collectors.toList());
+			 
+	         
+	         
+			 // i catch all the collection content to be displayed in to the Web page
+			 List<CollectionDisplay> myBD = resultCollections.stream()
+					                   .map(rc->{
+					                	         CollectionDisplay tempRc = new CollectionDisplay();	                	        
+					                	         //i catch all the BD from each collection to be displayed into the web page
+					                	         //List<BdDisplay>  bdDisplay2 = new ArrayList<BdDisplay> ();	                	         
+					                	         tempRc.setId(String.valueOf(rc.id));//created to be used with BdController.addBD in order to display at least the collection to the user
+					                	         tempRc.setEditor(rc.editor);
+					                	         tempRc.setTitle(rc.title);
+					                	         tempRc.setFollowOnWebstore(rc.getFollowingOnWebstores());
+					                	         tempRc.setBdDisplay(rc.getBdDisplay());
+					                	        return tempRc;
+					                	   
+					                   })//test
+					                   .collect(Collectors.toList()
+					                		   
+					                  );  
+				 return (myBD); 
+			}
+	
+	
+	
+	
+	
 	//controller to display the scanTest page
 	//used to test the use of the webcam into a web page
 	public Result  scanTest(){
@@ -468,58 +513,71 @@ public class BdController extends Controller {
 		return ok(views.html.scannedBD.render(resultToBeDisplayed));
 	}
 	
+   
+	
+	//action to retrieve the cover from ajax call from listBD page
+	public Result displayCover (String coverSeeked) {
+		
+		//use values hardcoded (bdOwned_ or bdWebstore_) from the page  listBD page
+		String result[] =coverSeeked.split("_");
+		String cover="";
+		
+		
+		if (result.length==2) {
+			
+			if (result[0].compareToIgnoreCase("bdOwned")==0) {
+				BdData bdData =BdData.find.where().eq("id",Long.valueOf(result[1])).findUnique();
+				cover=bdData.getImageBase64();
+			}else {
+				ScraperResults scraperResults =ScraperResults.find.where().eq("id",Long.valueOf(result[1])).findUnique();
+				cover=scraperResults.getImageBase64();
+			}
+			
+			return ok (cover);
+		
+		}
+         
+		return badRequest();
+		
+
+	}
+	
+	
+	 
+	
+	
+		
+	
+	
+	
+	//controller to Display the JS page to ask the cover seeked differed from the HTML page
+	
+	public Result  listCoversJs(String user){
+		play.Logger.debug(this.getClass().getName()+" listCoversJs --> login ="+ user);
+		
+		List<CollectionDisplay> collectionBD = askForCollectionsToBeDisplayed(user);
+		//
+		return ok(views.html.listCoversJs.render(collectionBD)); 	
+	 } 
+	
 	
 	//controller to display the scan page , bddata.number asc
 	//by default login ="grobe" defined in routes file.
 		public Result  listBD(String login){
-			//play.Logger.debug("scan : MCA is HEre : ListBD");
 			
+			List<CollectionDisplay> collectionBD = askForCollectionsToBeDisplayed(login);
 			
 			play.Logger.debug("BdController -listBD session(\"connectedBD\")"+session("connectedBD"));
-			
-		 /*
-		  * Done : Override login if session("connectedBD exist") to use it instead of the value of the input parameter of this action  
-		  */
-			Owners owner;
-			if (session("connectedBD")!=null)
-				{ owner =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
-				  login=owner.getLogin();
-				}else {
-					owner =Owners.find.where().eq("login", login).findUnique();
-				}
-             List <CollectionBD> resultCollections =(List<CollectionBD>) owner.getCollectionBD().stream()
-            		                                                       .sorted((o1, o2)->o1.getTitle().compareToIgnoreCase(o2.getTitle())
-            		                                                               )
-            		                                                       .collect(Collectors.toList());
+	        
 			 
-             
-             
-			 // i catch all the collection content to be displayed in to the Web page
-			 List<CollectionDisplay> myBD = resultCollections.stream()
-					                   .map(rc->{
-					                	         CollectionDisplay tempRc = new CollectionDisplay();	                	        
-					                	         //i catch all the BD from each collection to be displayed into the web page
-					                	         //List<BdDisplay>  bdDisplay2 = new ArrayList<BdDisplay> ();	                	         
-					                	         tempRc.setId(String.valueOf(rc.id));//created to be used with BdController.addBD in order to display at least the collection to the user
-					                	         tempRc.setEditor(rc.editor);
-					                	         tempRc.setTitle(rc.title);
-					                	         tempRc.setFollowOnWebstore(rc.getFollowingOnWebstores());
-					                	         tempRc.setBdDisplay(rc.getBdDisplay());
-					                	        return tempRc;
-					                	   
-					                   })//test
-					                   .collect(Collectors.toList()
-					                		   
-					                  );  
-					        
-			 //StatisticsBD myStat =new StatisticsBD();
 			 myStat.setStatisticsByLogin(login);
 			 
-			 //.stream().distinct().collect(Collectors.toList()) )
-			 //return ok( Json.toJson(result));
-			 return ok(  views.html.listBD.render(myBD, myStat,login)); 	
+			 
+			 return ok(  views.html.listBD.render(collectionBD, myStat,login)); 	
 		 } 
 	
+		
+		
 	//controller to display the data extract from the code bar scanned
 	//and based on the ISBN searches the data on the website Fnac
 	  @Security.Authenticated(Secured.class)

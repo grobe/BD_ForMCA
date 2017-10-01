@@ -1,0 +1,10 @@
+@import java.lang.String; var nameID=""
+@( listOfMyBD: List[models.CollectionDisplay])
+
+	@for(myBd <- listOfMyBD) {	
+		  @for(item <- myBd.bdDisplay){
+		       @if(item.isbn =="N/A"){ @{nameID = "bdWebstore_"}
+			   }else{ @{nameID = "bdOwned_"}} 
+getCover("@nameID@item.id");
+		  }}
+
