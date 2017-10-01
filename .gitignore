@@ -9,4 +9,4 @@ target
 /bin/
 /.cache-main
 /.cache-tests
-/application-log-2017-10-01-16.gz
+/*.gz
