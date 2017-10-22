@@ -2,6 +2,8 @@ package models;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import play.data.validation.Constraints;
 
 
@@ -34,10 +36,10 @@ public class BdDisplay {
     
     public String availability;
 
-
+    
     public String imageBase64;
 
-	
+    @JsonIgnore
 	public String getImageBase64() {
 		return imageBase64;
 	}

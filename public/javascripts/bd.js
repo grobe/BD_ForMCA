@@ -3,10 +3,10 @@ function Mysearch(userFilter) {
 		var searchStyle = document.getElementById('search_style');
 		document.getElementById('search').addEventListener('input', function() {
 		  
-			console.log("value = "+this.value);
+			//console.log("value = "+this.value);
 		    if (!this.value) {
 			searchStyle.innerHTML = "";
-			console.log("value dans if = "+this.value);
+			//console.log("value dans if = "+this.value);
 			return;
 		  }
 		  searchStyle.innerHTML = ".searchable:not([data-index*=\"" + this.value.toLowerCase() + "\"]) { display: none; }";
@@ -97,7 +97,7 @@ function totaux(TotalBD,Totalcollection,DateFichierBD,DateRechercheWeb ){
 	                
            }).then(function (value){
            
-           	console.log("fetch.cover.then=" + value);
+           //	console.log("fetch.cover.then=" + value);
            	 imgMCA.setAttribute("src", value);
            	
            });

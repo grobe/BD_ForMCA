@@ -7,7 +7,7 @@
      <file>${application.home:-.}/logs/application.log</file>
       <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- Daily rollover with compression -->
-            <fileNamePattern>application-log-%d{yyyy-MM-dd-HH}.gz</fileNamePattern>
+            <fileNamePattern>${application.home:-.}/logs/application-log-%d{yyyy-MM-dd-HH}.gz</fileNamePattern>
             <!-- keep 30 days worth of history -->
             <maxHistory>12</maxHistory>
       </rollingPolicy>
@@ -31,11 +31,14 @@
   <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
     <appender-ref ref="STDOUT" />
   </appender>
-
-  <logger name="play" level="INFO" />
-  <logger name="application" level="DEBUG" />
-
-    
+ 
+ <logger name="play" level="INFO"  />
+ 
+ <logger name="application" level="DEBUG" />
+  
+ 
+ <logger name="application.service" level="TRACE" />
+  <logger name="application.controllers" level="TRACE" />
 
   
   
@@ -45,10 +48,7 @@
   <logger name="com.avaje.ebeaninternal.server.lib.BackgroundThread" level="INFO" />
   <logger name="com.gargoylesoftware.htmlunit.javascript" level="OFF" />
   
-  
-   <logger name="controllers.BdController" level="DEBUG"/>
-   <logger name="models.StatisticsBD" level="DEBUG"/>
-  
+
   <logger name="akka.actor" level="ERROR" />
 
   <root level="WARN">

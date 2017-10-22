@@ -1,0 +1,11 @@
+@(user : String)
+<nav id="bt-menu" class="bt-menu">
+				<a href="#" class="bt-menu-trigger"><span>Menu</span></a>
+				<ul>
+					<li><a href="@routes.BdController.listBD(user)" class="glyphicon glyphicon-list">List</a></li>
+					<li><a href="@routes.BdController.pivot(user)" class="glyphicon glyphicon-blackboard">Pivot</a></li>
+					<li><a id="onshow_scanner" href="#" class="glyphicon glyphicon-barcode"  data-toggle="modal" data-target="#myScanModal">barcode</a></li>
+					<li><a href="#" class="glyphicon glyphicon-plus">Collection</a></li>
+					<li><a href="#" class="glyphicon glyphicon-cloud-download">URL LookFor</a></li>
+				</ul>
+			</nav>

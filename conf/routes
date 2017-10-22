@@ -39,6 +39,12 @@ GET /displayCover/:coverSeeked			controllers.BdController.displayCover(coverSeek
 
 #used for send to the backend the picturte of the barcode
 GET /scan								controllers.BdController.scan()
+
+
+#use to get the list of my Owned BD 
+GET /pivot/:log						controllers.BdController.pivot(log : String)
+GET /pivot							controllers.BdController.pivot(log ="grobe")
+
 #
 # Async Action : used to catch from a form POST the picture code and display into a for the result of the scan from the web store
 POST /infoBD							controllers.BdController.infoBD()

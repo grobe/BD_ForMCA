@@ -1,0 +1,55 @@
+@( listOfMyBD: String ,userFilter: String )
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/pivottable/pivot.css")">
+		@mainJsFiles()
+		<script src="@routes.Assets.versioned("javascripts/bd.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.versioned("javascripts/pivottable/pivot.js")" type="text/javascript"></script>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<header class="codrops-header">
+				<div class="bdHead">@userFilter's books <span style="font-size: medium;">(<b>V@info.BuildInfo.version</b>)</span></div>
+			</header>
+			@menus(userFilter)	
+			
+		  <script type="text/javascript">
+    // This example is the most basic usage of pivotUI()
+
+				    $(function(){
+				        $("#output").pivotUI(
+				        		@Html(listOfMyBD ),
+				            {
+				               
+				            }
+				        );
+				     });
+        </script>
+		
+		
+		
+		<div  class="contentListBD">	
+							   
+							   
+							   <div id="output"></div>
+							   
+							   
+							   
+							   
+							   
+							   
+		</div>		
+		<!-- /container -->
+			@modals()
+		
+	  </div>
+	</body>	
+	<script src="@routes.Assets.versioned("javascripts/template/classie.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.versioned("javascripts/template/borderMenu.js")" type="text/javascript"></script>
+	
+   
+</html>
+
+

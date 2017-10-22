@@ -75,7 +75,7 @@ public class CollectionBD extends Model {
     }
     
    
-    
+  
     
     //Convert the list of BDdata + ScraperResult to list of BdDisplay
     public List<BdDisplay> getBdDisplay (){

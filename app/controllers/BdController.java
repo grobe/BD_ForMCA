@@ -8,10 +8,12 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -32,6 +34,7 @@ import com.google.zxing.common.HybridBinarizer;
 
 import models.BdData;
 import models.BdDisplay;
+import models.BdPivot;
 import models.CollectionBD;
 import models.CollectionDisplay;
 import models.LoginForm;
@@ -123,7 +126,7 @@ public class BdController extends Controller {
 	//controller to display the scanTest page
 	//used to test the use of the webcam into a web page
 	public Result  scanTest(){
-		play.Logger.debug("scan : MCA is HEre : scanTest");
+		play.Logger.debug(this.getClass().getName()+"scanTest : MCA is HEre : scanTest");
 		return ok(views.html.scanTest.render());
 				} 
 	
@@ -132,7 +135,7 @@ public class BdController extends Controller {
 	public Result  scan(){
 		play.Logger.debug("scan : MCA is HEre : scan");
 		
-		Logger.debug("BdController : scan : session(\"connectedBD\") = "+session("connectedBD"));
+		Logger.debug(this.getClass().getName()+" scan : session(\"connectedBD\") = "+session("connectedBD"));
 		return ok(views.html.scan.render());
 				} 
 	
@@ -173,8 +176,8 @@ public class BdController extends Controller {
 	
 		response().setHeader(CACHE_CONTROL, "no-cache");
 	
-		Logger.debug("BdController : login : session(\"connectedBD\")" + session("connectedBD"));
-		Logger.debug("BdController : login : callBackURL" + callBackURL);
+		Logger.debug(this.getClass().getName()+" login : session(\"connectedBD\")" + session("connectedBD"));
+		Logger.debug(this.getClass().getName()+" login : callBackURL" + callBackURL);
 		
 		return ok(views.html.login.render(callBackURL));
 		
@@ -191,28 +194,28 @@ public class BdController extends Controller {
 		
 		// here i check if my form is well filled
 		//if not go back the login form
-		Logger.debug("BdController :security : before loginForm.hasError  ");
+		Logger.debug(this.getClass().getName()+"security : before loginForm.hasError  ");
 		if (loginForm.hasErrors()) {
-			Logger.debug("BdController :security : loginForm.hasError  ");
+			Logger.debug(this.getClass().getName()+"security : loginForm.hasError  ");
 			session().clear();
 			flash("Security", "Please fill correctly the form");
-			Logger.debug("BdController :security : loginForm.errors().size():"+loginForm.errors().size());
-			Logger.debug("BdController :security :loginForm.data().get(\"callBackURL\")1:"+loginForm.data().get("callBackURL"));
+			Logger.debug(this.getClass().getName()+"security : loginForm.errors().size():"+loginForm.errors().size());
+			Logger.debug(this.getClass().getName()+"security :loginForm.data().get(\"callBackURL\")1:"+loginForm.data().get("callBackURL"));
 			return redirect(controllers.routes.BdController.login(loginForm.data().get("callBackURL")));
 		} 
-		Logger.debug("BdController :security: after loginForm.hasError  ");
+		Logger.debug(this.getClass().getName()+"security: after loginForm.hasError  ");
 		
-		Logger.debug("BdController :security: loginForm.data().get(login)="+loginForm.data().get("password"));
+		Logger.debug(this.getClass().getName()+"security: loginForm.data().get(login)="+loginForm.data().get("password"));
 		
-		Logger.debug("BdController :security: loginForm.data().get(password)="+loginForm.data().get("password"));
+		Logger.debug(this.getClass().getName()+"security: loginForm.data().get(password)="+loginForm.data().get("password"));
 		
 		LoginForm userLogin = loginForm.bindFromRequest().get();
 		//session("testMCA","testMCA is here !!!!!!!!!!!!!!");
 		//check if the owner exist --> match between login and password
 		
-		Logger.debug("BdController :security: userLogin.getLogin()="+userLogin.getLogin());
+		Logger.debug(this.getClass().getName()+"security: userLogin.getLogin()="+userLogin.getLogin());
 		
-		Logger.debug("BdController :security: userLogin.getPassword()="+userLogin.getPassword());
+		Logger.debug(this.getClass().getName()+"security: userLogin.getPassword()="+userLogin.getPassword());
 		
 		Owners owner = Owners.find.where().eq("login",userLogin.getLogin()).eq("password", userLogin.getPassword()).findUnique();
 
@@ -232,8 +235,8 @@ public class BdController extends Controller {
 			String []objectParameters =callBAckURL.split("/");
 			
 			// the user is authenticated
-			Logger.debug("BdController : security :the user is authenticated :callBAckURL "+objectParameters[0]);
-			Logger.debug("BdController : security :the user is authenticated :owner.getId() "+owner.getId());
+			Logger.debug(this.getClass().getName()+" security :the user is authenticated :callBAckURL "+objectParameters[0]);
+			Logger.debug(this.getClass().getName()+" security :the user is authenticated :owner.getId() "+owner.getId());
 			session("connectedBD", String.valueOf(owner.getId()));
             
 			
@@ -244,42 +247,42 @@ public class BdController extends Controller {
 			 */
 			
 			try {
-				Logger.debug("BdController : security :1");
+				Logger.debug(this.getClass().getName()+" security :1");
 				Class<?>  myViewTobeDisplayed = Class.forName("controllers.BdController"); //."+objectParameters[0]+"()");
 				Object obj =myViewTobeDisplayed.newInstance();
 				
-				Logger.debug("BdController : security :2 : objectParameters[0]=" +objectParameters[0]); 
+				Logger.debug(this.getClass().getName()+" security :2 : objectParameters[0]=" +objectParameters[0]); 
 			
 				int numParams = objectParameters.length;//methode.getParameterCount();
-				Logger.debug("BdController : security :3.6: objectParameters.length ="+numParams);
+				Logger.debug(this.getClass().getName()+" security :3.6: objectParameters.length ="+numParams);
 				Result result=null;
 				
 				if (numParams ==1) {
-					Logger.debug("BdController : security :3.7.0: if ==0"); 
+					Logger.debug(this.getClass().getName()+" security :3.7.0: if ==0"); 
 					//result = (Content) method.invoke(null);
 					Method methode = obj.getClass().getMethod(objectParameters[0]);
 					result= (Result)methode.invoke(myViewTobeDisplayed.newInstance());
 					//call = controllers.routes.BdController.scan();
-					Logger.debug("BdController : security :3.7.1: after if invoke");
+					Logger.debug(this.getClass().getName()+" security :3.7.1: after if invoke");
 				}else {
-					Logger.debug("BdController : security :3.7.2: else");
+					Logger.debug(this.getClass().getName()+" security :3.7.2: else");
 						String[] paramString = new String[numParams];
 						
 						for (int i = 1; i< paramString.length;i++) {
-							Logger.debug("BdController : security :3.7.3: in the for : objectParameters[i]="+ objectParameters[i]);
+							Logger.debug(this.getClass().getName()+" security :3.7.3: in the for : objectParameters[i]="+ objectParameters[i]);
 							paramString[i] = objectParameters[i];
 						}
-						Logger.debug("BdController : security :3.7.4: before else invoke");
+						Logger.debug(this.getClass().getName()+" security :3.7.4: before else invoke");
 						//result = (Content) method.invoke(paramString);
 						Method methode = obj.getClass().getMethod(objectParameters[0],String.class);
 						result= (Result)methode.invoke(myViewTobeDisplayed.newInstance(),new String(objectParameters[1]));
-						Logger.debug("BdController : security :3.7.5: after else invoke");
+						Logger.debug(this.getClass().getName()+" security :3.7.5: after else invoke");
 					}
 					
 				
 				
 				
-				Logger.debug("BdController : security :4");
+				Logger.debug(this.getClass().getName()+" security :4");
 				return result;
 				//return redirect((Call)call);
 			} catch (NoSuchMethodException 
@@ -288,19 +291,19 @@ public class BdController extends Controller {
 					| IllegalArgumentException 
 					| InvocationTargetException | ClassNotFoundException | InstantiationException e) {
 				// TODO Auto-generated catch block
-				Logger.error("BdController : security : Class.forName "+ e.getMessage() +"\n cause = "+e.getCause());
+				Logger.error(this.getClass().getName()+" security : Class.forName "+ e.getMessage() +"\n cause = "+e.getCause());
 				//return redirect(controllers.routes.BdController.listBD(userLogin.getLogin()));
 			}
 			
 
 		}
-		Logger.debug("BdController : security : :the user is not authenticated ");
+		Logger.debug(this.getClass().getName()+" security : :the user is not authenticated ");
 		session().clear();
 		flash("Security", "You are not authenticated !");
 		
 		
-		Logger.debug("BdController :security : loginForm.field(callBackURL)2:"+ loginForm.field("callBackURL"));
-		Logger.debug("BdController :security : userLogin.getCallBackURL()2:"+ userLogin.getCallBackURL());
+		Logger.debug(this.getClass().getName()+"security : loginForm.field(callBackURL)2:"+ loginForm.field("callBackURL"));
+		Logger.debug(this.getClass().getName()+"security : userLogin.getCallBackURL()2:"+ userLogin.getCallBackURL());
 		
 		return redirect(controllers.routes.BdController.login(loginForm.data().get("callBackURL")));
 		//return badRequest(views.html.login.render(loginForm.data().get("callBackURL")));
@@ -321,15 +324,15 @@ public class BdController extends Controller {
 		 * and i need to close it through dedicated view & javascript
 		 * if not that means i can make my redirect normally : e.g :"453"
 		 */
-        play.Logger.debug("BdController : addBD : id before indexOf(_): " + id);
+        play.Logger.debug(this.getClass().getName()+" addBD : id before indexOf(_): " + id);
         if (id.indexOf("_") !=-1) {
-        	play.Logger.debug("BdController : addBD : id.indexOf(\"_\") ==-1 : true");
+        	play.Logger.debug(this.getClass().getName()+" addBD : id.indexOf(\"_\") ==-1 : true");
         	id=id.split("_")[0];
 			fromModalLoginCalled=true;
 		}
-		play.Logger.debug("BdController : addBD : id after indexOf(_): " + id);
-		play.Logger.debug("BdController : addBD :  fromModalLoginCalled : " + fromModalLoginCalled);
-		play.Logger.debug("BdController : addBD :  Long.valueOf(id) : " + String.valueOf(Long.valueOf(id)));
+		play.Logger.debug(this.getClass().getName()+" addBD : id after indexOf(_): " + id);
+		play.Logger.debug(this.getClass().getName()+" addBD :  fromModalLoginCalled : " + fromModalLoginCalled);
+		play.Logger.debug(this.getClass().getName()+" addBD :  Long.valueOf(id) : " + String.valueOf(Long.valueOf(id)));
 		
 		
 		//i check if the collection extracted from the web store (data into the form) already exist or not
@@ -347,9 +350,9 @@ public class BdController extends Controller {
 		 
 		 CollectionBD bdCollection=owner.getCollectionBD().stream()
 		    		.filter(e ->{ 
-		    			          play.Logger.debug("BdController : addBD : in filter : e.id ="+e.id);
-		    			          play.Logger.debug("BdController : addBD : in filter : bdscraper.getCollection().id ="+bdscraper.getCollection().id);
-		    			          play.Logger.debug("BdController : addBD : in filter : (e.id==bdscraper.getCollection().id) ="+(e.id==bdscraper.getCollection().id));
+		    			          play.Logger.debug(this.getClass().getName()+" addBD : in filter : e.id ="+e.id);
+		    			          play.Logger.debug(this.getClass().getName()+" addBD : in filter : bdscraper.getCollection().id ="+bdscraper.getCollection().id);
+		    			          play.Logger.debug(this.getClass().getName()+" addBD : in filter : (e.id==bdscraper.getCollection().id) ="+(e.id==bdscraper.getCollection().id));
 		    			          // i have to use longValue to compare the value, otherwise  the comparison is not working
 		    			          return(e.id.longValue()==bdscraper.getCollection().id.longValue());
 		    		              }) //-->
@@ -359,7 +362,7 @@ public class BdController extends Controller {
 		
 		
 		if (bdCollection !=null) {
-			play.Logger.debug("BdController : addBD :  The owner has the collection updated title : " + bdCollection.title);
+			play.Logger.debug(this.getClass().getName()+" addBD :  The owner has the collection updated title : " + bdCollection.title);
 			BdData bdInfo = new BdData();
 			bdInfo.setCollection(bdscraper.getCollection());
 			bdInfo.setCreationDate(new Date());
@@ -373,7 +376,7 @@ public class BdController extends Controller {
 			bdInfo.save();
 			
 		}else {
-			play.Logger.error("BdController : addBD :  The owner has not the the collection updated title : ");
+			play.Logger.error(this.getClass().getName()+" addBD :  The owner has not the the collection updated title : ");
 		}
 	
 
@@ -432,8 +435,8 @@ public class BdController extends Controller {
 		    formCollection.setOwner(owner);
 		    
 			if (bdCollection==null){
-				play.Logger.debug("BdController : scannedBD : New scannedBD collection____New:"+formCollection.title);
-				play.Logger.debug("BdController : scannedBD : New scannedBD owner:"+owner.login);
+				play.Logger.debug(this.getClass().getName()+" scannedBD : New scannedBD collection____New:"+formCollection.title);
+				play.Logger.debug(this.getClass().getName()+" scannedBD : New scannedBD owner:"+owner.login);
 				bdCollection = formCollection; 
 				bdCollection.save(); //the bdDATA object is also saved
 				resultToBeDisplayed ="Created";
@@ -444,15 +447,15 @@ public class BdController extends Controller {
 				  add a new one
 				
 				*/
-				play.Logger.debug("BdController : scannedBD : Existing scannedBD collection____New:"+formCollection.title);
+				play.Logger.debug(this.getClass().getName()+" scannedBD : Existing scannedBD collection____New:"+formCollection.title);
 				formCollection.setId(bdCollection.getId()); //here i update the ID collection of the form object 	
 				bdCollection.setEditor(formCollection.editor);
 				bdCollection.setTitle(formCollection.title);
 				
 //				BdData bdData =bdCollection.getBddata().stream()
 //						               .filter((item)->{
-//						            		play.Logger.debug("BdController : scannedBD :formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
-//						            		play.Logger.debug("BdController : scannedBD :item.getTitle() ="+item.getTitle());
+//						            		play.Logger.debug(this.getClass().getName()+" scannedBD :formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
+//						            		play.Logger.debug(this.getClass().getName()+" scannedBD :item.getTitle() ="+item.getTitle());
 //						            	   return (  /*formCollection.bddata.get(0).getTitle().equals(item.getTitle())
 //						            			   ||*/formCollection.bddata.get(0).getIsbn().equals(item.getIsbn())
 //						            			   ||formCollection.bddata.get(0).getNumber().equals(item.getNumber())
@@ -475,7 +478,7 @@ public class BdController extends Controller {
 								               .orElse(false);
 				
 				if (BdExisting==false) {//New BD into an existing collection
-					play.Logger.debug("BdController : scannedBD : bdData is null");
+					play.Logger.debug(this.getClass().getName()+" scannedBD : bdData is null");
 					
 					BdDataList.add(formCollection.getBddata().get(0));
 					resultToBeDisplayed ="Created";
@@ -485,9 +488,9 @@ public class BdController extends Controller {
 					resultToBeDisplayed ="Updated";		
 				}
 				
-				play.Logger.debug("BdController : scannedBD : bdData is not null");
-				play.Logger.debug("BdController : scannedBD : formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
-				play.Logger.debug("BdController : scannedBD : formCollection.bddata.get(0).number ="+formCollection.bddata.get(0).number);
+				play.Logger.debug(this.getClass().getName()+" scannedBD : bdData is not null");
+				play.Logger.debug(this.getClass().getName()+" scannedBD : formCollection.bddata.get(0).title ="+formCollection.bddata.get(0).title);
+				play.Logger.debug(this.getClass().getName()+" scannedBD : formCollection.bddata.get(0).number ="+formCollection.bddata.get(0).number);
 				BdDataList = BdDataList.stream()
 						.map(item ->{if (/*item.getTitle().equals(formCollection.bddata.get(0).getTitle())
 								         ||*/item.getIsbn().equals(formCollection.bddata.get(0).getIsbn())
@@ -507,8 +510,8 @@ public class BdController extends Controller {
 				
 				//!\ if you change the collection that mean's you have to update all the book of the collection to be link to the new connection./!\
 			}
-			play.Logger.debug("BdController : scannedBD : look for ISBN"+formCollection.bddata.get(0).isbn);
-		    play.Logger.debug("BdController : scannedBD : editor ="+bdCollection.editor +" & collection= " +bdCollection.title );
+			play.Logger.debug(this.getClass().getName()+" scannedBD : look for ISBN"+formCollection.bddata.get(0).isbn);
+		    play.Logger.debug(this.getClass().getName()+" scannedBD : editor ="+bdCollection.editor +" & collection= " +bdCollection.title );
 		
 		return ok(views.html.scannedBD.render(resultToBeDisplayed));
 	}
@@ -567,7 +570,7 @@ public class BdController extends Controller {
 			
 			List<CollectionDisplay> collectionBD = askForCollectionsToBeDisplayed(login);
 			
-			play.Logger.debug("BdController -listBD session(\"connectedBD\")"+session("connectedBD"));
+			play.Logger.debug(this.getClass().getName()+"-listBD session(\"connectedBD\")"+session("connectedBD"));
 	        
 			 
 			 myStat.setStatisticsByLogin(login);
@@ -577,6 +580,66 @@ public class BdController extends Controller {
 		 } 
 	
 		
+		//controller to get the data of the collection
+		//by default login ="grobe" defined in routes file.
+			public Result  pivot(String login){
+				Owners owner;
+				
+				
+				List<BdPivot> bdPivotListGlobal =new ArrayList <BdPivot>();
+				
+				if (session("connectedBD")!=null)
+					
+				{ owner =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
+				  login=owner.getLogin();
+				}else {
+					owner =Owners.find.where().eq("login", login).findUnique();
+				}
+				
+				
+				
+				List<CollectionBD> collectionBD =owner.getCollectionBD();
+						     
+				    		
+			//create the pivot list to be displayed					 
+				for (CollectionBD item :collectionBD) {
+                    	List<BdPivot> bdPivotList = item.bddata.stream()
+							    .map(bd->{
+							        BdPivot bdData = new BdPivot();	
+								    bdData.creationDate=bd.getCreationDate();
+						    		bdData.designer=bd.getDesigner();
+						    		bdData.isbn=bd.getIsbn();
+						    		bdData.number=bd.getNumber();
+						    		bdData.price=bd.getPrice();
+						    		bdData.scenario=bd.getScenario();
+						    		bdData.title=bd.getTitle();
+						    		bdData.collectionEditor=item.editor;
+						    		bdData.collectionTitle=item.title;
+						    		return (bdData);
+					             })
+							    .collect(Collectors.toList());
+						                        	
+                    	//merge the global list with the new collection
+                    	bdPivotListGlobal = Stream.of(bdPivotListGlobal, bdPivotList)
+                                .flatMap(x -> x.stream())
+                                .collect(Collectors.toList());
+				}		                      
+				
+				//sort by colectionTitel and by number
+				Comparator<BdPivot> sortByCollection = (p, o) -> p.collectionTitle.compareToIgnoreCase(o.collectionTitle);
+                Comparator<BdPivot> sortByBDNumber  = (p, o) -> p.number.compareToIgnoreCase(o.number);
+				
+				
+				play.Logger.debug(this.getClass().getName()+"-pivot session(\"connectedBD\")"+session("connectedBD"));
+		        
+				
+				 
+				bdPivotListGlobal=bdPivotListGlobal.stream().sorted(sortByCollection.thenComparing(sortByBDNumber))
+                                                .collect(Collectors.toList());
+				 
+				 return ok(views.html.pivot.render(Json.toJson(bdPivotListGlobal).toString(),login)); 	
+			 } 
+		
 		
 	//controller to display the data extract from the code bar scanned
 	//and based on the ISBN searches the data on the website Fnac
@@ -584,7 +647,7 @@ public class BdController extends Controller {
 	  public CompletionStage<Result>   infoBD(){
 		  
 		  //String loginConnected;
-		  play.Logger.debug("BdController : infoBD ");
+		  play.Logger.debug(this.getClass().getName()+" infoBD ");
 		
 		  
 		 //here i get the connected owner
@@ -605,15 +668,15 @@ public class BdController extends Controller {
 		        return    (CompletionStage<Result>) badRequest("bad request");
 		    }
 		
-		    play.Logger.debug("BdController : infoBD : before scanFromFnac.Scan");
+		    play.Logger.debug(this.getClass().getName()+" infoBD : before scanFromFnac.Scan");
 		    final String isbnCode =scanFromFnac.scan(file);
 		    play.Logger.debug(" BdController : infoBD : after scanFromFnac.Scan");
 		   
 		    
 		    String url =configuration.getString("webStore.fnac.searchUrl") +isbnCode;
 		  
-		    play.Logger.debug("BdController : infoBD :  URL =  " +url);
-		    play.Logger.debug("BdController : infoBD :  listBD :IsbnCode="+isbnCode+ " - size of the file :"+file.length());
+		    play.Logger.debug(this.getClass().getName()+" infoBD :  URL =  " +url);
+		    play.Logger.debug(this.getClass().getName()+" infoBD :  listBD :IsbnCode="+isbnCode+ " - size of the file :"+file.length());
 		  
 		  
 		
@@ -624,7 +687,7 @@ public class BdController extends Controller {
 	  	           response ->{
 	  	        	 CollectionBD bdInfo;
 		                  // play.Logger.debug("FnacCrawler : crawler2 :thenApply :"+url+" "+ new Date());
-		  	        	 play.Logger.debug("BdController : infoBDinfoBD : isbnCode="+isbnCode);
+		  	        	 play.Logger.debug(this.getClass().getName()+" infoBDinfoBD : isbnCode="+isbnCode);
 		  	        	//play.Logger.debug("response.getBody() : "+response.getBody());
 		  	        	if (!isbnCode.isEmpty()){
 		  	        	    /*Here we check that the IsbnCode is not empty
@@ -632,15 +695,15 @@ public class BdController extends Controller {
 		  	        	     */
 		  	        		
 		  	        		bdInfo = scanFromFnac.extractDataFromSearch( response.getBody(),isbnCode,ownerLogged) ;
-		  	        		play.Logger.debug("BdController : infoBD 1.5 : bdExist bdInfo ="+bdInfo);
+		  	        		play.Logger.debug(this.getClass().getName()+" infoBD 1.5 : bdExist bdInfo ="+bdInfo);
 		  	        		play.Logger.debug("infoBD 1.5 + bdExist bdInfo.id ="+bdInfo.getId());
 		  	        		
 		  	        	    //First:  i' check if the Bd extracted is already existing on my DB from isbn code
 		  	        		boolean bdExist =scanFromFnac.bdExist(isbnCode, bdInfo,ownerLogged);
 		  	        		
 			  	        	//if (bdExist==false) bdInfo.save();
-			  	        	play.Logger.debug("BdController : infoBD 2 : bdExist ="+bdExist);
-			  	        	play.Logger.debug("BdController : infoBD 3 : bdInfo.getOwner().getLogin() ="+bdInfo.getOwner().getLogin());
+			  	        	play.Logger.debug(this.getClass().getName()+" infoBD 2 : bdExist ="+bdExist);
+			  	        	play.Logger.debug(this.getClass().getName()+" infoBD 3 : bdInfo.getOwner().getLogin() ="+bdInfo.getOwner().getLogin());
 			  	        	
 			  	        	
 			  	        	return ok(views.html.bdInfo.render(bdInfo,bdExist));
