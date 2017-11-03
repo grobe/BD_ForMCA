@@ -42,8 +42,9 @@ GET /scan								controllers.BdController.scan()
 
 
 #use to get the list of my Owned BD 
-GET /pivot/:log						controllers.BdController.pivot(log : String)
 GET /pivot							controllers.BdController.pivot(log ="grobe")
+GET /pivot/:log						controllers.BdController.pivot(log : String)
+
 
 #
 # Async Action : used to catch from a form POST the picture code and display into a for the result of the scan from the web store
@@ -64,8 +65,9 @@ GET /addBD/:id								controllers.BdController.addBD(id: String )
 
 #Display the main page of the web site
 # by default my login is always grobe :)
-GET /:login									controllers.BdController.listBD(login : String)
 GET /								        controllers.BdController.listBD(login ="grobe") 
+GET /:login									controllers.BdController.listBD(login : String)
+
 
 
 # Map static resources from the /public folder to the /assets URL path

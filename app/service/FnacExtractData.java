@@ -217,7 +217,7 @@ public class FnacExtractData {
         			num =Double.valueOf(number);
         		}catch (NumberFormatException  e){
         			play.Logger.error("FnacExtractData : getNumber error"+ e.getMessage());
-        			number="-1";
+        			number="-10";
         			num=0;
         		}
         		
@@ -226,12 +226,15 @@ public class FnacExtractData {
      	  // play.Logger.debug("FnacExtractData : getNumber :_____MCA___________________________ :"+"bdNumber : "+ bdNumber);
                       	    
         }
-		return number;
+        // replace "3.0" by 3, I cannot only keep the integer of the double number because of some time we have 6.1 as book number 
+        number =String.valueOf(num).replaceAll(".0", "");
+        return number;
 	}
 	
 	
 	static String getAvailability(Element bdItem) {
-		Element bdAvailability = bdItem.select("span[class=Dispo-txt]").first();
+		
+		Element bdAvailability = bdItem.select("p[class=Dispo]").first();
         String availability="No information";
         
         if (bdAvailability !=null){
@@ -255,6 +258,7 @@ public class FnacExtractData {
       	   df.setDecimalFormatSymbols(sfs);
       	   price = df.parse(bdPrice.text()).doubleValue();
       	   //play.Logger.debug("FnacExtractData : getPrice :_____MCA___________________________ :"+"bdPrice : "+ bdPrice.text());
+      	   //play.Logger.debug("FnacExtractData : getPrice :_____MCA___________________________ :"+"price : "+ price);
                        	    
          }
 		return price;

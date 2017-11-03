@@ -58,7 +58,7 @@
 					     <div class="col-xs-3 col-md-2 @classRow">@item.title</div>
 					     <div class="col-xs-1 col-md-1  @classRow">@item.number</div>
 							    @if(item.isbn =="N/A"){
-							    <div class="col-xs-4 col-md-4  @classRow "> <b>Price: @item.price €</b>&nbsp;-&nbsp;@item.availability 
+							    <div class="col-xs-4 col-md-4  @classRow "> <b>Price: @item.price &euro;</b>&nbsp;-&nbsp;@item.availability 
 							      <!--   -->
 							         @if(session.containsKey("connectedBD")){
 							          <div class="commandButton"><a href='@routes.BdController.addBD( item.id )'><i  class="glyphicon glyphicon-plus-sign"></i></a>  </div>
