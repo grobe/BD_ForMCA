@@ -117,7 +117,7 @@ public class FnacCrawler {
      	   
      	   
      	   
-     	  // play.Logger.debug(this.getClass().getName()+": setAllCrowlerResult :listBD.size()     ________________________________ :"+" listBD.size() :"+ listBD.size()); 
+     	   play.Logger.debug(this.getClass().getName()+": setAllCrowlerResult :listBD.size()     ________________________________ :"+" listBD.size() :"+ listBD.size()); 
      	   listBD.forEach(bd -> {
      		                  
      		                  setCrowlerItemResult (bd, bot.collection);
@@ -148,7 +148,7 @@ public class FnacCrawler {
         	        	//STEP1 : i'm looking for the title and the number of the comic in the collection	 
         	            
         	  		  String bdGlobalTitle = FnacExtractData.getTitle(bdItem);
-        	          //  play.Logger.debug(this.getClass().getName()+": setCrowlerItemResult1 :_____MCA___________________________ : bdTitle "+ bdGlobalTitle+ " --- "+ new Date()); 
+        	            play.Logger.debug(this.getClass().getName()+": setCrowlerItemResult1 :_____MCA___________________________ : bdTitle "+ bdGlobalTitle+ " --- "+ new Date()); 
         	           
         	        	
         	        	// take the number between" tome" and ":" and remove all the non numeric characters -
@@ -200,7 +200,7 @@ public class FnacCrawler {
           
           
           }else{
-   	    	 //play.Logger.debug(this.getClass().getName()+": setCrowlerItemResult4  :_________________ : Line NOT selected : " + FnacExtractData.getTitle(bdItem)) ;    
+   	    	 play.Logger.debug(this.getClass().getName()+": setCrowlerItemResult4  :_________________ : Line NOT selected : " + FnacExtractData.getTitle(bdItem)) ;    
    	       }
        	    	 
              

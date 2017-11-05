@@ -34,17 +34,21 @@ public class FnacExtractData {
 	   i also double check the collection.title, because i don't know why but the result from Fnac web store some times return more items taht olny the colelction asked
 	*/
 	static boolean isItemArticleValidated (Element bdItem, String collectionSeeked){
-		//play.Logger.debug("FnacExtractData : isItemArticleValidated ? ");
+		play.Logger.debug("FnacExtractData : isItemArticleValidated ? ");
 		
 		String bdTitle=getTitle(bdItem);
 		String bdcollection=getCollection(bdItem);
-		//play.Logger.debug("FnacExtractData : isItemArticleValidated - collectionSeeked = "+collectionSeeked);
-		//play.Logger.debug("FnacExtractData : isItemArticleValidated - bdcollectionItem = "+bdcollection);
-		//play.Logger.debug("FnacExtractData : isItemArticleValidated - bdTitle = "+bdTitle);
+		play.Logger.debug("FnacExtractData : isItemArticleValidated - collectionSeeked = "+collectionSeeked);
+		play.Logger.debug("FnacExtractData : isItemArticleValidated - bdcollectionItem = "+bdcollection);
+		play.Logger.debug("FnacExtractData : isItemArticleValidated - bdTitle = "+bdTitle);
 		String bdNumber=getNumber(bdItem);
 		boolean goodNumber=false;
 		if (Double.valueOf(bdNumber).floatValue()>=0 && Double.valueOf(bdNumber).floatValue()<100) goodNumber=true;
-		
+		play.Logger.debug("FnacExtractData : isItemArticleValidated - goodNumber = "+goodNumber);
+		play.Logger.debug("FnacExtractData : isItemArticleValidated -  bdTitle.matches(\".*\\\\bTome\\\\b.*\") = "+ bdTitle.matches(".*\\bTome\\b.*"));
+		play.Logger.debug("FnacExtractData : isItemArticleValidated -  StringUtils.countMatches(bdTitle, \"Tome\")==1 = "+ (StringUtils.countMatches(bdTitle, "Tome")==1));
+		play.Logger.debug("FnacExtractData : isItemArticleValidated -  bdTitle.matches(\".*\\\\bTome\\\\b.*\") = "+ bdTitle.matches(".*\\bTome\\b.*"));
+		play.Logger.debug("FnacExtractData : isItemArticleValidated -  bdcollection.equals(collectionSeeked) = "+ bdcollection.equals(collectionSeeked));
 		return (goodNumber==true && bdTitle.matches(".*\\bTome\\b.*")&&  (StringUtils.countMatches(bdTitle, "Tome")==1) &&(StringUtils.countMatches(bdTitle, ":")==1)&&bdcollection.equals(collectionSeeked));
 	}
 	
@@ -148,9 +152,9 @@ public class FnacExtractData {
        
      	  
            collection = getTitle(bdItem);
-        	if (collection.contains("Tome")){
+        	if (collection.contains("Tome")&&collection.contains("-")){
         		
-        		collection = (collection.split("Tome"))[0];
+        		collection = (collection.split("-"))[0];
         	};
      	   //play.Logger.debug("FnacExtractData : getCollection :_____MCA___________________________ :"+"collection : "+ collection);
                       	    
