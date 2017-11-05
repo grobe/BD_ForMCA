@@ -1,10 +1,52 @@
 @media (max-width: 768px) {
     .hideColumnForMobile{display: none;}
-	
-	}
+   	}
 	
 .highlight { background: #000; color: #fff; }
 
+
+
+#goToTop {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed/sticky position */
+    bottom: 20px; /* Place the button at the bottom of the page */
+    right: 30px; /* Place the button 30px from the right */
+    z-index: 99; /* Make sure it does not overlap */
+    border: none; /* Remove borders */
+    outline: none; /* Remove outline */
+    background-color: #8A4A00; /* Set a background color */
+    color: #E0BC93; /* Text color */
+    cursor: pointer; /* Add a mouse pointer on hover */
+    padding-top: 8px; /* Some padding */
+    padding-bottom: 8px;
+    padding-right: 15px;
+    padding-left: 15px;
+    border-radius: 100px; /* Rounded corners */
+    /*display: flex !important;*/
+    flex-direction: column;
+}
+
+#goToTop:hover {
+    background-color: #555; /* Add a dark-grey background on hover */
+}
+
+
+.rightPosition{
+	display: flex;
+    flex-direction: row-reverse;
+}
+.centerText {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom:15px;
+    width: 3em;
+    border-radius: 100%;
+    font-size: 15px;
+   /* border: solid 2px #8A4A00;*/
+   font-weight: bold;
+    background-color: #E0BC93;
+    text-align: center;
+}
 
 
 

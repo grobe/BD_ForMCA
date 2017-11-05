@@ -68,38 +68,59 @@ function totaux(TotalBD,Totalcollection,DateFichierBD,DateRechercheWeb ){
 		};
 		
 		
-		function getCover (coverSeeked ){ 
-		       
+function getCover (coverSeeked ){ 
+       
 
-		var imgMCA        = document.getElementById(coverSeeked);
-			  
-           
-            var request = "/displayCover/"+coverSeeked;
+var imgMCA        = document.getElementById(coverSeeked);
+	  
+   
+    var request = "/displayCover/"+coverSeeked;
 
-            fetch(request).then(function(returnedValue) {
-	                 returnFetchValue=returnedValue.status;
-	                 returnFetchValueText=returnedValue.text();
-	                 contentType = returnedValue.headers.get("content-type");
-	                 //console.log("cover=" + contentType);
-	                 //console.log("cover : returnFetchValue.status=" + returnFetchValue);
-	                 //console.log("cover : returnFetchValueText=" + returnFetchValueText);
-	                
-	                 if (returnFetchValue!="200"){
-	                	
-	                
-	                	 console.log("cover : error Message : " + returnedValue.statusText); 
-	                 }else{                                            //to be updated to remove HArcoded :bdReturnedValues
-	                	
-	                	 console.log("cover : NoError on : " );
-	                	 //console.log("myModule.js :NoErrorMessage : " + returnFetchValueText); 
-	                 }
-	                 return returnFetchValueText;
-	                
-           }).then(function (value){
-           
-           //	console.log("fetch.cover.then=" + value);
-           	 imgMCA.setAttribute("src", value);
-           	
-           });
-            return ; 
-			}
+    fetch(request).then(function(returnedValue) {
+             returnFetchValue=returnedValue.status;
+             returnFetchValueText=returnedValue.text();
+             contentType = returnedValue.headers.get("content-type");
+             //console.log("cover=" + contentType);
+             //console.log("cover : returnFetchValue.status=" + returnFetchValue);
+             //console.log("cover : returnFetchValueText=" + returnFetchValueText);
+            
+             if (returnFetchValue!="200"){
+            	
+            
+            	 console.log("cover : error Message : " + returnedValue.statusText); 
+             }else{                                            //to be updated to remove HArcoded :bdReturnedValues
+            	
+            	 console.log("cover : NoError on : " );
+            	 //console.log("myModule.js :NoErrorMessage : " + returnFetchValueText); 
+             }
+             return returnFetchValueText;
+            
+   }).then(function (value){
+   
+   //	console.log("fetch.cover.then=" + value);
+   	 imgMCA.setAttribute("src", value);
+   	
+   });
+    return ; 
+}
+
+function goToTopInit() {
+	document.getElementById("goToTop").addEventListener("click",topFunction , false);
+	document.addEventListener("scroll",scrollFunction , false);
+}
+
+function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        document.getElementById("goToTop").style.display = "flex";
+    } else {
+        document.getElementById("goToTop").style.display = "none";
+    }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+	console.log("topFunction :  Start");
+    document.body.scrollTop = 0; // For Chrome, Safari and Opera 
+    document.documentElement.scrollTop = 0; // For IE and Firefox
+    console.log("topFunction :  End");
+}

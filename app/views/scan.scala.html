@@ -1,20 +1,31 @@
 
 <div class="modal-body">
-			      				 
+			    <form id="BDscanManually" name="BDscanManually" >  				 
 				<div class="form-group">
-					<input type="text" name="isbn" id ="isbn" placeholder ="Fill manually your ISBN Code" size="50%">
-					<button id="sendManually" name="sendManually" type="button" class="btn btn-primary">Send Code</button>
+					<input type="text" name="isbn" id ="isbn" class="form-control" placeholder ="Fill manually your ISBN Code">
 				</div>
-				<div class="form-group">
-				<strong>or</strong> 
+				<div class="form-group rightPosition">	
+			           <button id="sendManually" name="sendManually" type="button" class="btn btn-primary ">Send your ISBN Code</button>
+                    				
+				</div>	
+				</form>
+				
+				<div class="centerText">
+				
+				or
 				</div>
 				
 				<div class="form-group">
-					<input type="file" name="picture" id="picture" placeholder="scan your ISBN code" class="form-control" accept="image/*;capture=camera"> 
+					<input type="file"  class="hidden" name="picture" id="picture" title="Scan your ISBN code" placeholder="scan your ISBN code" class="form-control" accept="image/*;capture=camera">
+					
+					<label for="picture" class="btn btn-primary form-control" >Scan your ISBN code</label> 
+				   <div> </div>
 				</div>
 			
 				
 				
+				
+				   
 				   
 				<div class="form-group">
 					<img src="@routes.Assets.versioned("images/no-image-available.png")" crossOrigin="anonymous" width="100" height="100" id="photo" alt="photo" class="img-thumbnail">
@@ -35,6 +46,10 @@
 <script>
 
 
+document.getElementById("sendManually").addEventListener("click",handleIsbn , false);
+
+
+
 console.log("scan.scala.html :  Start");
 
 //if (filesToUpload){
@@ -46,8 +61,54 @@ document.getElementById('bdReturnedValues').innerHTML  ="";
 document.getElementById('name').innerHTML  = "";
 
 
+function handleIsbn(evt) {
+	
+	document.getElementById('bdReturnedValues').innerHTML  ="Data is transfering, please wait";
+    document.getElementById('name').innerHTML  = "";
+    document.getElementById('size').innerHTML  = "";
+    document.getElementById('photo').src="@routes.Assets.versioned("images/no-image-available.png")";
+	var isbn =document.getElementById('isbn').value;
+	var request = new Request('/infoBDManually?isbn='+isbn, {  
+		method: 'GET',
+		credentials: 'same-origin',
+		//body: formData
+		//mode: 'cors', 
+		/*redirect: 'follow',
+		//headers: new Headers({
+		//	'Content-Type': 'text/plain'
+		})*/
+	});
+
+	// Now use it!
+	fetch(request).then(function(returnedValue) {
+                    
+		                return returnedValue.text();
+		                
+	                }).then(function (value){
+	                	document.getElementById('bdReturnedValues').innerHTML=value;
+	                	console.log("scan.scala.html : sendFile : submitForm ");
+	                	addEventForsubmitForm("BDscan", "@routes.BdController.scannedBD");
+	                	return "c'est bon tu as compris";
+	                	}).then(function(answer){
+	                		console.log("scan.scala.html : Answer from the Web service called : "+answer);
+	                		
+	                		 //i'm looking for scripts into the HTML fragment injected
+	                	     //if i found it/them, i execute then
+	                	    var scripts = document.getElementById('BDscan').getElementsByTagName("script");
+	                	    console.log("scan.html :before script for"); 
+	                	     for (var i = 0; i < scripts.length; ++i) {
+	                		      console.log("i="+i); 
+	                	         var script = scripts[i];
+	                	        eval(script.innerHTML);
+	                	  }
+	                		 console.log("scan.html :after script for");
+	                	});
+}
+
+
+
 function handleFiles(evt) {
-		
+		 
 		        var files = evt.target.files;
 		        var photo        = document.getElementById('photo');
 		        var dislaySize = document.getElementById('size');

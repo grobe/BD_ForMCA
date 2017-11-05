@@ -169,7 +169,15 @@ public class BdController extends Controller {
 	}
 	
 	
-	
+	public Result logout(String callBackURL) {
+		
+		
+		Logger.debug(this.getClass().getName()+" - logout");
+		session().clear();
+		
+		return  redirect("/");
+		
+	}
 	
 	public Result login(String callBackURL) {
 		
@@ -641,42 +649,13 @@ public class BdController extends Controller {
 			 } 
 		
 		
-	//controller to display the data extract from the code bar scanned
-	//and based on the ISBN searches the data on the website Fnac
-	  @Security.Authenticated(Secured.class)
-	  public CompletionStage<Result>   infoBD(){
-		  
-		  //String loginConnected;
-		  play.Logger.debug(this.getClass().getName()+" infoBD ");
-		
-		  
-		 //here i get the connected owner
-		  Owners ownerLogged =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
-		 
-		  
-		  File file;
-		 
-		  MultipartFormData<File> body = request().body().asMultipartFormData();
-		  FilePart<File> picture = body.getFile("picture");
-		    if (picture != null) {
-		        //String fileName = picture.getFilename();
-		        //String contentType = picture.getContentType();
-		        file = picture.getFile();
-		        
-		    } else {
-		        flash("error", "Missing file");
-		        return    (CompletionStage<Result>) badRequest("bad request");
-		    }
-		
-		    play.Logger.debug(this.getClass().getName()+" infoBD : before scanFromFnac.Scan");
-		    final String isbnCode =scanFromFnac.scan(file);
-		    play.Logger.debug(" BdController : infoBD : after scanFromFnac.Scan");
-		   
-		    
-		    String url =configuration.getString("webStore.fnac.searchUrl") +isbnCode;
+	
+			
+	private CompletionStage<Result> extractDataFromIsbn (String isbnCode,Owners ownerLogged )		{
+		 String url =configuration.getString("webStore.fnac.searchUrl") +isbnCode;
 		  
 		    play.Logger.debug(this.getClass().getName()+" infoBD :  URL =  " +url);
-		    play.Logger.debug(this.getClass().getName()+" infoBD :  listBD :IsbnCode="+isbnCode+ " - size of the file :"+file.length());
+		    play.Logger.debug(this.getClass().getName()+" infoBD :  listBD :IsbnCode="+isbnCode+ " - size of the file :"+"file.length()");
 		  
 		  
 		
@@ -708,13 +687,60 @@ public class BdController extends Controller {
 			  	        	
 			  	        	return ok(views.html.bdInfo.render(bdInfo,bdExist));
 		  	        	}else{
-		  	        		return ok("Barcode not recognized !! ");
+		  	        		return ok("Barcode or ISBN code not recognized !! ");
 		  	        	}
 		  	        	    
 		  	        	 
 		                
 		        
 		             });
+	}
+			
+	    //controller to display the data extract from the code bar filled manually by the user
+		//and based on the ISBN searches the data on the website Fnac
+		  @Security.Authenticated(Secured.class)
+		  public CompletionStage<Result>   infoBDManually(String isbnCode){
+			  play.Logger.debug(this.getClass().getName()+" infoBD : IsbnCode="+isbnCode);
+			  //here i get the connected owner
+			  Owners ownerLogged =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
+			  
+			  return extractDataFromIsbn ( isbnCode,ownerLogged );
+		  }
+			  
+	
+	//controller to display the data extract from the code bar scanned
+	//and based on the ISBN searches the data on the website Fnac
+	  @Security.Authenticated(Secured.class)
+	  public CompletionStage<Result>   infoBD(){
+		  
+		  //String loginConnected;
+		  play.Logger.debug(this.getClass().getName()+" infoBD ");
+		
+		  
+		 //here i get the connected owner
+		  Owners ownerLogged =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
+		 
+		  
+		  File file;
+		 
+		  MultipartFormData<File> body = request().body().asMultipartFormData();
+		  FilePart<File> picture = body.getFile("picture");
+		    if (picture != null) {
+		        //String fileName = picture.getFilename();
+		        //String contentType = picture.getContentType();
+		        file = picture.getFile();
+		        
+		    } else {
+		        flash("error", "Missing file");
+		        return    (CompletionStage<Result>) badRequest("bad request");
+		    }
+		
+		    play.Logger.debug(this.getClass().getName()+" infoBD : before scanFromFnac.Scan");
+		    String isbnCode =scanFromFnac.scan(file);
+		    play.Logger.debug(" BdController : infoBD : after scanFromFnac.Scan");
+		   
+		    
+		    return extractDataFromIsbn ( isbnCode,ownerLogged );
 		  
 	  }
 	  

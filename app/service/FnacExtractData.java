@@ -130,7 +130,7 @@ public class FnacExtractData {
         if (bdEditor !=null){
      	  
         	editor = bdEditor.text();
-     	    if (editor.split(" - ").length>1) {
+     	    if (editor.split(" - ").length>2) {
      	    	editor= editor.split(" - ")[2].trim();
      	    }
      	   

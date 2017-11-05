@@ -47,9 +47,12 @@ GET /pivot/:log						controllers.BdController.pivot(log : String)
 
 
 #
-# Async Action : used to catch from a form POST the picture code and display into a for the result of the scan from the web store
+# Async Action : used to catch from a form POST the picture code and display into a  for the result of the scan from the web store
 POST /infoBD							controllers.BdController.infoBD()
+GET  /infoBDManually           			controllers.BdController.infoBDManually(isbn : String)
 
+# used to remove the session / disconnect the user from the application.
+GET  /logout/:userFilter       			controllers.BdController.logout(userFilter:String)
 
 #used for Update or Create a BD after a scan of the bar code
 POST /scannedBD							controllers.BdController.scannedBD()

@@ -34,7 +34,7 @@ body  {
 
 .contentListBD {
 	    background-color: #EFE4D2; /*top colour*/
-	    background-image:linear-gradient(to bottom, #EFE4D2,   #E0BC93);
+	   /* background-image:linear-gradient(to bottom, #EFE4D2,   #E0BC93);*/
 	    padding: 0px;
 	    border-radius: 14px !important;
 	    border-color: #8a4a00;
