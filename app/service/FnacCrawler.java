@@ -21,11 +21,15 @@ import org.jsoup.select.Elements;
 import models.CollectionBD;
 import models.ScraperBot;
 import models.ScraperResults;
+import play.Configuration;
 import play.libs.ws.WSClient;
 
 public class FnacCrawler {
 	@Inject 
 	WSClient ws;
+	
+	@Inject
+	Configuration configuration;
 	
 	int i;
 	/*
@@ -78,7 +82,7 @@ public class FnacCrawler {
 				    //Look for the URL to be used by the bot to search into the store FNAC
 				    String url  =bot.url;
 				   
-			        CompletionStage<String> retour = ws.url(url).get().thenApply(
+			        CompletionStage<String> retour = ws.url(url).setRequestTimeout(configuration.getBytes("webStore.fnac.timeout")).get().thenApply(
 			  	           response ->{
 			                 // play.Logger.debug("FnacCrawler : crawler2 :thenApply :"+url+" "+ new Date());
 			                   
