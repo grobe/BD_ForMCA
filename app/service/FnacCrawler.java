@@ -73,7 +73,7 @@ public class FnacCrawler {
 		List <CollectionBD> collection =  CollectionBD.find.all();
 		
 		play.Logger.debug(this.getClass().getName()+": crawler 1 : : collection.size() :" + collection.size() + new Date());
-		i=0;
+		i=0;  
 		collection.stream().forEach((col)->{
 		    i=i+1; 
 			play.Logger.debug(this.getClass().getName()+": crawler 1.5 : : collection seeked : "+i+ "DB ID: "+col.id+" title="+col.title+" with number of links =" +col.scraperBots.size()+ new Date());
@@ -103,6 +103,12 @@ public class FnacCrawler {
 			              	  }
 			             }); 
 			 });        
+		
+		try {
+			Thread.sleep(configuration.getBytes("webStore.fnac.sleep"));
+		} catch (InterruptedException exception) {
+			 play.Logger.error(this.getClass().getName()+": crawler5 Thread ++++++++++++++++ error exception : "+exception.getMessage()+ "-----"+ new Date());
+		}
 		});
 		
 		return "done";
