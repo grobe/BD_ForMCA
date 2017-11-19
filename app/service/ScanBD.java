@@ -89,8 +89,8 @@ public interface ScanBD {
         
         CollectionBD collectionScanned = ownerLogged.getCollectionBD().stream()
 		 
-				               .filter(collection1->{play.Logger.debug("ScanBD : bdExist : collection1.title="+collection1.title);
-				               						play.Logger.debug("ScanBD : bdExist : bdInfo.title="+bdInfo.title);
+				               .filter(collection1->{//play.Logger.debug("ScanBD : bdExist : collection1.title="+collection1.title);
+				               						//play.Logger.debug("ScanBD : bdExist : bdInfo.title="+bdInfo.title);
 				            	                    return (collection1.title.equals(bdInfo.title));})
 				                .findFirst()
 				                .orElse(null);

@@ -49,7 +49,7 @@ public class FnacExtractData {
 		play.Logger.debug("FnacExtractData : isItemArticleValidated -  StringUtils.countMatches(bdTitle, \"Tome\")==1 = "+ (StringUtils.countMatches(bdTitle, "Tome")==1));
 		play.Logger.debug("FnacExtractData : isItemArticleValidated -  bdTitle.matches(\".*\\\\bTome\\\\b.*\") = "+ bdTitle.matches(".*\\bTome\\b.*"));
 		play.Logger.debug("FnacExtractData : isItemArticleValidated -  bdcollection.equals(collectionSeeked) = "+ bdcollection.equals(collectionSeeked));
-		return (goodNumber==true && bdTitle.matches(".*\\bTome\\b.*")&&  (StringUtils.countMatches(bdTitle, "Tome")==1) &&(StringUtils.countMatches(bdTitle, ":")==1)&&bdcollection.equals(collectionSeeked));
+		return (goodNumber==true && bdTitle.matches(".*\\bTome\\b.*")&&  (StringUtils.countMatches(bdTitle, "Tome")==1) &&(StringUtils.countMatches(bdTitle, ":")==1)&&bdcollection.toUpperCase().equals(collectionSeeked.toUpperCase()));
 	}
 	
 	
@@ -171,7 +171,7 @@ public class FnacExtractData {
      	  
         	title = bdTitle.text();
         	
-     	 //  play.Logger.debug("FnacExtractData : getTitle :_____MCA___________________________ :"+"bdTitle : "+ bdTitle.text());
+     	   play.Logger.debug("FnacExtractData : getTitle :_____MCA___________________________ :"+"bdTitle : "+ bdTitle.text());
                       	    
         }
 		return title.trim();
@@ -199,7 +199,8 @@ public class FnacExtractData {
 		String bdNumber=getTitle(bdItem);
 		String number="0";
 		double num =0;
-		
+				
+		 play.Logger.debug("FnacExtractData : getNumber1 :_____MCA___________________________ :"+"bdNumber : "+ bdNumber);
         if (!bdNumber.contentEquals("No information")){
         	// take the number between" tome" and ":" and remove all the non numeric characters -
         	if (bdNumber.contains("Tome")&&bdNumber.contains(":")){
@@ -219,6 +220,8 @@ public class FnacExtractData {
         			//                   |here i get the zone where the number is      |Here i remove all alpha char      |Here i remove the space                                  
         			number = (((bdNumber.split("Tome"))[1].split(":"))[0].replaceAll("[^\\d.]", " ").trim().replaceAll(" ", ""));
         			num =Double.valueOf(number);
+        			//play.Logger.debug("FnacExtractData : getNumber2 :_____MCA___________________________ :"+"num : "+ num);
+        			//play.Logger.debug("FnacExtractData : getNumber2.5 :_____MCA___________________________ :"+"number : "+ number);
         		}catch (NumberFormatException  e){
         			play.Logger.error("FnacExtractData : getNumber error"+ e.getMessage());
         			number="-10";
@@ -227,11 +230,15 @@ public class FnacExtractData {
         		
         	}
         	
-     	  // play.Logger.debug("FnacExtractData : getNumber :_____MCA___________________________ :"+"bdNumber : "+ bdNumber);
+     	  //play.Logger.debug("FnacExtractData : getNumber3 :_____MCA___________________________ :"+"num : "+ num);
                       	    
         }
         // replace "3.0" by 3, I cannot only keep the integer of the double number because of some time we have 6.1 as book number 
-        number =String.valueOf(num).replaceAll(".0", "");
+        //number =String.valueOf(num).replaceAll(".", "&");
+       // play.Logger.debug("FnacExtractData : getNumber3 :_____MCA___________________________ :"+"number : "+ number);
+        number =String.valueOf(num).replaceAll("\\.0", "");
+       
+        play.Logger.debug("FnacExtractData : getNumber4 :_____MCA___________________________ :"+"number : "+ number);
         return number;
 	}
 	

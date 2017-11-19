@@ -91,7 +91,7 @@ public class FnacScanBD  implements ScanBD {
 		    	bdInfo.setTitle(FnacExtractData.getTitleCleaned(listBD.get(0)));
 		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 7");
 		    	bdInfo.setNumber(FnacExtractData.getNumber(listBD.get(0)));
-		    	
+		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 7.9 :listBD.get(0)"+listBD.get(0));
 		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 8 :FnacExtractData.getNumber(listBD.get(0)=" + FnacExtractData.getNumber(listBD.get(0)));
 		    	bdInfo.setDesigner(FnacExtractData.getAuthor(listBD.get(0)));
 		    	play.Logger.debug("FnacScanBD : extractDataFromSearch : extractData 9");
