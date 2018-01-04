@@ -49,7 +49,12 @@ public class FnacExtractData {
 		play.Logger.debug("FnacExtractData : isItemArticleValidated -  StringUtils.countMatches(bdTitle, \"Tome\")==1 = "+ (StringUtils.countMatches(bdTitle, "Tome")==1));
 		play.Logger.debug("FnacExtractData : isItemArticleValidated -  bdTitle.matches(\".*\\\\bTome\\\\b.*\") = "+ bdTitle.matches(".*\\bTome\\b.*"));
 		play.Logger.debug("FnacExtractData : isItemArticleValidated -  bdcollection.equals(collectionSeeked) = "+ bdcollection.equals(collectionSeeked));
-		return (goodNumber==true && bdTitle.matches(".*\\bTome\\b.*")&&  (StringUtils.countMatches(bdTitle, "Tome")==1) &&(StringUtils.countMatches(bdTitle, ":")==1)&&bdcollection.toUpperCase().equals(collectionSeeked.toUpperCase()));
+		return (goodNumber==true && 
+				bdTitle.matches(".*\\bTome\\b.*")&&
+				(StringUtils.countMatches(bdTitle, "Tome")==1) &&
+				(StringUtils.countMatches(bdTitle, ":")==1)&&
+				bdcollection.toUpperCase().equals(collectionSeeked.toUpperCase())
+				);
 	}
 	
 	
@@ -85,14 +90,19 @@ public class FnacExtractData {
 	        	// Reading a Image file from file system
 	        	byte imageData[] = new byte[(int) file.length()];
 	        	imageInFile.read(imageData);
+	        	
 	        	base64Image = Base64.getEncoder().encodeToString(imageData);
-		        
+	        	imageInFile.close();
 		        
 	        	base64Image="data:image/png;base64,"+base64Image;
 	        	
 	        	//the file is deleted when the JVM go down
 	        	//TODO create a daily job which delete all the temporary file creation date = before today.
-	        	file.deleteOnExit();
+	        	//or delete when the file is not useful anymore :)
+	        	//file.deleteOnExit();
+	        	play.Logger.error ("file.getAbsolutePath()"+file.getAbsolutePath());
+	        	
+	        	Files.delete(file.toPath());
 				
 			} catch (MalformedURLException e1) {
 				// TODO Auto-generated catch block
