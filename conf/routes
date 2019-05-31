@@ -17,7 +17,9 @@ GET /SayHello/:text					    controllers.ActorController.sayHello(text: String )
 
 
 
+# testpurpose to check a new way to get data from web site
 
+GET /testMCA_ISBN/:isbn                         controllers.BdController.testMCA_ISBN(isbn : String)
 
 # Test purpose !!! used to test the use of the Webcam on a web page
 GET /scanTest								controllers.BdController.scanTest()

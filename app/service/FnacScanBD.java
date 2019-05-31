@@ -28,7 +28,9 @@ import play.mvc.Result;
 public class FnacScanBD  implements ScanBD {
 	
 	private static final int ArrayList = 0;
-	@Inject 
+
+
+	@Inject
 	WSClient ws;
 	public FnacScanBD() {
 		

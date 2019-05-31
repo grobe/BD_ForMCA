@@ -1,6 +1,6 @@
 name := """BD.grobe.fr"""
 
-version := "1.4.3"
+version := "1.5.0"
 
 lazy val root = (project in file(".")).enablePlugins(BuildInfoPlugin, PlayJava, PlayEbean,DebianPlugin, WindowsPlugin).settings(
   buildInfoKeys := Seq[BuildInfoKey](name, version),
@@ -17,7 +17,7 @@ libraryDependencies += "org.webjars" % "bootstrap" % "3.3.7"
 
 
 // https://mvnrepository.com/artifact/org.jsoup/jsoup
-libraryDependencies += "org.jsoup" % "jsoup" % "1.10.2"
+libraryDependencies += "org.jsoup" % "jsoup" % "1.11.3"
 
 // https://mvnrepository.com/artifact/com.google.zxing/core
 libraryDependencies += "com.google.zxing" % "core" % "3.3.0"

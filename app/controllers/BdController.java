@@ -19,6 +19,8 @@ import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import javafx.scene.media.SubtitleTrack;
+import org.hibernate.validator.internal.util.logging.Log_$logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -43,6 +45,7 @@ import models.Owners;
 //import models.Owners;
 import models.ScraperResults;
 import models.StatisticsBD;
+import org.jsoup.nodes.Element;
 import play.Configuration;
 import play.Logger;
 import play.data.DynamicForm;
@@ -55,8 +58,11 @@ import play.mvc.*;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.twirl.api.Content;
-import service.FnacExtractData;
+import service.DecitreExtractData;
+
+import service.DecitreScanBD;
 import service.FnacScanBD;
+import play.libs.ws.*;
 //import views.html.login;
 
 @Singleton
@@ -65,7 +71,10 @@ public class BdController extends Controller {
 	
 	@Inject
 	FnacScanBD scanFromFnac;
-	
+
+    @Inject
+    DecitreScanBD scanFromDecitre;
+
 	@Inject 
 	WSClient ws;
 	
@@ -139,7 +148,76 @@ public class BdController extends Controller {
 		return ok(views.html.scan.render());
 				} 
 	
-	
+
+	public  CompletionStage<Result >testMCA_ISBN (String isbn){
+
+
+
+
+		return ws.url("https://www.decitre.fr/rechercher/result?q="+isbn).get().thenApply(response -> {
+
+							Logger.debug(this.getClass().getName() + " testMCA");
+
+
+							String result =response.getBody();
+					      Logger.debug(result);
+					         Element bdData = DecitreExtractData.getItemList(result);
+
+				             String Collection = DecitreExtractData.getCollection(bdData);
+					         String number = DecitreExtractData.getNumber(bdData);
+					         String editor = DecitreExtractData.getEditor(bdData);
+					   		 String title = DecitreExtractData.getTitle(bdData);
+					   		 String image64 = DecitreExtractData.getImageBAse64(bdData);
+
+                            Double price = null;
+                            try {
+                                price = DecitreExtractData.getPrice(bdData);
+                            } catch (Exception e) {
+                                play.Logger.debug("scan : MCA is HEre : error " + e.getMessage());
+                            }
+                            String writer = DecitreExtractData.getScriptWriter(bdData);
+                            String designer = DecitreExtractData.getDesigner(bdData);
+                            String availability = DecitreExtractData.getAvailability(bdData);
+
+                    return ok("Collection =" +Collection+" number="+number+" editor="+editor +" title="+title+" image64="+image64+" price="+ price+" Writer="+ writer +" Designer="+ designer+" availability="+ availability +"<br>" ) ;
+						}
+				);
+
+
+
+	}
+
+
+
+
+	/*public  CompletionStage<Result >testMCA_ISBN (){
+
+		//https://www.canalbd.net/spawnjs.php?lib=album-dante&spawn=recherche_js&default_rech=9791097477042&lang=fr&rand=0.3914657199778966
+		//https://www.chasse-aux-livres.fr/search?query=9782302074149&catalog=fr
+		return ws.url("https://www.canalbd.net/spawnjs.php?lib=album-dante&spawn=recherche_js&default_rech=9791097477042&lang=fr&rand=0.3914657199778966").get()
+		.thenApply(response -> {
+
+					Logger.debug(this.getClass().getName() + " testMCA");
+					Logger.debug("response.getBody() : " + response.getBody());
+
+					return response.getBody() ;
+				}
+
+		).thenCompose(response2-> {
+					//9782864973232$https://www.canalbd.net/album-dante_catalogue_detail_Asterix-T36-Le-Papyrus-de-Cesar-Edition-Speciale-T36--9782864973232$fr$9782864973232$location
+					String urlTest = response2.split("\\$")[1];
+
+
+					return  ws.url( //"https://www.chasse-aux-livres.fr/search?query=9782302074149&catalog=fr"//urlTest).get().thenApply(responseURL ->{
+						return ok(responseURL.getBody());
+					});
+
+
+				}
+		);
+
+	}   */
+
 	public Result searchCollection(String term,String userFilter) {
     	//look for the list of distinct list of line managers
     	
@@ -286,9 +364,6 @@ public class BdController extends Controller {
 						result= (Result)methode.invoke(myViewTobeDisplayed.newInstance(),new String(objectParameters[1]));
 						Logger.debug(this.getClass().getName()+" security :3.7.5: after else invoke");
 					}
-					
-				
-				
 				
 				Logger.debug(this.getClass().getName()+" security :4");
 				return result;
@@ -580,7 +655,7 @@ public class BdController extends Controller {
 			
 			play.Logger.debug(this.getClass().getName()+"-listBD session(\"connectedBD\")"+session("connectedBD"));
 	        
-			 
+
 			 myStat.setStatisticsByLogin(login);
 			 
 			 
@@ -652,7 +727,7 @@ public class BdController extends Controller {
 	
 			
 	private CompletionStage<Result> extractDataFromIsbn (String isbnCode,Owners ownerLogged )		{
-		 String url =configuration.getString("webStore.fnac.searchUrl") +isbnCode;
+		 String url =configuration.getString("webStore.decitre.searchUrl") +isbnCode;
 		  
 		    play.Logger.debug(this.getClass().getName()+" infoBD :  URL =  " +url);
 		    play.Logger.debug(this.getClass().getName()+" infoBD :  listBD :IsbnCode="+isbnCode+ " - size of the file :"+"file.length()");
@@ -660,12 +735,12 @@ public class BdController extends Controller {
 		  
 		
 		  
-		  //return scanFromFnac.extractDataFromSearch(IsbnCode);  
+		  //return scanFromDecitre.extractDataFromSearch(IsbnCode);
 		  
 		  return ws.url(url).get().thenApply(
 	  	           response ->{
 	  	        	 CollectionBD bdInfo;
-		                  // play.Logger.debug("FnacCrawler : crawler2 :thenApply :"+url+" "+ new Date());
+		                  play.Logger.debug("extractDataFromIsbn : extractDataFromIsbn :thenApply :"+url+" "+ new Date());
 		  	        	 play.Logger.debug(this.getClass().getName()+" infoBDinfoBD : isbnCode="+isbnCode);
 		  	        	//play.Logger.debug("response.getBody() : "+response.getBody());
 		  	        	if (!isbnCode.isEmpty()){
@@ -673,12 +748,12 @@ public class BdController extends Controller {
 		  	        	     * in order to save only validated IsbnCode
 		  	        	     */
 		  	        		
-		  	        		bdInfo = scanFromFnac.extractDataFromSearch( response.getBody(),isbnCode,ownerLogged) ;
+		  	        		bdInfo = scanFromDecitre.extractDataFromSearch( response.getBody(),isbnCode,ownerLogged) ;
 		  	        		play.Logger.debug(this.getClass().getName()+" infoBD 1.5 : bdExist bdInfo ="+bdInfo);
 		  	        		play.Logger.debug("infoBD 1.5 + bdExist bdInfo.id ="+bdInfo.getId());
 		  	        		
 		  	        	    //First:  i' check if the Bd extracted is already existing on my DB from isbn code
-		  	        		boolean bdExist =scanFromFnac.bdExist(isbnCode, bdInfo,ownerLogged);
+		  	        		boolean bdExist =scanFromDecitre.bdExist(isbnCode, bdInfo,ownerLogged);
 		  	        		
 			  	        	//if (bdExist==false) bdInfo.save();
 			  	        	play.Logger.debug(this.getClass().getName()+" infoBD 2 : bdExist ="+bdExist);
@@ -735,9 +810,9 @@ public class BdController extends Controller {
 		        return    (CompletionStage<Result>) badRequest("bad request");
 		    }
 		
-		    play.Logger.debug(this.getClass().getName()+" infoBD : before scanFromFnac.Scan");
-		    String isbnCode =scanFromFnac.scan(file);
-		    play.Logger.debug(" BdController : infoBD : after scanFromFnac.Scan");
+		    play.Logger.debug(this.getClass().getName()+" infoBD : before scanFromDecitre.Scan");
+		    String isbnCode =scanFromDecitre.scan(file);
+		    play.Logger.debug(" BdController : infoBD : after scanFromDecitre.Scan");
 		   
 		    
 		    return extractDataFromIsbn ( isbnCode,ownerLogged );

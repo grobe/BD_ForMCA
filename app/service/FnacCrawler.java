@@ -76,15 +76,23 @@ public class FnacCrawler {
 		i=0;  
 		collection.stream().forEach((col)->{
 		    i=i+1; 
-			play.Logger.debug(this.getClass().getName()+": crawler 1.5 : : collection seeked : "+i+ "DB ID: "+col.id+" title="+col.title+" with number of links =" +col.scraperBots.size()+ new Date());
-			 col.scraperBots.stream().forEach((bot)->{		
+
+
+		    if (col.scraperBots.size() >0) {
+				play.Logger.debug(this.getClass().getName()+": OK___________________________________________________________crawler 1.5 : : collection seeked : "+i+ "DB ID: "+col.id+" title="+col.title+" with number of links =" +col.scraperBots.size()+ new Date());
+			}else {
+				play.Logger.debug(this.getClass().getName()+": KOcrawler 1.5 BIS : : collection seeked : "+i+ "DB ID: "+col.id+" title="+col.title+" with number of links =0" + new Date());
+			}
+
+
+			col.scraperBots.stream().forEach((bot)->{
 			        
 				    //Look for the URL to be used by the bot to search into the store FNAC
 				    String url  =bot.url;
 				   
 			        CompletionStage<String> retour = ws.url(url).setRequestTimeout(configuration.getBytes("webStore.fnac.timeout")).get().thenApply(
 			  	           response ->{
-			                 // play.Logger.debug("FnacCrawler : crawler2 :thenApply :"+url+" "+ new Date());
+			                  play.Logger.debug("FnacCrawler : crawler2 :thenApply :"+url+" "+ new Date());
 			                   
 			                   
 			                   return (response.getBody());
@@ -93,7 +101,7 @@ public class FnacCrawler {
 			        	 
 			        	     Date d = new Date();
 			                 play.Logger.info("FnacCrawler : crawler3 : whenComplete :bot.ID"+bot.id +" - "+ d);
-			                 //play.Logger.debug("FnacCrawler : crawler3.5 : whenComplete :"+value+" : "+ d);
+			                 play.Logger.debug("FnacCrawler : crawler3.5 : whenComplete :"+value+" : "+ d);
 			                 if (exception != null) {
 			              	   play.Logger.error(this.getClass().getName()+": crawler4 : ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ exception:"+exception.getMessage()+ "---"+url+"--"+ new Date()); 
 			                   //future.completeExceptionally(exception);

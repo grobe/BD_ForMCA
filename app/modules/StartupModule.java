@@ -4,10 +4,7 @@ import javax.inject.Inject;
 
 import com.google.inject.AbstractModule;
 
-import service.FnacCrawler;
-import service.FnacScanBD;
-import service.ScanBD;
-import service.SchedulingStartUp;
+import service.*;
 import actors.ActorsWebService;
 import models.StatisticsBD;
 import play.Configuration;
@@ -31,6 +28,7 @@ public class StartupModule extends AbstractModule implements AkkaGuiceSupport {
 		bindActor(ActorsWebService.class, "update-db-crawler");
         bind(SchedulingStartUp.class).asEagerSingleton(); 
         bind(FnacScanBD.class);
+		bind(DecitreScanBD.class);
         bind(StatisticsBD.class);
         bind(FnacCrawler.class); //not working don't understand why to see later
         
