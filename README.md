@@ -1,4 +1,4 @@
-<h1>Play 2.5.16 Java Product with Promise, Akka, Ebean</h1>
+<h1>Play 2.5.18 Java Product with Promise, Akka, Ebean</h1>
 
 
 This project allow me to handle my comics or graphical novel collection.
