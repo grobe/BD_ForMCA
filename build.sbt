@@ -1,6 +1,6 @@
 name := """BD.grobe.fr"""
 
-version := "1.5.0"
+version := "1.5.1"
 
 lazy val root = (project in file(".")).enablePlugins(BuildInfoPlugin, PlayJava, PlayEbean,DebianPlugin, WindowsPlugin).settings(
   buildInfoKeys := Seq[BuildInfoKey](name, version),
@@ -14,6 +14,10 @@ libraryDependencies += "org.mockito" % "mockito-core" % "2.1.0"
 libraryDependencies += javaWs % "test"
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.36"
 libraryDependencies += "org.webjars" % "bootstrap" % "3.3.7"
+
+
+// https://mvnrepository.com/artifact/org.imgscalr/imgscalr-lib
+libraryDependencies += "org.imgscalr" % "imgscalr-lib" % "4.2"
 
 
 // https://mvnrepository.com/artifact/org.jsoup/jsoup

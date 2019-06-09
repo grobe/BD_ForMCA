@@ -512,7 +512,7 @@ public class BdController extends Controller {
 		    Owners owner =Owners.find.where().eq("id", Long.valueOf(session("connectedBD"))).findUnique();
 		  
 		    CollectionBD bdCollection=owner.getCollectionBD().stream()
-								    		.filter(e -> e.getTitle().equals( formCollection.title))
+								    		.filter(e -> e.getTitle().toUpperCase().equals( formCollection.title.toUpperCase()))
 								            .findFirst()
 								            .orElse(null);
 		    formCollection.setOwner(owner);
